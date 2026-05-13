@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Represents a user in the system (teacher or learner)",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "userName": { "type": "string" },
+        "fullName": { "type": "string" },
+        "rank": { "type": "string", "enum": ["teacher", "learner"] },
+        "className": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "lastLogin": { "type": "string", "format": "date-time" },
+        "photoURL": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "scores": {
+          "type": "object"
+        }
+      },
+      "required": ["uid", "email", "rank"]
+    },
+    "Test": {
+      "title": "Test",
+      "description": "Represents a classroom test created by a teacher",
+      "type": "object",
+      "properties": {
+        "testName": { "type": "string" },
+        "className": { "type": "string" },
+        "durationMinutes": { "type": "number" },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "startTime": { "type": "string", "format": "date-time" },
+        "endTime": { "type": "string", "format": "date-time" },
+        "isActive": { "type": "boolean" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "markingScheme": {
+          "type": "object"
+        }
+      },
+      "required": ["testName", "className", "durationMinutes"]
+    },
+    "Question": {
+      "title": "Question",
+      "description": "A question within a test",
+      "type": "object",
+      "properties": {
+        "questionId": { "type": "string" },
+        "questionText": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "options": { "type": "array", "items": { "type": "string" } },
+        "correctAnswerIndex": { "type": "number" },
+        "answeredUsers": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["questionText", "options", "correctAnswerIndex"]
+    },
+    "TestAttempt": {
+      "title": "TestAttempt",
+      "description": "A learner's attempt at a test",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "testId": { "type": "string" },
+        "testName": { "type": "string" },
+        "className": { "type": "string" },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "submittedAt": { "type": "string", "format": "date-time" },
+        "isSubmitted": { "type": "boolean" },
+        "score": { "type": "number" },
+        "percentage": { "type": "number" },
+        "answers": {
+          "type": "object"
+        }
+      },
+      "required": ["uid", "testId"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "tests/{testId}": {
+      "schema": "Test",
+      "description": "Tests metadata"
+    },
+    "tests/{testId}/questions/{questionId}": {
+      "schema": "Question",
+      "description": "Questions in a test"
+    },
+    "testAttempts/{attemptId}": {
+      "schema": "TestAttempt",
+      "description": "Student test attempts and progress"
+    }
+  }
+}
