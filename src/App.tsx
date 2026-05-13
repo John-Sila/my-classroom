@@ -19,19 +19,10 @@ import CreateTest from './pages/CreateTest';
 import ManageUsers from './pages/ManageUsers';
 import TakeTest from './pages/TakeTest';
 import TestResults from './pages/TestResults';
+import AnalyticsPage from './pages/AnalyticsPage';
+import AvailableTests from './pages/AvailableTests';
+import MyResults from './pages/MyResults';
 
-const Analytics = () => <div className="p-8 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-soft">
-  <h2 className="text-2xl font-bold mb-4">Detailed Analytics</h2>
-  <p className="text-slate-500">Feature coming soon: question-by-question heatmaps and class-wide trend analysis.</p>
-</div>;
-const AvailableTests = () => <div className="p-8 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-soft">
-  <h2 className="text-2xl font-bold mb-4">All Examinations</h2>
-  <p className="text-slate-500">Go to Dashboard to see your currently active tests.</p>
-</div>;
-const MyResults = () => <div className="p-8 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-soft">
-  <h2 className="text-2xl font-bold mb-4">Performance History</h2>
-  <p className="text-slate-500">Go to Dashboard to see your recent score chart.</p>
-</div>;
 const Unauthorized = () => <div className="flex flex-col items-center justify-center h-full text-center p-12 bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-soft">
   <XCircle className="text-red-500 mb-4" size={64} />
   <h2 className="text-3xl font-black uppercase tracking-tight mb-2">Access Denied!</h2>
@@ -118,7 +109,7 @@ export default function App() {
         <Route path="/teacher/analytics" element={
           <ProtectedRoute>
             <RoleGuard allowedRank="teacher">
-              <MainLayout><Analytics /></MainLayout>
+              <MainLayout><AnalyticsPage /></MainLayout>
             </RoleGuard>
           </ProtectedRoute>
         } />
