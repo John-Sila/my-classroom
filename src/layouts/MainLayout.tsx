@@ -1,29 +1,46 @@
-import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { NavLink, useNavigate, Outlet } from 'react-router-dom';
 import {
   LayoutDashboard,
-  FileText,
-  Users,
+  BookOpen,
+  ClipboardList,
   BarChart3,
-  Moon,
-  Sun,
+  Users,
+  PlusCircle,
   LogOut,
   Menu,
   X,
-  GraduationCap
+  Sun,
+  Moon,
+  GraduationCap,
 } from 'lucide-react';
-import { motion } from 'motion/react';
-import { useAuthStore, useThemeStore } from '../store/useStore';
-import { auth } from '../lib/firebase';
-import { signOut } from 'firebase/auth';
+
+import { useAuthStore } from '../store/authStore';
+import { useThemeStore } from '../store/themeStore';
 import { cn } from '../lib/utils';
 
-export function MainLayout({ children }: { children: React.ReactNode }) {
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase/config';
+
+export const MainLayout: React.FC = () => {
   const { user } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const location = useLocation();
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const root = document.documentElement;
+
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -31,167 +48,172 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
   };
 
   const teacherNav = [
-    { name: 'Dashboard', icon: LayoutDashboard, path: '/teacher' },
-    { name: 'Create Test', icon: FileText, path: '/teacher/create-test' },
-    { name: 'Manage Users', icon: Users, path: '/teacher/users' },
-    { name: 'Analytics', icon: BarChart3, path: '/teacher/analytics' },
+    { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
+    { name: 'Create Test', icon: PlusCircle, path: '/create-test' },
+    { name: 'Manage Users', icon: Users, path: '/manage-users' },
+    { name: 'Results Analytics', icon: BarChart3, path: '/results-analytics' },
+    { name: 'Test Analytics', icon: BookOpen, path: '/test-analytics' },
   ];
 
   const learnerNav = [
-    { name: 'Dashboard', icon: LayoutDashboard, path: '/learner' },
-    { name: 'Available Tests', icon: FileText, path: '/learner/tests' },
-    { name: 'My Results', icon: BarChart3, path: '/learner/results' },
+    { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
+    { name: 'Available Tests', icon: ClipboardList, path: '/tests' },
+    { name: 'My Results', icon: BarChart3, path: '/results' },
+    { name: 'Analytics', icon: BookOpen, path: '/analytics' },
   ];
 
-  const navItems = user?.rank === 'teacher' ? teacherNav : learnerNav;
+  const navItems =
+    user?.rank === 'teacher' ? teacherNav : learnerNav;
 
   return (
-    <div className={cn("min-h-screen", theme === 'dark' ? 'dark bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900')}>
-      {/* Topbar — sets CSS variable --topbar-height so main & aside align */}
-      <header
-        className={cn(
-          "fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 md:px-6",
-          // glass effect: light and dark variants
-          "backdrop-blur-sm",
-          theme === 'dark'
-            ? "bg-slate-900/60 text-slate-100 border-b border-slate-800"
-            : "bg-white/70 text-slate-900 border-b border-slate-200"
-        )}
-        style={{ height: 64, /* px */ } as React.CSSProperties}
-      >
-        {/* CSS variable for consumers */}
-        <div style={{ '--topbar-height': '64px' } as React.CSSProperties} />
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 transition-colors duration-300">
+      {/* Mobile Topbar */}
+      <header className="lg:hidden sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
+        <div className="flex items-center gap-2">
+          <GraduationCap className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
 
-        {/* LEFT: hamburger + brand */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className={cn(
-              "p-2 rounded-md transition-colors",
-              theme === 'dark' ? "hover:bg-slate-800/60" : "hover:bg-slate-100"
-            )}
-            aria-label="Toggle sidebar"
-          >
-            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-
-          <div className="flex items-center gap-2 font-semibold text-lg md:text-xl text-blue-600 dark:text-blue-400">
-            <GraduationCap size={26} />
-            <span className="hidden sm:inline">Teacher Sila’s Classroom</span>
-          </div>
+          <span className="text-lg font-bold text-slate-900 dark:text-white">
+            Teacher Sila&apos;s
+          </span>
         </div>
 
-        {/* RIGHT: user info + theme + avatar */}
-        <div className="flex items-center gap-4">
-          <div className="text-right hidden md:block">
-            <p className="text-sm font-medium">{user ? `Welcome back, ${user.userName}` : 'Welcome'}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              {user?.rank === 'teacher' ? 'Instructor' : `Class ${user?.className}`}
-            </p>
-          </div>
-
-          <button
-            onClick={toggleTheme}
-            className={cn(
-              "p-2 rounded-md transition-colors",
-              theme === 'dark' ? "hover:bg-slate-800/60" : "hover:bg-slate-100"
-            )}
-            aria-label="Toggle theme"
-            title={theme === 'light' ? 'Switch to dark' : 'Switch to light'}
-          >
-            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-          </button>
-
-          <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold border-2 border-white dark:border-slate-800 shadow-sm">
-            {user?.userName?.[0]?.toUpperCase()}
-          </div>
-
-          <button
-            onClick={handleLogout}
-            className={cn(
-              "ml-1 p-2 rounded-md transition-colors",
-              theme === 'dark' ? "hover:bg-red-900/20 text-red-400" : "hover:bg-red-50 text-red-600"
-            )}
-            aria-label="Logout"
-            title="Logout"
-          >
-            <LogOut size={18} />
-          </button>
-        </div>
+        <button
+          onClick={() => setIsSidebarOpen(true)}
+          className="rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+        >
+          <Menu className="h-6 w-6" />
+        </button>
       </header>
 
-      {/* Sidebar — top aligned to header via top: var(--topbar-height) with fallback */}
-      <aside
-        className={cn(
-          "fixed bottom-0 left-0 transition-all duration-300 shadow-soft overflow-hidden z-40",
-          isSidebarOpen ? "w-64" : "w-0 md:w-20"
-        )}
-        style={{ top: 'var(--topbar-height, 64px)' }}
-      >
-        <nav className={cn("p-4 flex flex-col h-full", theme === 'dark' ? "bg-transparent" : "bg-transparent")}>
-          <ul className="space-y-2 flex-grow">
-            {navItems.map((item) => {
-              const isActive = location.pathname === item.path;
-              return (
-                <li key={item.path}>
-                  <Link
-                    to={item.path}
-                    className={cn(
-                      "flex items-center gap-3 p-3 rounded-xl transition-all group",
-                      isActive
-                        ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30"
-                        : "hover:bg-blue-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
-                    )}
-                  >
-                    <item.icon size={22} className={cn("shrink-0", isActive ? "" : "group-hover:scale-110 transition-transform")} />
-                    <span className={cn("font-medium whitespace-nowrap transition-opacity", !isSidebarOpen && "md:opacity-0")}>{item.name}</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-
-          <div className="space-y-2 pt-4 border-t border-slate-200 dark:border-slate-800">
-            <button
-              onClick={toggleTheme}
-              className={cn(
-                "w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-all"
-              )}
-            >
-              {theme === 'light' ? <Moon size={22} /> : <Sun size={22} />}
-              <span className={cn("font-medium whitespace-nowrap", !isSidebarOpen && "md:opacity-0")}>
-                {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
-              </span>
-            </button>
-
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 transition-all"
-            >
-              <LogOut size={22} />
-              <span className={cn("font-medium whitespace-nowrap", !isSidebarOpen && "md:opacity-0")}>Logout</span>
-            </button>
-          </div>
-        </nav>
-      </aside>
-
-      {/* Main Content — uses the same variable for paddingTop; fallback 64px */}
-      <main
-        className={cn(
-          "transition-all duration-300 p-6 min-h-screen",
-          isSidebarOpen ? "pl-72" : "pl-6 md:pl-26"
-        )}
-        style={{ paddingTop: 'var(--topbar-height, 96px)' }}
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          key={location.pathname}
+      <div className="flex">
+        {/* Sidebar */}
+        <aside
+          className={cn(
+            'fixed left-0 top-0 z-50 h-screen w-64 overflow-y-auto border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 transform transition-transform duration-300 lg:translate-x-0',
+            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          )}
         >
-          {children}
-        </motion.div>
-      </main>
+          <div className="flex h-full flex-col">
+            {/* Desktop Logo */}
+            <div className="hidden items-center gap-3 p-6 lg:flex">
+              <div className="rounded-xl bg-indigo-600 p-2">
+                <GraduationCap className="h-6 w-6 text-white" />
+              </div>
+
+              <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+                Classroom
+              </span>
+            </div>
+
+            {/* Mobile Header */}
+            <div className="flex items-center justify-between border-b border-slate-100 p-4 dark:border-slate-800 lg:hidden">
+              <span className="font-bold text-slate-900 dark:text-white">
+                Navigation
+              </span>
+
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                className="rounded-lg p-1 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                <X className="h-6 w-6 text-slate-500" />
+              </button>
+            </div>
+
+            {/* Nav */}
+            <nav className="flex-1 space-y-1 px-4 py-4">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setIsSidebarOpen(false)}
+                  className={({ isActive }) =>
+                    cn(
+                      'flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all',
+                      isActive
+                        ? 'bg-indigo-50 text-indigo-600 shadow-sm dark:bg-indigo-900/40 dark:text-indigo-400'
+                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white'
+                    )
+                  }
+                >
+                  <item.icon className="h-5 w-5" />
+                  {item.name}
+                </NavLink>
+              ))}
+            </nav>
+
+            {/* Footer Buttons */}
+            <div className="space-y-2 border-t border-slate-100 p-4 dark:border-slate-800">
+
+              <button
+                onClick={handleLogout}
+                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:hover:bg-red-900/20"
+              >
+                <LogOut className="h-5 w-5" />
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        {/* Backdrop */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        {/* Main Content */}
+        <main className="relative min-h-screen flex-1 lg:ml-64">
+          {/* Desktop Header */}
+          <header className="sticky top-0 z-30 hidden items-center justify-between border-b border-slate-200 bg-white/80 px-8 py-4 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/80 lg:flex">
+            <div className="flex items-center gap-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
+                <Users className="h-5 w-5 text-slate-500" />
+              </div>
+
+              <div>
+                <h2 className="font-semibold text-slate-900 dark:text-white">
+                  Teacher Sila&apos;s Classroom
+                </h2>
+
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Welcome back, {user?.userName || 'User'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="mr-2 text-right">
+                <p className="text-sm font-medium text-slate-900 dark:text-white">
+                  {user?.fullName}
+                </p>
+
+                <p className="text-xs capitalize text-slate-500 dark:text-slate-400">
+                  {user?.rank} - {user?.className}
+                </p>
+              </div>
+
+              {user?.photoURL ? (
+                <img
+                  src={user.photoURL}
+                  alt="Avatar"
+                  className="h-10 w-10 rounded-full border-2 border-indigo-500 object-cover"
+                />
+              ) : (
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 font-bold text-white">
+                  {user?.userName?.[0]?.toUpperCase()}
+                </div>
+              )}
+            </div>
+          </header>
+
+          {/* Page Content */}
+          <div className="p-4 lg:p-8">
+            <Outlet />
+          </div>
+        </main>
+      </div>
     </div>
   );
-}
+};

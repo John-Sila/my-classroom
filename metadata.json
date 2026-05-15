@@ -1,6 +1,6 @@
 {
   "name": "Teacher Sila’s Classroom",
-  "description": "A modern, full-stack classroom examination platform for teachers and learners featuring real-time tests, analytics, and automated grading.",
+  "description": "A modern classroom examination platform for teachers and learners with real-time test taking, analytics, and role-based management.",
   "requestFramePermissions": [],
   "majorCapabilities": []
 }

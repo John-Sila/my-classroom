@@ -1,91 +1,109 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Default Deny
+    // 0. Global Safety Net
     match /{document=**} {
       allow read, write: if false;
     }
 
     // --- Helpers ---
-    function isSignedIn() { return request.auth != null; }
-    function isVerified() { return isSignedIn() && request.auth.token.email_verified == true; }
-    function isAdmin() { return isSignedIn() && request.auth.token.email == 'jsila3000@gmail.com'; }
-    function getUserData() { 
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data; 
+    function isSignedIn() {
+      return request.auth != null;
     }
-    function isTeacher() { 
-      return isSignedIn() && (
-        isAdmin() || 
-        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && getUserData().rank == 'teacher')
-      );
-    }
-    function incoming() { return request.resource.data; }
-    function existing() { return resource.data; }
-    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
 
-    // --- Entity Validations ---
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isTeacher() {
+      return isSignedIn() && getUserData().rank == 'teacher';
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- Validation Blueprints ---
     function isValidUser(data) {
-      return data.keys().hasAll(['uid', 'email', 'rank', 'userName', 'fullName', 'className', 'isActive']) &&
-             data.uid == request.auth.uid &&
-             data.rank in ['teacher', 'learner'] &&
-             data.userName is string && data.userName.size() <= 50 &&
-             data.fullName is string && data.fullName.size() <= 100;
+      return data.uid == request.auth.uid 
+        && data.email is string
+        && data.userName is string && data.userName.size() <= 100
+        && data.rank in ['teacher', 'learner']
+        && (data.rank == 'teacher' || data.className is string)
+        && data.createdAt == request.time
+        && data.updatedAt == request.time;
     }
 
     function isValidTest(data) {
-      return data.keys().hasAll(['testName', 'className', 'durationMinutes', 'createdBy', 'isActive']) &&
-             data.testName is string && data.testName.size() <= 200 &&
-             data.durationMinutes is number && data.durationMinutes > 0 &&
-             data.createdBy == request.auth.uid;
+      return data.testName is string && data.testName.size() <= 200
+        && data.className is string
+        && data.durationMinutes is number && data.durationMinutes > 0
+        && data.createdBy == request.auth.uid
+        && data.isActive is bool;
+    }
+
+    function isValidQuestion(data) {
+      return data.questionText is string && data.questionText.size() <= 2000
+        && data.options is list && data.options.size() >= 2
+        && data.correctAnswerIndex is number;
     }
 
     function isValidAttempt(data) {
-      return data.keys().hasAll(['uid', 'testId', 'testName', 'className', 'isSubmitted', 'score', 'percentage', 'answers']) &&
-             data.uid == request.auth.uid &&
-             data.testId is string &&
-             data.score is number &&
-             data.percentage is number &&
-             data.answers is map;
+      return data.uid == request.auth.uid
+        && data.testId is string
+        && data.isSubmitted is bool;
     }
 
-    // --- Match Blocks ---
+    // --- Rules ---
 
-    match /users/{userId} {
-      allow get: if isSignedIn();
-      allow list: if isTeacher();
-      allow create: if isSignedIn() && (request.auth.uid == userId || isTeacher());
-      allow update: if isSignedIn() && (
-        (request.auth.uid == userId && incoming().diff(existing()).affectedKeys().hasOnly(['lastLogin', 'photoURL', 'userName', 'fullName'])) ||
-        isTeacher()
-      );
+    match /users/{uid} {
+      allow read: if isSignedIn() && (isOwner(uid) || isTeacher());
+      allow create: if isSignedIn() && isOwner(uid) && isValidUser(incoming());
+      allow update: if isSignedIn() && isOwner(uid) 
+        && incoming().rank == existing().rank // Rank is immutable
+        && incoming().uid == existing().uid
+        && incoming().updatedAt == request.time
+        && (
+          incoming().diff(existing()).affectedKeys().hasOnly(['lastLogin', 'updatedAt', 'photoURL', 'userName', 'fullName', 'scores'])
+        );
     }
 
     match /tests/{testId} {
-      allow get: if isSignedIn();
-      allow list: if isSignedIn();
+      allow read: if isSignedIn() && (isTeacher() || getUserData().className == resource.data.className);
       allow create: if isTeacher() && isValidTest(incoming());
-      allow update: if isTeacher() && isValidTest(incoming());
-      allow delete: if isTeacher();
+      allow update: if isTeacher() && incoming().createdBy == existing().createdBy;
+      allow delete: if isTeacher() && existing().createdBy == request.auth.uid;
 
       match /questions/{questionId} {
-        allow read: if isSignedIn();
+        allow read: if isSignedIn() && (isTeacher() || getUserData().className == get(/databases/$(database)/documents/tests/$(testId)).data.className);
         allow write: if isTeacher();
       }
     }
 
     match /testAttempts/{attemptId} {
-      allow get: if isSignedIn() && (resource.data.uid == request.auth.uid || isTeacher());
-      allow list: if isSignedIn() && (resource.data.uid == request.auth.uid || isTeacher());
+      allow read: if isSignedIn() && (isOwner(existing().uid) || isTeacher());
       allow create: if isSignedIn() && isValidAttempt(incoming());
-      allow update: if isSignedIn() && (
-        (resource.data.uid == request.auth.uid && !existing().isSubmitted && (
-          // Action: Answer Question
-          incoming().diff(existing()).affectedKeys().hasOnly(['answers', 'updatedAt']) ||
-          // Action: Submit Test
-          incoming().diff(existing()).affectedKeys().hasOnly(['isSubmitted', 'score', 'percentage', 'submittedAt', 'answers', 'updatedAt'])
-        )) ||
-        isTeacher()
-      );
+      allow update: if isSignedIn() && isOwner(existing().uid)
+        && existing().isSubmitted == false // Cannot update submitted test
+        && (
+          // Action: Answer question or Submit
+          incoming().diff(existing()).affectedKeys().hasAny(['answers', 'isSubmitted', 'submittedAt', 'score', 'percentage', 'updatedAt'])
+        )
+        && incoming().uid == existing().uid
+        && incoming().testId == existing().testId
+        && incoming().updatedAt == request.time;
     }
   }
 }

@@ -2,7 +2,7 @@
   "entities": {
     "User": {
       "title": "User",
-      "description": "Represents a user in the system (teacher or learner)",
+      "description": "Represents a user (Teacher or Learner) in the platform.",
       "type": "object",
       "properties": {
         "uid": { "type": "string" },
@@ -17,16 +17,18 @@
         "photoURL": { "type": "string" },
         "isActive": { "type": "boolean" },
         "scores": {
-          "type": "object"
+          "type": "object",
+          "description": "Map of testName to score"
         }
       },
       "required": ["uid", "email", "rank"]
     },
     "Test": {
       "title": "Test",
-      "description": "Represents a classroom test created by a teacher",
+      "description": "A classroom examination template.",
       "type": "object",
       "properties": {
+        "testId": { "type": "string" },
         "testName": { "type": "string" },
         "className": { "type": "string" },
         "durationMinutes": { "type": "number" },
@@ -37,14 +39,14 @@
         "isActive": { "type": "boolean" },
         "timestamp": { "type": "string", "format": "date-time" },
         "markingScheme": {
-          "type": "object"
+          "type": "object",
+          "description": "Map of questionId to mark value (usually index or score)"
         }
-      },
-      "required": ["testName", "className", "durationMinutes"]
+      }
     },
     "Question": {
       "title": "Question",
-      "description": "A question within a test",
+      "description": "A single question within a test.",
       "type": "object",
       "properties": {
         "questionId": { "type": "string" },
@@ -53,14 +55,14 @@
         "options": { "type": "array", "items": { "type": "string" } },
         "correctAnswerIndex": { "type": "number" },
         "answeredUsers": { "type": "array", "items": { "type": "string" } }
-      },
-      "required": ["questionText", "options", "correctAnswerIndex"]
+      }
     },
     "TestAttempt": {
       "title": "TestAttempt",
-      "description": "A learner's attempt at a test",
+      "description": "A learner's progress or result for a specific test.",
       "type": "object",
       "properties": {
+        "attemptId": { "type": "string" },
         "uid": { "type": "string" },
         "testId": { "type": "string" },
         "testName": { "type": "string" },
@@ -72,28 +74,28 @@
         "score": { "type": "number" },
         "percentage": { "type": "number" },
         "answers": {
-          "type": "object"
+          "type": "object",
+          "description": "Map of questionId to {selectedAnswer, isCorrect, updatedAt}"
         }
-      },
-      "required": ["uid", "testId"]
+      }
     }
   },
   "firestore": {
-    "users/{userId}": {
+    "users/{uid}": {
       "schema": "User",
-      "description": "User profiles"
+      "description": "User profiles and metadata."
     },
     "tests/{testId}": {
       "schema": "Test",
-      "description": "Tests metadata"
+      "description": "Test definitions."
     },
     "tests/{testId}/questions/{questionId}": {
       "schema": "Question",
-      "description": "Questions in a test"
+      "description": "Questions linked to a test."
     },
     "testAttempts/{attemptId}": {
       "schema": "TestAttempt",
-      "description": "Student test attempts and progress"
+      "description": "Individual test results and progress."
     }
   }
 }

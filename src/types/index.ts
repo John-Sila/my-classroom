@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore';
+
 export type UserRank = 'teacher' | 'learner';
 
 export interface UserProfile {
@@ -7,12 +9,26 @@ export interface UserProfile {
   fullName: string;
   rank: UserRank;
   className: string;
-  createdAt: any;
-  updatedAt: any;
-  lastLogin: any;
-  photoURL?: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+  lastLogin: Timestamp;
+  photoURL: string;
   isActive: boolean;
-  scores?: Record<string, number>;
+  scores: Record<string, number>;
+}
+
+export interface Test {
+  testId: string;
+  testName: string;
+  className: string;
+  durationMinutes: number;
+  createdBy: string;
+  createdAt: Timestamp;
+  startTime: Timestamp;
+  endTime: Timestamp;
+  isActive: boolean;
+  timestamp: Timestamp;
+  markingScheme: Record<string, number>;
 }
 
 export interface Question {
@@ -21,37 +37,25 @@ export interface Question {
   imageUrl?: string;
   options: string[];
   correctAnswerIndex: number;
-}
-
-export interface Test {
-  id: string;
-  testName: string;
-  className: string;
-  durationMinutes: number;
-  createdBy: string;
-  createdAt: any;
-  startTime: any;
-  endTime: any;
-  isActive: boolean;
-  markingScheme: Record<string, number>;
+  answeredUsers: string[];
 }
 
 export interface TestAttempt {
-  id: string;
+  attemptId: string;
   uid: string;
   testId: string;
   testName: string;
   className: string;
-  startedAt: any;
-  updatedAt: any;
-  submittedAt?: any;
+  startedAt: Timestamp;
+  updatedAt: Timestamp;
+  submittedAt?: Timestamp;
   isSubmitted: boolean;
   score: number;
   percentage: number;
   answers: Record<string, {
     selectedAnswer: number;
     isCorrect: boolean;
-    updatedAt: any;
+    updatedAt: Timestamp;
   }>;
 }
 
@@ -73,5 +77,10 @@ export interface FirestoreErrorInfo {
     email?: string | null;
     emailVerified?: boolean | null;
     isAnonymous?: boolean | null;
+    tenantId?: string | null;
+    providerInfo?: {
+      providerId?: string | null;
+      email?: string | null;
+    }[];
   }
 }
