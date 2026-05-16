@@ -66,28 +66,52 @@ export const MyResults: React.FC = () => {
         const testsRoot = collection(db, 'testResults', user.uid, 'tests');
         const testsSnap = await getDocs(testsRoot);
 
-        const allResults: any[] = [];
+        const results: ResultDoc[] = [];
 
         for (const testDoc of testsSnap.docs) {
           const testId = testDoc.id;
-          const resultsRef = collection(db, 'testResults', user.uid, 'tests', testId, 'results');
-          const resultsSnap = await getDocs(query(resultsRef, orderBy('submittedAt', 'desc')));
 
-          resultsSnap.docs.forEach((docSnap) => {
-            allResults.push({
+          const resultsRef = collection(
+            db,
+            'testResults',
+            user.uid,
+            'tests',
+            testId,
+            'results'
+          );
+
+          const resultsSnap = await getDocs(
+            query(resultsRef, orderBy('submittedAt', 'desc'))
+          );
+
+          for (const docSnap of resultsSnap.docs) {
+            const data = docSnap.data() as TestAttempt;
+
+            results.push({
               id: docSnap.id,
-              ...docSnap.data()
+              attemptId: data.attemptId,
+              uid: data.uid,
+              testId: data.testId,
+              testName: data.testName,
+              className: data.className,
+              score: data.score,
+              percentage: data.percentage,
+              totalQuestions: Object.keys(data.answers || {}).length,
+              answers: data.answers,
+              submittedAt: data.submittedAt,
+              createdAt: data.updatedAt ?? data.submittedAt
             });
-          });
+          }
         }
 
-        allResults.sort((a, b) => {
-          const aTime = a.submittedAt?.toDate?.()?.getTime?.() ?? 0;
-          const bTime = b.submittedAt?.toDate?.()?.getTime?.() ?? 0;
+        // final deterministic sort (cross-test ordering)
+        results.sort((a, b) => {
+          const aTime = a.submittedAt?.toMillis?.() ?? 0;
+          const bTime = b.submittedAt?.toMillis?.() ?? 0;
           return bTime - aTime;
         });
 
-        setResults(allResults as TestAttempt[]);
+        setResults(results);
       } catch (error) {
         console.error('Error fetching results:', error);
         setResults([]);

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { GraduationCap, Mail, Lock, ArrowRight, Loader2 } from 'lucide-react';
+import { GraduationCap, Mail, Lock, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { auth, db } from '../../firebase/config';
 import { doc, updateDoc, Timestamp } from 'firebase/firestore';
-import { toast } from 'react-hot-toast';
+import { getAuthErrorMessage } from '@/src/utils/authErrors';
+import { notify } from '@/src/utils/toast';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -12,6 +13,7 @@ export const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const [error, setError] = useState('');
 
   const from = location.state?.from?.pathname || '/';
 
@@ -31,11 +33,12 @@ export const Login: React.FC = () => {
         updatedAt: Timestamp.now()
       });
 
-      toast.success('Successfully logged in!');
+      notify.success('Successfully logged in!');
       navigate(from, { replace: true });
     } catch (error: any) {
-      console.error('Login error:', error);
-      toast.error(error.message || 'Failed to login. Please check your credentials.');
+      const errorMessage = getAuthErrorMessage(error.code);
+      notify.error(errorMessage);
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -119,7 +122,7 @@ export const Login: React.FC = () => {
         </div>
         
         <p className="mt-8 text-center text-sm text-slate-500 dark:text-slate-500">
-          © 2026 Teacher Sila’s Classroom. All rights reserved.
+          © {new Date().getFullYear()} Teacher Sila’s Classroom. All rights reserved.
         </p>
       </div>
     </div>

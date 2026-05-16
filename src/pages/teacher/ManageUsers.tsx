@@ -5,8 +5,6 @@ import {
   Search, 
   Filter, 
   MoreVertical, 
-  Trash2, 
-  Edit2, 
   Shield, 
   Loader2,
   CheckCircle2,
@@ -16,7 +14,7 @@ import { collection, query, onSnapshot, orderBy } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 import { UserProfile } from '../../types';
 import { cn } from '../../lib/utils';
-import { toast } from 'react-hot-toast';
+import { notify } from '@/src/utils/toast';
 
 export const ManageUsers: React.FC = () => {
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -92,7 +90,7 @@ export const ManageUsers: React.FC = () => {
       // 4. Cleanup secondary app
       await deleteApp(secondaryApp);
 
-      toast.success(`User ${formData.userName} created successfully!`);
+      notify.success(`User ${formData.userName} created successfully!`);
       setFormData({
         email: '',
         password: '',
@@ -102,7 +100,7 @@ export const ManageUsers: React.FC = () => {
         className: ''
       });
     } catch (error: any) {
-      toast.error(error.message);
+      notify.error(error.message);
     } finally {
       setIsCreating(false);
     }

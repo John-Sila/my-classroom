@@ -21,10 +21,7 @@ import {
 import { db } from '../../firebase/config';
 import { Test, TestAttempt, Question } from '../../types';
 import { 
-  BarChart3, 
   Filter, 
-  ChevronDown, 
-  Search,
   CheckCircle2,
   XCircle,
   HelpCircle,

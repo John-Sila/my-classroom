@@ -1,20 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Users, 
-  ClipboardList, 
-  CheckCircle2, 
-  Clock, 
-  TrendingUp, 
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+  Users,
+  ClipboardList,
+  CheckCircle2,
+  TrendingUp,
   Activity,
   Filter,
-  UserX,
-  Search
+  UserX
 } from 'lucide-react';
-import { collection, query, onSnapshot, orderBy, limit, where } from 'firebase/firestore';
+
+import {
+  collection,
+  query,
+  onSnapshot,
+  orderBy,
+  limit,
+  where,
+  getDocs
+} from 'firebase/firestore';
+
 import { db } from '../../firebase/config';
 import { Test, TestAttempt, UserProfile } from '../../types';
 import { cn } from '../../lib/utils';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell
+} from 'recharts';
+
 import { format } from 'date-fns';
 
 export const TeacherDashboard: React.FC = () => {
@@ -31,31 +49,66 @@ export const TeacherDashboard: React.FC = () => {
   const [allLearners, setAllLearners] = useState<UserProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  /**
+   * 1. Tests + Learners (single stable subscription layer)
+   */
   useEffect(() => {
-    // Listen for tests
-    const qTests = query(collection(db, 'tests'), orderBy('createdAt', 'desc'), limit(10));
+    let mounted = true;
+
+    const qTests = query(
+      collection(db, 'tests'),
+      orderBy('createdAt', 'desc'),
+      limit(10)
+    );
+
     const unsubTests = onSnapshot(qTests, (snap) => {
-      const data = snap.docs.map(doc => ({ ...doc.data(), testId: doc.id } as Test));
+      if (!mounted) return;
+
+      const data = snap.docs.map(
+        doc => ({ ...doc.data(), testId: doc.id } as Test)
+      );
+
       setRecentTests(data);
-      if (data.length > 0 && !selectedTestId) {
-        setSelectedTestId(data[0].testId);
-      }
+
       setStats(prev => ({ ...prev, tests: snap.size }));
+
+      /**
+       * CRITICAL FIX:
+       * only initialize once, never override user selection
+       */
+      setSelectedTestId(prev => {
+        if (prev && data.some(t => t.testId === prev)) return prev;
+        return data[0]?.testId ?? null;
+      });
+
+      setIsLoading(false);
     });
 
-    // Listen for users
-    const qUsers = query(collection(db, 'users'), where('rank', '==', 'learner'));
+    const qUsers = query(
+      collection(db, 'users'),
+      where('rank', '==', 'learner')
+    );
+
     const unsubUsers = onSnapshot(qUsers, (snap) => {
-      setAllLearners(snap.docs.map(doc => doc.data() as UserProfile));
+      if (!mounted) return;
+
+      setAllLearners(
+        snap.docs.map(doc => doc.data() as UserProfile)
+      );
+
       setStats(prev => ({ ...prev, learners: snap.size }));
     });
 
     return () => {
+      mounted = false;
       unsubTests();
       unsubUsers();
     };
   }, []);
 
+  /**
+   * 2. Attempts stream (fully reactive, no navigation dependency)
+   */
   useEffect(() => {
     if (!selectedTestId) return;
 
@@ -67,35 +120,75 @@ export const TeacherDashboard: React.FC = () => {
 
     const unsubAttempts = onSnapshot(qAttempts, (snap) => {
       const data = snap.docs.map(doc => doc.data() as TestAttempt);
+
       setAttempts(data);
-      setStats(prev => ({ ...prev, submissions: snap.size }));
-      
-      if (snap.size > 0) {
-        const sum = data.reduce((acc, curr) => acc + curr.percentage, 0);
-        setStats(prev => ({ ...prev, avgScore: Math.round(sum / snap.size) }));
-      } else {
-        setStats(prev => ({ ...prev, avgScore: 0 }));
-      }
+
+      setStats(prev => {
+        const avg =
+          data.length > 0
+            ? Math.round(
+                data.reduce((acc, curr) => acc + curr.percentage, 0) /
+                  data.length
+              )
+            : 0;
+
+        return {
+          ...prev,
+          submissions: snap.size,
+          avgScore: avg
+        };
+      });
     });
 
     return () => unsubAttempts();
   }, [selectedTestId]);
 
-  const selectedTest = recentTests.find(t => t.testId === selectedTestId);
-  const testClass = selectedTest?.className;
-  
-  // Learners who haven't attempted the test
-  const participantsUids = new Set(attempts.map(a => a.uid));
-  const absentLearners = allLearners.filter(l => 
-    l.className === testClass && !participantsUids.has(l.uid)
+  /**
+   * Derived state (keeps render stable)
+   */
+  const selectedTest = useMemo(
+    () => recentTests.find(t => t.testId === selectedTestId),
+    [recentTests, selectedTestId]
   );
 
-  const chartData = attempts.map(a => ({
-    name: a.uid.slice(0, 4), // Placeholder for bars
-    score: a.percentage,
-    fullName: a.uid // will be resolved in a real app with more logic
-  }));
+  const testClass = selectedTest?.className;
 
+  const participantsUids = useMemo(
+    () => new Set(attempts.map(a => a.uid)),
+    [attempts]
+  );
+
+  const absentLearners = useMemo(() => {
+    if (!testClass) return [];
+
+    return allLearners.filter(
+      l => l.className === testClass && !participantsUids.has(l.uid)
+    );
+  }, [allLearners, testClass, participantsUids]);
+
+  const chartData = useMemo(
+    () =>
+      attempts.map(a => ({
+        name: a.uid.slice(0, 4),
+        score: a.percentage,
+        fullName: a.uid
+      })),
+    [attempts]
+  );
+
+  /**
+   * Loading gate (prevents empty flash on first render)
+   */
+  if (isLoading || !selectedTestId) {
+    return (
+      <div className="space-y-8 pb-10">
+        <div className="flex justify-center py-20">
+          <Activity className="w-10 h-10 animate-spin text-slate-400" />
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="space-y-8 pb-10">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -107,13 +200,14 @@ export const TeacherDashboard: React.FC = () => {
         ].map(stat => (
           <div key={stat.label} className="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm transition-transform hover:-translate-y-1">
             <div className={cn("p-3 rounded-2xl w-fit mb-4", stat.bg)}>
-               <stat.icon className={cn("w-6 h-6", stat.color)} />
+              <stat.icon className={cn("w-6 h-6", stat.color)} />
             </div>
             <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">{stat.label}</p>
             <p className="text-3xl font-bold text-slate-900 dark:text-white mt-1">{stat.value}</p>
           </div>
         ))}
       </div>
+
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Leaderboard */}

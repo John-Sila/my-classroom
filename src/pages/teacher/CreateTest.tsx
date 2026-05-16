@@ -14,10 +14,11 @@ import {
   X
 } from 'lucide-react';
 import { collection, doc, addDoc, serverTimestamp, setDoc } from 'firebase/firestore';
-import { db, auth } from '../../firebase/config';
+import { db, auth, storage } from '../../firebase/config';
 import { cn } from '../../lib/utils';
-import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { notify } from '@/src/utils/toast';
 
 interface QuestionDraft {
   questionText: string;
@@ -71,12 +72,12 @@ export const CreateTest: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!testName || !startTime || !endTime) {
-      toast.error('Please fill in all test details.');
+      notify.error('Please fill in all test details.');
       return;
     }
 
     if (questions.some(q => !q.questionText || q.options.some(o => !o))) {
-      toast.error('Please complete all questions and options.');
+      notify.error('Please complete all questions and options.');
       return;
     }
 
@@ -119,12 +120,12 @@ export const CreateTest: React.FC = () => {
           answeredUsers: []
         });
       }
-
-      toast.success('Test created successfully!');
+      
+      notify.success('Test created successfully!');
       navigate('/');
     } catch (error: any) {
       console.error('Error creating test:', error);
-      toast.error('Failed to create test: ' + error.message);
+      notify.error('Failed to create test: ' + error.message);
     } finally {
       setIsSubmitting(false);
     }

@@ -28,8 +28,8 @@ import { useAuthStore } from '../../store/authStore';
 import { Test, Question, TestAttempt, OperationType } from '../../types';
 import { cn } from '../../lib/utils';
 import { handleFirestoreError } from '../../utils/firebaseErrors';
-import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'motion/react';
+import { notify } from '@/src/utils/toast';
 
 export const TakeTest: React.FC = () => {
   const { testId } = useParams<{ testId: string }>();
@@ -56,7 +56,7 @@ export const TakeTest: React.FC = () => {
         // Fetch test
         const testDoc = await getDoc(doc(db, 'tests', testId));
         if (!testDoc.exists()) {
-          toast.error('Test not found');
+          notify.error('Test not found.');
           navigate('/');
           return;
         }
@@ -75,7 +75,7 @@ export const TakeTest: React.FC = () => {
         if (attemptDoc.exists()) {
           const attemptData = attemptDoc.data() as TestAttempt;
           if (attemptData.isSubmitted) {
-            toast.error('You have already submitted this test.');
+            notify.error('You have already submitted this test.');
             navigate('/results');
             return;
           }
@@ -273,12 +273,11 @@ const handleFinalSubmit = async () => {
       }
     );
 
-    toast.success('Test submitted successfully!');
+    notify.success('Test submitted successfully!');
     navigate('/results');
 
   } catch (error) {
-    console.error('Submission error:', error);
-    toast.error('Failed to submit test.');
+    notify.error('Failed to submit test.');
   } finally {
     setIsSubmitting(false);
   }

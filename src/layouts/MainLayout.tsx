@@ -18,9 +18,11 @@ import {
 import { useAuthStore } from '../store/authStore';
 import { useThemeStore } from '../store/themeStore';
 import { cn } from '../lib/utils';
-
 import { signOut } from 'firebase/auth';
-import { auth } from '../firebase/config';
+import { auth, db } from '../firebase/config';
+import { motion } from 'motion/react';
+import { doc, updateDoc, Timestamp } from 'firebase/firestore';
+import { notify } from '../utils/toast';
 
 export const MainLayout: React.FC = () => {
   const { user } = useAuthStore();
@@ -42,9 +44,25 @@ export const MainLayout: React.FC = () => {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
+
   const handleLogout = async () => {
-    await signOut(auth);
-    navigate('/login');
+    try {
+      notify.info('Logging out...');
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        await updateDoc(doc(db, 'users', currentUser.uid), {
+          lastLogout: Timestamp.now(),
+          updatedAt: Timestamp.now()
+        });
+      } else {
+        notify.warning('No user is currently logged in.');
+      }
+
+      await signOut(auth);
+      navigate('/login');
+    } catch (error) {
+      notify.error('Logout failed:');
+    }
   };
 
   const teacherNav = [
@@ -183,7 +201,28 @@ export const MainLayout: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="ml-auto flex items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+              aria-label="Toggle theme"
+            >
+              <motion.span
+                key={theme}
+                initial={{ rotate: 0, scale: 0.8, opacity: 0 }}
+                animate={{ rotate: 360, scale: 1, opacity: 1 }}
+                exit={{ rotate: -360, scale: 0.8, opacity: 0 }}
+                transition={{ duration: 0.7, ease: 'easeInOut' }}
+                className="flex items-center justify-center"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )}
+              </motion.span>
+            </button>
+
               <div className="mr-2 text-right">
                 <p className="text-sm font-medium text-slate-900 dark:text-white">
                   {user?.fullName}
