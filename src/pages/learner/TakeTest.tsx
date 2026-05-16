@@ -187,6 +187,7 @@ export const TakeTest: React.FC = () => {
 
 const handleFinalSubmit = async () => {
   if (!attempt || !test || !user || isSubmitting) return;
+  const loader = notify.loading('Submitting your test...');
 
   setIsSubmitting(true);
   setShowConfirmModal(false);
@@ -273,11 +274,11 @@ const handleFinalSubmit = async () => {
       }
     );
 
-    notify.success('Test submitted successfully!');
+    notify.updateSuccess(loader, 'Test submitted successfully!');
     navigate('/results');
 
   } catch (error) {
-    notify.error('Failed to submit test.');
+    notify.updateError(loader, 'Failed to submit test.');
   } finally {
     setIsSubmitting(false);
   }

@@ -44,6 +44,7 @@ export const ManageUsers: React.FC = () => {
   }, []);
 
   const handleCreateUser = async (e: React.FormEvent) => {
+    const loader = notify.loading('Creating user...');
     e.preventDefault();
     setIsCreating(true);
 
@@ -90,7 +91,7 @@ export const ManageUsers: React.FC = () => {
       // 4. Cleanup secondary app
       await deleteApp(secondaryApp);
 
-      notify.success(`User ${formData.userName} created successfully!`);
+      notify.updateSuccess(loader, `User ${formData.userName} created successfully!`);
       setFormData({
         email: '',
         password: '',
@@ -100,7 +101,7 @@ export const ManageUsers: React.FC = () => {
         className: ''
       });
     } catch (error: any) {
-      notify.error(error.message);
+      notify.updateError(loader, error.message);
     } finally {
       setIsCreating(false);
     }

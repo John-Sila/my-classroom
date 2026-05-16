@@ -71,13 +71,14 @@ export const CreateTest: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    const loader = notify.loading('Creating test...');
     if (!testName || !startTime || !endTime) {
-      notify.error('Please fill in all test details.');
+      notify.updateError(loader, 'Please fill in all test details.');
       return;
     }
 
     if (questions.some(q => !q.questionText || q.options.some(o => !o))) {
-      notify.error('Please complete all questions and options.');
+      notify.updateError(loader, 'Please complete all questions and options.');
       return;
     }
 
@@ -102,13 +103,7 @@ export const CreateTest: React.FC = () => {
 
       for (let i = 0; i < questions.length; i++) {
         const q = questions[i];
-        let imageUrl = '';
-
-        if (q.image) {
-          const imageRef = ref(storage, `tests/${testRef.id}/questions/${i}_${q.image.name}`);
-          const uploadResult = await uploadBytes(imageRef, q.image);
-          imageUrl = await getDownloadURL(uploadResult.ref);
-        }
+        const imageUrl = q.imageUrl || '';
 
         const questionRef = doc(collection(db, `tests/${testRef.id}/questions`));
         await setDoc(questionRef, {
@@ -121,11 +116,11 @@ export const CreateTest: React.FC = () => {
         });
       }
       
-      notify.success('Test created successfully!');
+      notify.updateSuccess(loader, 'Test created successfully!');
       navigate('/');
     } catch (error: any) {
       console.error('Error creating test:', error);
-      notify.error('Failed to create test: ' + error.message);
+      notify.updateError(loader, 'Failed to create test: ' + error.message);
     } finally {
       setIsSubmitting(false);
     }

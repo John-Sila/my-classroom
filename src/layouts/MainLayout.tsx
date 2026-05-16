@@ -55,7 +55,7 @@ export const MainLayout: React.FC = () => {
           updatedAt: Timestamp.now()
         });
       } else {
-        notify.warning('No user is currently logged in.');
+        notify.info('No user is currently logged in.');
       }
 
       await signOut(auth);

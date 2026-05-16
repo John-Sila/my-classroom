@@ -96,7 +96,6 @@ export default function App() {
         <Toaster
           position="top-center"
           richColors
-          closeButton
           duration={3000}
         />
 
