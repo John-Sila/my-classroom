@@ -153,9 +153,13 @@ export const MainLayout: React.FC = () => {
         <div className="flex items-center gap-2">
           {/* Mobile Notification Bell Icon Trigger Link */}
           <button
-            onClick={() => navigate('/notifications')}
+            onClick={() => {
+              // Dynamically choose target destination route mapping based on auth profile rank field
+              const targetPath = user?.rank === 'teacher' ? '/admin_settings' : '/personal_settings';
+              navigate(targetPath);
+            }}
             className="relative rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
-            aria-label="Notifications"
+            aria-label="Settings"
           >
             <Bell className="h-6 w-6" />
             {hasUnread && (
@@ -164,6 +168,7 @@ export const MainLayout: React.FC = () => {
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-600 dark:bg-indigo-500"></span>
               </span>
             )}
+          </button>
           </button>
 
           <button
