@@ -111,7 +111,7 @@ export const MainLayout: React.FC = () => {
     { name: 'Results Analytics', icon: BarChart3, path: '/results-analytics' },
     { name: 'Test Analytics', icon: BookOpen, path: '/test-analytics' },
     { name: 'Notifier', icon: BellElectric, path: '/notifier' },
-    { name: 'Notifications', icon: Bell, path: '/notifications' },
+    { name: 'Notifications', icon: Bell, path: '/my_notifications' },
     { name: 'Settings', icon: Settings, path: '/admin_settings' },
   ];
 
@@ -155,7 +155,7 @@ export const MainLayout: React.FC = () => {
           <button
             onClick={() => {
               // Dynamically choose target destination route mapping based on auth profile rank field
-              const targetPath = user?.rank === 'teacher' ? '/admin_settings' : '/personal_settings';
+              const targetPath = user?.rank === 'teacher' ? '/my_notifications' : '/notifications';
               navigate(targetPath);
             }}
             className="relative rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
@@ -168,7 +168,6 @@ export const MainLayout: React.FC = () => {
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-600 dark:bg-indigo-500"></span>
               </span>
             )}
-          </button>
           </button>
 
           <button
@@ -307,7 +306,11 @@ export const MainLayout: React.FC = () => {
 
               {/* Desktop Notification Action Gateway Item Node link */}
               <button
-                onClick={() => navigate('/notifications')}
+                onClick={() => {
+                  // Dynamically choose target destination route mapping based on auth profile rank field
+                  const targetPath = user?.rank === 'teacher' ? '/my_notifications' : '/notifications';
+                  navigate(targetPath);
+                }}
                 className="relative flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                 aria-label="View notifications"
               >
