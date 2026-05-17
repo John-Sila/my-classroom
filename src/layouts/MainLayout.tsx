@@ -142,7 +142,11 @@ export const MainLayout: React.FC = () => {
           )}
 
           <span className="text-lg font-bold text-slate-900 dark:text-white">
-            {user?.fullName || 'Teacher Sila'}
+            {user?.fullName 
+              ? user.fullName.length > 14 
+                ? `${user.fullName.slice(0, 14)}...` 
+                : user.fullName
+              : 'Teacher Sila'}
           </span>
         </div>
 
