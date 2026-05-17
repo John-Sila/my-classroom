@@ -130,9 +130,19 @@ export const MainLayout: React.FC = () => {
       {/* Mobile Topbar */}
       <header className="lg:hidden sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
         <div className="flex items-center gap-2">
-          <GraduationCap className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
+          {/* Profile Photo with Icon Fallback */}
+          {user?.photoURL ? (
+            <img
+              src={user.photoURL}
+              alt="Avatar"
+              className="h-8 w-8 rounded-full border border-indigo-500 object-cover"
+            />
+          ) : (
+            <GraduationCap className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
+          )}
+
           <span className="text-lg font-bold text-slate-900 dark:text-white">
-            Teacher Sila&apos;s
+            {user?.fullName || 'Teacher Sila'}
           </span>
         </div>
 
@@ -184,7 +194,7 @@ export const MainLayout: React.FC = () => {
             {/* Mobile Sidebar Close Header */}
             <div className="flex items-center justify-between border-b border-slate-100 p-4 dark:border-slate-800 lg:hidden">
               <span className="font-bold text-slate-900 dark:text-white">
-                Navigation
+                Teacher Sila
               </span>
 
               <button
