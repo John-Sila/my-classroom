@@ -16,6 +16,7 @@ import { UserProfile } from '../../types';
 import { cn } from '../../lib/utils';
 import { notify } from '@/src/utils/toast';
 import { AnimatePresence, motion } from 'motion/react';
+import { ClassSelect } from '@/src/utils/classSelector';
 
 export const ManageUsers: React.FC = () => {
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -83,6 +84,7 @@ export const ManageUsers: React.FC = () => {
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
         lastLogin: Timestamp.now(),
+        lastNotificationRead: null,
         photoURL: '',
         isActive: true,
         scores: {}
@@ -204,16 +206,10 @@ export const ManageUsers: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Class</label>
-                  <select
+                  <ClassSelect
                     value={formData.className}
-                    onChange={e => setFormData({ ...formData, className: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none dark:text-white text-sm"
-                  >
-                    <option value="">Select Class</option>
-                    <option value="5D">5D</option>
-                    <option value="4A">4A</option>
-                    <option value="3B">3B</option>
-                  </select>
+                    onChange={(v) => setFormData({ ...formData, className: v })}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Role</label>

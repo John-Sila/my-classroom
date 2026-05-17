@@ -15,6 +15,7 @@ export interface UserProfile {
   photoURL: string;
   isActive: boolean;
   scores: Record<string, number>;
+  lastNotificationRead: Timestamp | null;
 }
 
 export interface Test {

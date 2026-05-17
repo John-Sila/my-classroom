@@ -17,6 +17,8 @@ import { TakeTest } from './pages/learner/TakeTest';
 import { MyResults } from './pages/learner/Results';
 import { LearnerDashboard } from './pages/learner/Dashboard';
 import { SettingsPage } from './pages/learner/settings';
+import { NotificationCreator } from './pages/teacher/notifier';
+import { NotificationViewer } from './pages/learner/notifications';
 
 const TestAnalytics = () => <ResultsAnalytics />;
 const PersonalAnalytics = () => <LearnerDashboard />;
@@ -66,6 +68,14 @@ const router = createBrowserRouter([
         element: <ProtectedRoute allowedRanks={['teacher']}><TestAnalytics /></ProtectedRoute>,
       },
       {
+        path: 'notifier',
+        element: <ProtectedRoute allowedRanks={['teacher']}><NotificationCreator /></ProtectedRoute>,
+      },
+      {
+        path: 'notifications',
+        element: <ProtectedRoute allowedRanks={['teacher']}><NotificationViewer /></ProtectedRoute>,
+      },
+      {
         path: 'settings',
         element: <ProtectedRoute allowedRanks={['teacher']}><SettingsPage /></ProtectedRoute>,
       },
@@ -81,6 +91,10 @@ const router = createBrowserRouter([
       {
         path: 'results',
         element: <ProtectedRoute allowedRanks={['learner']}><MyResults /></ProtectedRoute>,
+      },
+      {
+        path: 'notifications',
+        element: <ProtectedRoute allowedRanks={['learner']}><NotificationViewer /></ProtectedRoute>,
       },
       {
         path: 'settings',
