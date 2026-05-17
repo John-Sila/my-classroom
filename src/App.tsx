@@ -72,13 +72,16 @@ const router = createBrowserRouter([
         element: <ProtectedRoute allowedRanks={['teacher']}><NotificationCreator /></ProtectedRoute>,
       },
       {
-        path: 'notifications',
+        path: 'my_notifications',
         element: <ProtectedRoute allowedRanks={['teacher']}><NotificationViewer /></ProtectedRoute>,
       },
       {
-        path: 'settings',
+        path: 'admin_settings',
         element: <ProtectedRoute allowedRanks={['teacher']}><SettingsPage /></ProtectedRoute>,
       },
+
+
+
       // Learner Routes
       {
         path: 'tests',
@@ -97,7 +100,7 @@ const router = createBrowserRouter([
         element: <ProtectedRoute allowedRanks={['learner']}><NotificationViewer /></ProtectedRoute>,
       },
       {
-        path: 'settings',
+        path: 'personal_settings',
         element: <ProtectedRoute allowedRanks={['learner']}><SettingsPage /></ProtectedRoute>,
       },
     ],

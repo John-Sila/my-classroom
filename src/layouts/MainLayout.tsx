@@ -110,17 +110,17 @@ export const MainLayout: React.FC = () => {
     { name: 'Manage Users', icon: Users, path: '/manage-users' },
     { name: 'Results Analytics', icon: BarChart3, path: '/results-analytics' },
     { name: 'Test Analytics', icon: BookOpen, path: '/test-analytics' },
-    { name: 'Settings', icon: Settings, path: '/settings' },
     { name: 'Notifier', icon: BellElectric, path: '/notifier' },
     { name: 'Notifications', icon: Bell, path: '/notifications' },
+    { name: 'Settings', icon: Settings, path: '/admin_settings' },
   ];
 
   const learnerNav = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
     { name: 'Available Tests', icon: ClipboardList, path: '/tests' },
     { name: 'My Results', icon: BarChart3, path: '/results' },
-    { name: 'Settings', icon: Settings, path: '/settings' },
     { name: 'Notifications', icon: Bell, path: '/notifications' },
+    { name: 'Settings', icon: Settings, path: '/personal_settings' },
   ];
 
   const navItems = user?.rank === 'teacher' ? teacherNav : learnerNav;

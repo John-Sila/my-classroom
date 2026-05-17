@@ -15,6 +15,7 @@ import { db, auth } from '../../firebase/config';
 import { cn } from '../../lib/utils';
 import { Bell, Calendar, Inbox, Loader2, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useAuthStore } from '@/src/store/authStore';
 
 interface NotificationItem {
   id: string;
@@ -24,66 +25,67 @@ interface NotificationItem {
 }
 
 export const NotificationViewer: React.FC = () => {
-  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
-  const [lastReadTime, setLastReadTime] = useState<Timestamp | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+    const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+    const [lastReadTime, setLastReadTime] = useState<Timestamp | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    
+    const { user } = useAuthStore();
 
-  useEffect(() => {
-    const fetchNotificationsAndStatus = async () => {
-      const user = auth.currentUser;
-      if (!user) {
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        // 1. Fetch user's history configuration metadata
-        const userDocRef = doc(db, 'users', user.uid);
-        const userSnap = await getDoc(userDocRef);
-        
-        if (userSnap.exists() && userSnap.data().lastNotificationRead) {
-          setLastReadTime(userSnap.data().lastNotificationRead);
+    useEffect(() => {
+        const fetchNotificationsAndStatus = async () => {
+        if (!user) {
+            setIsLoading(false);
+            return;
         }
 
-        // 2. Fetch latest broadcast feeds (excluding config tracking docs)
-        const q = query(
-          collection(db, 'notifications'),
-          orderBy('createdAt', 'desc'),
-          limit(50)
+        try {
+            // 1. Fetch user's history configuration metadata
+            const userDocRef = doc(db, 'users', user.uid);
+            const userSnap = await getDoc(userDocRef);
+            
+            if (userSnap.exists() && userSnap.data().lastNotificationRead) {
+            setLastReadTime(userSnap.data().lastNotificationRead);
+            }
+
+            // 2. Fetch latest broadcast feeds (excluding config tracking docs)
+            const q = query(
+            collection(db, 'notifications'),
+            orderBy('createdAt', 'desc'),
+            limit(50)
+            );
+            const querySnapshot = await getDocs(q);
+            
+            const fetchedList: NotificationItem[] = querySnapshot.docs
+            .filter(d => d.id !== 'latestNotification')
+            .map(d => ({
+                id: d.id,
+                ...d.data()
+            } as NotificationItem));
+
+            setNotifications(fetchedList);
+
+            // 3. Automatically flush updates to indicate user has acknowledged this sweep
+            await setDoc(userDocRef, {
+            lastNotificationRead: serverTimestamp()
+            }, { merge: true });
+
+        } catch (error) {
+            console.error("Error shifting notification payloads:", error);
+        } finally {
+            setIsLoading(false);
+        }
+        };
+
+        fetchNotificationsAndStatus();
+    }, []);
+
+    if (isLoading) {
+        return (
+        <div className="min-h-[60vh] flex items-center justify-center">
+            <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+        </div>
         );
-        const querySnapshot = await getDocs(q);
-        
-        const fetchedList: NotificationItem[] = querySnapshot.docs
-          .filter(d => d.id !== 'latestNotification')
-          .map(d => ({
-            id: d.id,
-            ...d.data()
-          } as NotificationItem));
-
-        setNotifications(fetchedList);
-
-        // 3. Automatically flush updates to indicate user has acknowledged this sweep
-        await setDoc(userDocRef, {
-          lastNotificationRead: serverTimestamp()
-        }, { merge: true });
-
-      } catch (error) {
-        console.error("Error shifting notification payloads:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchNotificationsAndStatus();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
-      </div>
-    );
-  }
+    }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-4 transition-colors">

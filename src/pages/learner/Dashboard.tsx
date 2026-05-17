@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { 
   Trophy, 
   Target, 
-  BarChart2, 
-  Clock, 
   ArrowRight,
   TrendingUp,
   BrainCircuit,
@@ -11,11 +9,10 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { collection, query, onSnapshot, where, orderBy, limit } from 'firebase/firestore';
-import { db, auth } from '../../firebase/config';
+import { db } from '../../firebase/config';
 import { useAuthStore } from '../../store/authStore';
 import { TestAttempt, Test } from '../../types';
-import { cn } from '../../lib/utils';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
