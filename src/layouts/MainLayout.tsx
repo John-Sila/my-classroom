@@ -29,6 +29,11 @@ export const MainLayout: React.FC = () => {
   const { theme, toggleTheme } = useThemeStore();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [photoURL, setPhotoURL] = useState<string | null>(user?.photoURL ?? null);
+
+  useEffect(() => {
+    setPhotoURL(user?.photoURL ?? null);
+  }, [user?.photoURL]);
 
   const navigate = useNavigate();
 
@@ -77,7 +82,7 @@ export const MainLayout: React.FC = () => {
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
     { name: 'Available Tests', icon: ClipboardList, path: '/tests' },
     { name: 'My Results', icon: BarChart3, path: '/results' },
-    { name: 'Analytics', icon: BookOpen, path: '/analytics' },
+    { name: 'Settings', icon: BookOpen, path: '/settings' },
   ];
 
   const navItems =

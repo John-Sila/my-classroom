@@ -16,6 +16,7 @@ import { AvailableTests } from './pages/learner/AvailableTests';
 import { TakeTest } from './pages/learner/TakeTest';
 import { MyResults } from './pages/learner/Results';
 import { LearnerDashboard } from './pages/learner/Dashboard';
+import { SettingsPage } from './pages/learner/settings';
 
 const TestAnalytics = () => <ResultsAnalytics />;
 const PersonalAnalytics = () => <LearnerDashboard />;
@@ -78,8 +79,8 @@ const router = createBrowserRouter([
         element: <ProtectedRoute allowedRanks={['learner']}><MyResults /></ProtectedRoute>,
       },
       {
-        path: 'analytics',
-        element: <ProtectedRoute allowedRanks={['learner']}><PersonalAnalytics /></ProtectedRoute>,
+        path: 'settings',
+        element: <ProtectedRoute allowedRanks={['learner']}><SettingsPage /></ProtectedRoute>,
       },
     ],
   },
