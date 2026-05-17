@@ -26,6 +26,7 @@ import {
   updateDoc,
   serverTimestamp,
   getDoc,
+  deleteField,
 } from 'firebase/firestore';
 
 import {
@@ -40,6 +41,7 @@ import { useAuthStore } from '../../store/authStore';
 import { useThemeStore } from '../../store/themeStore';
 import { cn } from '../../lib/utils';
 import { notify } from '@/src/utils/toast';
+import { AnimatePresence, motion } from 'motion/react';
 
 export const SettingsPage: React.FC = () => {
     const { user } = useAuthStore();
@@ -53,6 +55,10 @@ export const SettingsPage: React.FC = () => {
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
 
+    const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+    const [pendingPhotoFile, setPendingPhotoFile] = useState<File | null>(null);
+    const [showPhotoConfirm, setShowPhotoConfirm] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [formData, setFormData] = useState({
       fullName: '',
       userName: '',
@@ -88,17 +94,13 @@ export const SettingsPage: React.FC = () => {
 
     const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
-    const handleUploadPhoto = async (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (!user) return;
-
-      const file = event.target.files?.[0];
-      if (!file) return;
+    const handleConfirmUploadPhoto = async () => {
+      if (!user || !pendingPhotoFile) return;
 
       const loadingToast = notify.loading("Uploading profile photo...");
       setIsUploadingPhoto(true);
 
       try {
-        // 1. Fetch user doc for rate limiting
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
 
@@ -113,10 +115,8 @@ export const SettingsPage: React.FC = () => {
           throw new Error("You can only update your profile photo once every 7 days.");
         }
 
-        // 2. Upload to Cloudinary (unsigned)
         const formData = new FormData();
-
-        formData.append("file", file);
+        formData.append("file", pendingPhotoFile);
         formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
 
         const res = await fetch(
@@ -134,24 +134,66 @@ export const SettingsPage: React.FC = () => {
           throw new Error(data?.error?.message || "Cloudinary upload failed");
         }
 
-        // 3. Update Firestore
         await updateDoc(userRef, {
           photoURL: data.secure_url,
           lastPhotoUpdate: serverTimestamp(),
           updatedAt: serverTimestamp(),
         });
 
+        setPhotoPreview(null);
+        setPendingPhotoFile(null);
+        setShowPhotoConfirm(false);
         notify.updateSuccess(loadingToast, "Profile photo updated.");
-        window.location.reload();
       } catch (err) {
         console.error(err);
-
         notify.updateError(
           loadingToast,
           err instanceof Error ? err.message : "Failed to upload image"
         );
       } finally {
         setIsUploadingPhoto(false);
+        window.location.reload();
+      }
+    };
+
+    const handlePhotoSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const previewUrl = URL.createObjectURL(file);
+      setPendingPhotoFile(file);
+      setPhotoPreview(previewUrl);
+      setShowPhotoConfirm(true);
+    };
+
+    const handleRemovePhoto = async () => {
+      if (!user) return;
+
+      const loadingToast = notify.loading("Removing profile photo...");
+      setIsUploadingPhoto(true);
+
+      try {
+        const userRef = doc(db, "users", user.uid);
+
+        await updateDoc(userRef, {
+          photoURL: deleteField(),
+          updatedAt: serverTimestamp(),
+        });
+
+        setPhotoPreview(null);
+        setPendingPhotoFile(null);
+        setShowPhotoConfirm(false);
+
+        notify.updateSuccess(loadingToast, "Profile photo removed.");
+      } catch (err) {
+        console.error(err);
+        notify.updateError(
+          loadingToast,
+          err instanceof Error ? err.message : "Failed to remove image"
+        );
+      } finally {
+        setIsUploadingPhoto(false);
+        window.location.reload();
       }
     };
 
@@ -214,38 +256,54 @@ export const SettingsPage: React.FC = () => {
           {/* Profile Card */}
           <div className="rounded-[2.5rem] border border-slate-100 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <div className="flex flex-col items-center text-center">
-              <div className="relative">
-                {user?.photoURL ? (
-                  <img
-                    src={user.photoURL}
-                    alt="Profile"
-                    className="h-28 w-28 rounded-full border-4 border-indigo-500 object-cover"
-                  />
-                ) : (
-                  <div className="flex h-28 w-28 items-center justify-center rounded-full bg-indigo-600 text-4xl font-bold text-white">
-                    {user?.userName?.[0]?.toUpperCase()}
-                  </div>
-                )}
-
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="absolute bottom-1 right-1 rounded-full bg-indigo-600 p-2 text-white shadow-lg transition hover:bg-indigo-700"
-                >
-                  {isUploadingPhoto ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Camera className="h-4 w-4" />
-                  )}
-                </button>
-
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  onChange={handleUploadPhoto}
+            <div className="relative">
+              {photoPreview ? (
+                <img
+                  src={photoPreview}
+                  alt="Preview"
+                  className="h-28 w-28 rounded-full border-4 border-indigo-500 object-cover"
                 />
-              </div>
+              ) : user?.photoURL ? (
+                <img
+                  src={user.photoURL}
+                  alt="Profile"
+                  className="h-28 w-28 rounded-full border-4 border-indigo-500 object-cover"
+                />
+              ) : (
+                <div className="flex h-28 w-28 items-center justify-center rounded-full bg-indigo-600 text-4xl font-bold text-white">
+                  {user?.userName?.[0]?.toUpperCase()}
+                </div>
+              )}
+
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="absolute bottom-1 right-1 rounded-full bg-indigo-600 p-2 text-white shadow-lg transition hover:bg-indigo-700"
+              >
+                {isUploadingPhoto ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Camera className="h-4 w-4" />
+                )}
+              </button>
+
+              {user?.photoURL && (
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="absolute bottom-1 left-1 rounded-full bg-red-600 p-2 text-white shadow-lg transition hover:bg-red-700"
+                  aria-label="Remove profile photo"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              )}
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={handlePhotoSelect}
+              />
+            </div>
 
               <h2 className="mt-5 text-xl font-bold text-slate-900 dark:text-white">
                 {user?.fullName}
@@ -596,6 +654,104 @@ export const SettingsPage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        <AnimatePresence mode="wait">
+          {showPhotoConfirm && photoPreview && (
+            <motion.div
+              key="photo-confirm"
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <motion.div
+                initial={{ scale: 0.9, y: 20, opacity: 0 }}
+                animate={{ scale: 1, y: 0, opacity: 1 }}
+                exit={{ scale: 0.95, y: 10, opacity: 0 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl dark:bg-slate-900"
+              >
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  Confirm profile photo
+                </h3>
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                  Preview the selected photo before uploading.
+                </p>
+
+                <img
+                  src={photoPreview}
+                  alt="Selected preview"
+                  className="mt-4 h-56 w-full rounded-2xl object-cover"
+                />
+
+                <div className="mt-6 flex justify-end gap-3">
+                  <button
+                    onClick={() => {
+                      setShowPhotoConfirm(false);
+                      setPhotoPreview(null);
+                      setPendingPhotoFile(null);
+                    }}
+                    className="rounded-xl bg-slate-100 px-4 py-2 font-semibold text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleConfirmUploadPhoto}
+                    className="rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white hover:bg-indigo-700"
+                  >
+                    Upload
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {showDeleteConfirm && (
+            <motion.div
+              key="delete-confirm"
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <motion.div
+                initial={{ scale: 0.9, y: 20, opacity: 0 }}
+                animate={{ scale: 1, y: 0, opacity: 1 }}
+                exit={{ scale: 0.95, y: 10, opacity: 0 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl dark:bg-slate-900"
+              >
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  Remove profile photo?
+                </h3>
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                  This will clear your profile image from your account.
+                </p>
+
+                <div className="mt-6 flex justify-end gap-3">
+                  <button
+                    onClick={() => setShowDeleteConfirm(false)}
+                    className="rounded-xl bg-slate-100 px-4 py-2 font-semibold text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={async () => {
+                      await handleRemovePhoto();
+                      setShowDeleteConfirm(false);
+                    }}
+                    className="rounded-xl bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
       </div>
     );
 };

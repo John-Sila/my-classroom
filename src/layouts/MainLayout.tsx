@@ -13,6 +13,7 @@ import {
   Sun,
   Moon,
   GraduationCap,
+  Settings,
 } from 'lucide-react';
 
 import { useAuthStore } from '../store/authStore';
@@ -51,8 +52,8 @@ export const MainLayout: React.FC = () => {
 
 
   const handleLogout = async () => {
+    const loader = notify.loading('Logging out...');
     try {
-      notify.info('Logging out...');
       const currentUser = auth.currentUser;
       if (currentUser) {
         await updateDoc(doc(db, 'users', currentUser.uid), {
@@ -60,13 +61,14 @@ export const MainLayout: React.FC = () => {
           updatedAt: Timestamp.now()
         });
       } else {
-        notify.info('No user is currently logged in.');
+        notify.updateError(loader, 'No user is currently logged in.');
       }
 
       await signOut(auth);
+      notify.updateSuccess(loader, 'Logged out successfully!');
       navigate('/login');
     } catch (error) {
-      notify.error('Logout failed:');
+      notify.updateError(loader, 'Logout failed:');
     }
   };
 
@@ -76,13 +78,14 @@ export const MainLayout: React.FC = () => {
     { name: 'Manage Users', icon: Users, path: '/manage-users' },
     { name: 'Results Analytics', icon: BarChart3, path: '/results-analytics' },
     { name: 'Test Analytics', icon: BookOpen, path: '/test-analytics' },
+    { name: 'Settings', icon: Settings, path: '/settings' },
   ];
 
   const learnerNav = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
     { name: 'Available Tests', icon: ClipboardList, path: '/tests' },
     { name: 'My Results', icon: BarChart3, path: '/results' },
-    { name: 'Settings', icon: BookOpen, path: '/settings' },
+    { name: 'Settings', icon: Settings, path: '/settings' },
   ];
 
   const navItems =
@@ -191,8 +194,12 @@ export const MainLayout: React.FC = () => {
           {/* Desktop Header */}
           <header className="sticky top-0 z-30 hidden items-center justify-between border-b border-slate-200 bg-white/80 px-8 py-4 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/80 lg:flex">
             <div className="flex items-center gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
-                <Users className="h-5 w-5 text-slate-500" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                <img
+                  src="/logo.png"
+                  alt="Logo"
+                  className="h-7 w-7 object-contain"
+                />
               </div>
 
               <div>

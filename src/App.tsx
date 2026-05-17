@@ -65,6 +65,10 @@ const router = createBrowserRouter([
         path: 'test-analytics',
         element: <ProtectedRoute allowedRanks={['teacher']}><TestAnalytics /></ProtectedRoute>,
       },
+      {
+        path: 'settings',
+        element: <ProtectedRoute allowedRanks={['teacher']}><SettingsPage /></ProtectedRoute>,
+      },
       // Learner Routes
       {
         path: 'tests',

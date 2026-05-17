@@ -15,6 +15,7 @@ import { db } from '../../firebase/config';
 import { UserProfile } from '../../types';
 import { cn } from '../../lib/utils';
 import { notify } from '@/src/utils/toast';
+import { AnimatePresence, motion } from 'motion/react';
 
 export const ManageUsers: React.FC = () => {
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -31,6 +32,7 @@ export const ManageUsers: React.FC = () => {
     rank: 'learner' as 'teacher' | 'learner',
     className: ''
   });
+  const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
@@ -273,17 +275,42 @@ export const ManageUsers: React.FC = () => {
                    ) : (
                      filteredUsers.map((user) => (
                        <tr key={user.uid} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                         <td className="px-6 py-4">
-                           <div className="flex items-center gap-3">
-                             <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-indigo-600 dark:text-indigo-400">
-                               {user.userName[0].toUpperCase()}
-                             </div>
-                             <div>
-                               <p className="text-sm font-medium text-slate-900 dark:text-white">{user.fullName}</p>
-                               <p className="text-xs text-slate-500 dark:text-slate-400">{user.email}</p>
-                             </div>
-                           </div>
-                         </td>
+
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center justify-center">
+                              <button
+                                type="button"
+                                onClick={() => setSelectedUser(user)}
+                                className="h-full w-full"
+                              >
+                                {user.photoURL ? (
+                                  <img
+                                    src={user.photoURL}
+                                    alt={user.fullName}
+                                    className="h-full w-full object-cover"
+                                    onError={(e) => {
+                                      e.currentTarget.style.display = 'none';
+                                    }}
+                                  />
+                                ) : (
+                                  <span className="font-bold text-indigo-600 dark:text-indigo-400">
+                                    {user.userName?.[0]?.toUpperCase() || '?'}
+                                  </span>
+                                )}
+                              </button>
+                            </div>
+
+                            <div>
+                              <p className="text-sm font-medium text-slate-900 dark:text-white">
+                                {user.fullName}
+                              </p>
+                              <p className="text-xs text-slate-500 dark:text-slate-400">{user.email}</p>
+                            </div>
+                          </div>
+                        </td>
+
+
                          <td className="px-6 py-4">
                            <span className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg text-xs font-medium">
                              {user.className}
@@ -327,6 +354,69 @@ export const ManageUsers: React.FC = () => {
            </div>
         </div>
       </div>
+
+
+      <AnimatePresence>
+        {selectedUser && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedUser(null)}
+          >
+            <motion.div
+              className="w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl dark:bg-slate-900"
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.95, y: 10, opacity: 0 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="relative">
+                <img
+                  src={selectedUser.photoURL || '/logo.png'}
+                  alt={selectedUser.fullName}
+                  className="h-80 w-full object-cover"
+                />
+              </div>
+
+              <div className="p-6">
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                  {selectedUser.fullName}
+                </h3>
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                  @{selectedUser.userName}
+                </p>
+
+                <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                  <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/50">
+                    <p className="text-slate-500">Role</p>
+                    <p className="font-semibold text-slate-900 dark:text-white">
+                      {selectedUser.rank}
+                    </p>
+                  </div>
+                  <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/50">
+                    <p className="text-slate-500">Class</p>
+                    <p className="font-semibold text-slate-900 dark:text-white">
+                      {selectedUser.className || 'N/A'}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setSelectedUser(null)}
+                  className="mt-6 rounded-xl bg-indigo-600 px-4 py-2 font-semibold text-white hover:bg-indigo-700"
+                >
+                  Close
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+
     </div>
   );
 };
