@@ -201,20 +201,7 @@ export default function LibraryWidget() {
 
       {/* Main Workspace Terminal Display Content Wrapper */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        {isCompact && showNotice && (
-          <div className="fixed top-0 left-0 right-0 z-[100] bg-amber-50 dark:bg-amber-900/30 border-b border-amber-200 dark:border-amber-800 px-4 py-3 flex items-center justify-between">
-            <p className="text-xs md:text-sm text-amber-800 dark:text-amber-200 font-medium">
-              Library experience is optimized for tablets and desktop devices for better layout stability and readability.
-            </p>
 
-            <button
-              onClick={() => setShowNotice(false)}
-              className="text-amber-700 dark:text-amber-300 font-bold text-sm px-3 py-1 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-800"
-            >
-              Dismiss
-            </button>
-          </div>
-        )}
         
         {/* Mobile Navbar Control Element Container Header */}
         <div className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800/80 flex items-center px-4 lg:hidden justify-between shrink-0">
@@ -234,6 +221,20 @@ export default function LibraryWidget() {
 
         {/* Main Fluid Container Content Box Grid View */}
         <div className="flex-1 w-full min-w-0 max-w-full overflow-x-hidden overflow-y-auto p-4 md:p-6 lg:p-8 bg-slate-50/50 dark:bg-slate-950/40">
+          {isCompact && showNotice && (
+            <div className="fixed top-0 left-0 right-0 z-[100] bg-amber-50 dark:bg-amber-900/30 border-b border-amber-200 dark:border-amber-800 px-4 py-3 flex items-center justify-between">
+              <p className="text-xs md:text-sm text-amber-800 dark:text-amber-200 font-medium">
+                Library experience is optimized for tablets and desktop devices for better layout stability and readability.
+              </p>
+
+              <button
+                onClick={() => setShowNotice(false)}
+                className="text-amber-700 dark:text-amber-300 font-bold text-sm px-3 py-1 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-800"
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
           <div
             className={cn(
               "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80",
