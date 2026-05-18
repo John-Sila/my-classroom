@@ -16,6 +16,7 @@ import {
   Settings,
   BellElectric,
   Bell,
+  LibraryBig,
 } from 'lucide-react';
 
 import { useAuthStore } from '../store/authStore';
@@ -112,6 +113,7 @@ export const MainLayout: React.FC = () => {
     { name: 'Test Analytics', icon: BookOpen, path: '/test-analytics' },
     { name: 'Notifier', icon: BellElectric, path: '/notifier' },
     { name: 'Notifications', icon: Bell, path: '/my_notifications' },
+    { name: 'Library', icon: LibraryBig, path: '/my_library' },
     { name: 'Settings', icon: Settings, path: '/admin_settings' },
   ];
 
@@ -120,6 +122,7 @@ export const MainLayout: React.FC = () => {
     { name: 'Available Tests', icon: ClipboardList, path: '/tests' },
     { name: 'My Results', icon: BarChart3, path: '/results' },
     { name: 'Notifications', icon: Bell, path: '/notifications' },
+    { name: 'Library', icon: LibraryBig, path: '/library' },
     { name: 'Settings', icon: Settings, path: '/personal_settings' },
   ];
 
@@ -268,7 +271,7 @@ export const MainLayout: React.FC = () => {
         {/* Main Workspace Frame container */}
         <main className="relative min-h-screen flex-1 lg:ml-64">
           {/* Desktop Header panel view */}
-          <header className="sticky top-0 z-30 hidden items-center justify-between border-b border-slate-200 bg-white/80 px-8 py-4 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/80 lg:flex">
+          <header className="sticky top-0 z-40 hidden items-center justify-between border-b border-slate-200 bg-white/80 px-8 py-4 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/80 lg:flex">
             <div className="flex items-center gap-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                 <img

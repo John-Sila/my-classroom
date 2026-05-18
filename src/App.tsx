@@ -16,9 +16,10 @@ import { AvailableTests } from './pages/learner/AvailableTests';
 import { TakeTest } from './pages/learner/TakeTest';
 import { MyResults } from './pages/learner/Results';
 import { LearnerDashboard } from './pages/learner/Dashboard';
-import { SettingsPage } from './pages/learner/settings';
-import { NotificationCreator } from './pages/teacher/notifier';
-import { NotificationViewer } from './pages/learner/notifications';
+import { SettingsPage } from './pages/learner/Settings';
+import { NotificationCreator } from './pages/teacher/Notifier';
+import { NotificationViewer } from './pages/learner/Notifications';
+import LibraryWidget from './pages/learner/Library';
 
 const TestAnalytics = () => <ResultsAnalytics />;
 const PersonalAnalytics = () => <LearnerDashboard />;
@@ -79,6 +80,11 @@ const router = createBrowserRouter([
         path: 'admin_settings',
         element: <ProtectedRoute allowedRanks={['teacher']}><SettingsPage /></ProtectedRoute>,
       },
+      {
+        path: 'my_library',
+        element: <ProtectedRoute allowedRanks={['teacher']}><LibraryWidget /></ProtectedRoute>,
+      },
+
 
 
 
@@ -102,6 +108,10 @@ const router = createBrowserRouter([
       {
         path: 'personal_settings',
         element: <ProtectedRoute allowedRanks={['learner']}><SettingsPage /></ProtectedRoute>,
+      },
+      {
+        path: 'library',
+        element: <ProtectedRoute allowedRanks={['teacher']}><LibraryWidget /></ProtectedRoute>,
       },
     ],
   },
