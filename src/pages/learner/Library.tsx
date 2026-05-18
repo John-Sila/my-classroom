@@ -120,6 +120,7 @@ export default function LibraryWidget() {
           collapsed ? "w-20" : "w-72",
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
+        onClick={() => {if (!collapsed) setCollapsed(true)}}
       >
         {/* Sidebar Header */}
         <div className="h-16 border-b border-slate-200 dark:border-slate-800/80 flex items-center justify-between px-4">

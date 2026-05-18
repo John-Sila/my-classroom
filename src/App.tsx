@@ -111,7 +111,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'library',
-        element: <ProtectedRoute allowedRanks={['teacher']}><LibraryWidget /></ProtectedRoute>,
+        element: <ProtectedRoute allowedRanks={['learner']}><LibraryWidget /></ProtectedRoute>,
       },
     ],
   },

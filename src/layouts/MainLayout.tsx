@@ -129,7 +129,7 @@ export const MainLayout: React.FC = () => {
   const navItems = user?.rank === 'teacher' ? teacherNav : learnerNav;
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 transition-colors duration-300">
+    <div className="min-h-screen w-screen overflow-hidden bg-slate-100 dark:bg-slate-950 transition-colors duration-300">
       {/* Mobile Topbar */}
       <header className="lg:hidden sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
         <div className="flex items-center gap-2">
