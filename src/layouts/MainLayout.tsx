@@ -28,6 +28,7 @@ import { motion } from 'motion/react';
 import { doc, updateDoc, Timestamp, onSnapshot } from 'firebase/firestore';
 import { notify } from '../utils/toast';
 import { Footer } from '../pages/footer';
+import { useIsCompactView, useIsMobile } from '../utils/isMobile';
 
 export const MainLayout: React.FC = () => {
   const { user } = useAuthStore();
@@ -36,6 +37,7 @@ export const MainLayout: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [photoURL, setPhotoURL] = useState<string | null>(user?.photoURL ?? null);
   const [hasUnread, setHasUnread] = useState(false);
+  const isMobile = useIsMobile();
 
   const navigate = useNavigate();
 
@@ -114,7 +116,7 @@ export const MainLayout: React.FC = () => {
     { name: 'Test Analytics', icon: BookOpen, path: '/test-analytics' },
     { name: 'Notifier', icon: BellElectric, path: '/notifier' },
     { name: 'Notifications', icon: Bell, path: '/my_notifications' },
-    { name: 'Library', icon: LibraryBig, path: '/my_library' },
+    !isMobile && { name: 'Library', icon: LibraryBig, path: '/my_library' },
     { name: 'Settings', icon: Settings, path: '/admin_settings' },
   ];
 
@@ -123,7 +125,7 @@ export const MainLayout: React.FC = () => {
     { name: 'Available Tests', icon: ClipboardList, path: '/tests' },
     { name: 'My Results', icon: BarChart3, path: '/results' },
     { name: 'Notifications', icon: Bell, path: '/notifications' },
-    { name: 'Library', icon: LibraryBig, path: '/library' },
+    !isMobile && { name: 'Library', icon: LibraryBig, path: '/library' },
     { name: 'Settings', icon: Settings, path: '/personal_settings' },
   ];
 
