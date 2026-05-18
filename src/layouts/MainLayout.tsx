@@ -183,28 +183,22 @@ export const MainLayout: React.FC = () => {
         {/* Sidebar */}
         <aside
           className={cn(
-            'fixed left-0 top-0 z-50 h-screen w-64 overflow-y-auto border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 transform transition-transform duration-300 lg:translate-x-0',
+            'fixed left-0 top-0 z-50 h-dvh w-64 overflow-hidden border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 transform transition-transform duration-300 lg:translate-x-0',
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           )}
         >
           <div className="flex h-full flex-col">
-            {/* Desktop Logo */}
             <div className="hidden items-center gap-3 p-6 lg:flex">
               <div className="rounded-xl bg-indigo-600 p-2">
                 <GraduationCap className="h-6 w-6 text-white" />
               </div>
-
               <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
                 Classroom
               </span>
             </div>
 
-            {/* Mobile Sidebar Close Header */}
             <div className="flex items-center justify-between border-b border-slate-100 p-4 dark:border-slate-800 lg:hidden">
-              <span className="font-bold text-slate-900 dark:text-white">
-                Teacher Sila
-              </span>
-
+              <span className="font-bold text-slate-900 dark:text-white">Teacher Sila</span>
               <button
                 onClick={() => setIsSidebarOpen(false)}
                 className="rounded-lg p-1 hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -213,8 +207,7 @@ export const MainLayout: React.FC = () => {
               </button>
             </div>
 
-            {/* Nav Menu Lists */}
-            <nav className="flex-1 space-y-1 px-4 py-4">
+            <nav className="flex-1 overflow-y-auto space-y-1 px-4 py-4">
               {navItems.map((item) => (
                 <NavLink
                   key={item.path}
@@ -231,17 +224,14 @@ export const MainLayout: React.FC = () => {
                 >
                   <item.icon className="h-5 w-5" />
                   <span>{item.name}</span>
-                  
-                  {/* Inline indicator badge inside the sidebar links item list view stack */}
                   {item.path === '/notifications' && hasUnread && (
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full bg-indigo-600 dark:bg-indigo-400" />
+                    <span className="absolute right-4 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-indigo-600 dark:bg-indigo-400" />
                   )}
                 </NavLink>
               ))}
             </nav>
 
-            {/* Footer Action Blocks */}
-            <div className="space-y-2 border-t border-slate-100 p-4 dark:border-slate-800">
+            <div className="border-t border-slate-100 p-4 dark:border-slate-800">
               <button
                 onClick={handleLogout}
                 className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:hover:bg-red-900/20"
@@ -252,6 +242,7 @@ export const MainLayout: React.FC = () => {
             </div>
           </div>
         </aside>
+
 
         {/* Backdrop Element overlay layer */}
         {isSidebarOpen && (
@@ -280,7 +271,7 @@ export const MainLayout: React.FC = () => {
                 </h2>
 
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Welcome back, {user?.userName || 'User'}
+                  Welcome back, @{user?.userName || 'User'}
                 </p>
               </div>
             </div>

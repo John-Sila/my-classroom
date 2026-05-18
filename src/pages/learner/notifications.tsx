@@ -99,7 +99,7 @@ export const NotificationViewer: React.FC = () => {
               Class Announcements
             </h1>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-              Stay up to date with updates from your instructors.
+              Stay up to date with updates from your instructor.
             </p>
           </div>
         </div>
