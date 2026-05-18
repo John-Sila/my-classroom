@@ -194,19 +194,26 @@ export const TeacherDashboard: React.FC = () => {
 
   return (
     <div className="space-y-8 pb-10">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {[
           { label: 'Total Tests', value: stats.tests, icon: ClipboardList, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/30' },
           { label: 'Total Learners', value: stats.learners, icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-50 dark:bg-indigo-900/30' },
           { label: 'Submissions', value: stats.submissions, icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/30' },
           { label: 'Average Score', value: `${stats.avgScore}%`, icon: TrendingUp, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/30' },
         ].map((stat) => (
-          <div key={stat.label} className="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm transition-transform hover:-translate-y-1">
+          <div
+            key={stat.label}
+            className="bg-white dark:bg-slate-900 p-4 md:p-6 rounded-[1.75rem] border border-slate-100 dark:border-slate-800 shadow-sm transition-transform hover:-translate-y-1"
+          >
             <div className={cn("p-3 rounded-2xl w-fit mb-4", stat.bg)}>
               <stat.icon className={cn("w-6 h-6", stat.color)} />
             </div>
-            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">{stat.label}</p>
-            <p className="text-3xl font-bold text-slate-900 dark:text-white mt-1">{stat.value}</p>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-medium">
+              {stat.label}
+            </p>
+            <p className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mt-1">
+              {stat.value}
+            </p>
           </div>
         ))}
       </div>
