@@ -17,6 +17,7 @@ import { db } from '../../firebase/config';
 import { cn } from '../../lib/utils';
 import { Bell, Send, Sparkles, Type, MessageSquare, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { notify } from '@/src/utils/toast';
 
 export const NotificationCreator: React.FC = () => {
     const [title, setTitle] = useState('');
@@ -65,6 +66,7 @@ export const NotificationCreator: React.FC = () => {
         setShowConfirm(false);
         setIsSaving(true);
 
+        const loader = notify.loading('Publishing notification...');
         try {
             const notificationData = {
                 title: title.trim(),
@@ -82,10 +84,12 @@ export const NotificationCreator: React.FC = () => {
                 },
                 { merge: true }
             );
+            notify.updateSuccess(loader, 'Notification published successfully!');
 
             setTitle('');
             setMessage('');
         } catch (error) {
+            notify.updateError(loader, 'Failed to publish notification. Please try again.');
             console.error('Failed to create notification:', error);
         } finally {
             setIsSaving(false);

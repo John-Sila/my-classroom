@@ -177,6 +177,21 @@ export const TeacherDashboard: React.FC = () => {
     );
   }
 
+  const getInitials = (nameOrId: string) => {
+    const parts = nameOrId.trim().split(" ").filter(Boolean);
+    if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    return nameOrId.slice(0, 2).toUpperCase();
+  };
+
+  const getAvatarUrl = (uid: string) => {
+    // If you already have all users in allLearners, use that.
+    // Otherwise, swap this with a Firestore lookup for users/UID.
+    return allLearners.find((l) => l.uid === uid)?.photoURL || "";
+  };
+
+  const truncateUid = (uid: string, max = 10) =>
+    uid.length > max ? `${uid.slice(0, max)}...` : uid;
+
   return (
     <div className="space-y-8 pb-10">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -198,20 +213,24 @@ export const TeacherDashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
-            <div className="p-8 border-b border-slate-50 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur rounded-[2rem] border border-slate-200/70 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.06)] overflow-hidden">
+            <div className="p-6 md:p-8 border-b border-slate-100 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Real-time Leaderboard</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Rankings for the selected test</p>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                  Real-time Leaderboard
+                </h3>
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                  Rankings for the selected test
+                </p>
               </div>
 
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <select
-                    value={selectedTestId || ''}
+                    value={selectedTestId || ""}
                     onChange={(e) => setSelectedTestId(e.target.value)}
-                    className="pl-9 pr-8 py-2.5 bg-slate-50 dark:bg-slate-800 border-none rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-indigo-500/20"
+                    className="pl-9 pr-10 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all"
                   >
                     {recentTests.map((t) => (
                       <option key={t.testId} value={t.testId}>
@@ -225,62 +244,170 @@ export const TeacherDashboard: React.FC = () => {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-widest">
-                  <tr>
-                    <th className="px-8 py-4 font-bold">Rank</th>
-                    <th className="px-8 py-4 font-bold">Learner</th>
-                    <th className="px-8 py-4 font-bold text-center">Score</th>
-                    <th className="px-8 py-4 font-bold text-center">Percentage</th>
-                    <th className="px-8 py-4 font-bold text-right">Submitted Info</th>
+              <table className="w-full min-w-[900px] text-left border-separate border-spacing-0">
+                <thead className="bg-slate-50/80 dark:bg-slate-800/60">
+                  <tr className="text-[11px] uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+                    <th className="px-6 md:px-8 py-4 font-bold">Rank</th>
+                    <th className="px-6 md:px-8 py-4 font-bold">Learner</th>
+                    <th className="px-6 md:px-8 py-4 font-bold">Progress</th>
+                    <th className="px-6 md:px-8 py-4 font-bold text-center">Percentage</th>
+                    <th className="px-6 md:px-8 py-4 font-bold text-center">Score</th>
+                    <th className="px-6 md:px-8 py-4 font-bold text-right">Time</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                   {attempts.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-8 py-20 text-center">
-                        <Activity className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-                        <p className="text-slate-500">No submissions yet for this test.</p>
+                      <td colSpan={6} className="px-8 py-20 text-center">
+                        <div className="mx-auto flex max-w-sm flex-col items-center">
+                          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800">
+                            <Activity className="w-8 h-8 text-slate-300 dark:text-slate-500" />
+                          </div>
+                          <p className="text-slate-500 dark:text-slate-400 font-medium">
+                            No submissions yet for this test.
+                          </p>
+                        </div>
                       </td>
                     </tr>
                   ) : (
-                    attempts.map((attempt, idx) => (
-                      <tr key={attempt.attemptId || `${attempt.uid}-${idx}`} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                        <td className="px-8 py-5">{idx + 1}</td>
-                        <td className="px-8 py-5">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600 font-bold">
-                              {attempt.uid.slice(0, 2).toUpperCase()}
+                    attempts.map((attempt, idx) => {
+                      const pct = Math.max(0, Math.min(100, Math.round(attempt.percentage || 0)));
+                      const isTop = idx === 0;
+                      const isSecond = idx === 1;
+                      const isThird = idx === 2;
+
+                      const rankBadge =
+                        isTop
+                          ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                          : isSecond
+                          ? "bg-slate-400/15 text-slate-600 dark:text-slate-300"
+                          : isThird
+                          ? "bg-orange-500/15 text-orange-600 dark:text-orange-400"
+                          : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-300";
+
+                      const barColor =
+                        pct >= 80
+                          ? "from-emerald-500 to-emerald-400"
+                          : pct >= 50
+                          ? "from-indigo-500 to-cyan-500"
+                          : "from-rose-500 to-orange-400";
+
+                      return (
+                        <tr
+                          key={attempt.attemptId || `${attempt.uid}-${idx}`}
+                          className="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
+                        >
+                          <td className="px-6 md:px-8 py-5 align-middle">
+                            <div
+                              className={`inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold ring-1 ring-inset ring-black/5 dark:ring-white/10 ${rankBadge}`}
+                            >
+                              {idx + 1}
                             </div>
-                            <span className="text-sm font-semibold text-slate-900 dark:text-white">
-                              {allLearners.find((l) => l.uid === attempt.uid)?.fullName || attempt.uid}
+                          </td>
+
+                          <td className="px-6 md:px-8 py-5 align-middle">
+                            <div className="flex items-center gap-3">
+                              <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700">
+                                {(() => {
+                                  const learner = allLearners.find((l) => l.uid === attempt.uid);
+                                  const photoURL = learner?.photoURL;
+                                  const name = learner?.fullName || attempt.uid;
+                                  const initials = getInitials(name);
+
+                                  return photoURL ? (
+                                    <img
+                                      src={photoURL}
+                                      alt={name}
+                                      className="h-full w-full object-cover"
+                                      loading="lazy"
+                                    />
+                                  ) : (
+                                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-500 to-violet-500 text-xs font-bold text-white">
+                                      {initials}
+                                    </div>
+                                  );
+                                })()}
+                              </div>
+
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-2">
+                                  <span className="truncate text-sm font-semibold text-slate-900 dark:text-white">
+                                    {allLearners.find((l) => l.uid === attempt.uid)?.fullName || attempt.uid}
+                                  </span>
+                                </div>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                  Learner ID: {truncateUid(attempt.uid)}
+                                </p>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td className="px-6 md:px-8 py-5 align-middle">
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="font-medium text-slate-500 dark:text-slate-400">
+                                  Completion
+                                </span>
+                              </div>
+
+                              <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-200/70 dark:bg-slate-700">
+                                <div
+                                  className={`h-full rounded-full bg-gradient-to-r ${barColor} transition-all duration-500`}
+                                  style={{ width: `${pct}%` }}
+                                />
+                              </div>
+                            </div>
+                          </td>
+                          
+                          <td className="px-6 md:px-8 py-5 align-middle text-center">
+                            <span className="text-sm font-bold text-slate-900 dark:text-white">
+                              {pct}%
                             </span>
-                          </div>
-                        </td>
-                        <td className="px-8 py-5 text-center">{attempt.score} pts</td>
-                        <td className="px-8 py-5 text-center">{Math.round(attempt.percentage || 0)}%</td>
-                        <td className="px-8 py-5 text-right">
-                          <p className="text-xs text-slate-500 dark:text-slate-400">
-                            {attempt.submittedAt ? format(attempt.submittedAt.toDate(), 'h:mm a, MMM d') : 'N/A'}
-                          </p>
-                        </td>
-                      </tr>
-                    ))
+                          </td>
+
+                          <td className="px-6 md:px-8 py-5 align-middle text-center">
+                            <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                              {attempt.score} pts
+                            </span>
+                          </td>
+
+
+
+                          <td className="px-6 md:px-8 py-5 align-middle text-right">
+                            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                              {attempt.submittedAt
+                                ? format(attempt.submittedAt.toDate(), "h:mm a, MMM d")
+                                : "N/A"}
+                            </p>
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>
             </div>
 
             {absentLearners.length > 0 && (
-              <div className="bg-slate-50 dark:bg-slate-800/40 p-8">
-                <div className="flex items-center gap-2 mb-6">
-                  <UserX className="w-5 h-5 text-red-500" />
-                  <h4 className="font-bold text-slate-900 dark:text-white">Absent Learners ({absentLearners.length})</h4>
+              <div className="border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/30 p-6 md:p-8">
+                <div className="flex items-center gap-2 mb-5">
+                  <UserX className="w-5 h-5 text-rose-500" />
+                  <h4 className="font-bold text-slate-900 dark:text-white">
+                    Absent Learners ({absentLearners.length})
+                  </h4>
                 </div>
+
                 <div className="flex flex-wrap gap-3">
                   {absentLearners.map((learner) => (
-                    <div key={learner.uid} className="flex items-center gap-2 bg-white dark:bg-slate-900 px-4 py-2 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm">
-                      <span className="text-xs font-medium text-slate-700 dark:text-slate-300">{learner.fullName}</span>
+                    <div
+                      key={learner.uid}
+                      className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 shadow-sm transition-colors hover:border-slate-300 dark:hover:border-slate-600"
+                    >
+                      <span className="h-2 w-2 rounded-full bg-rose-500" />
+                      <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                        {learner.fullName}
+                      </span>
                     </div>
                   ))}
                 </div>

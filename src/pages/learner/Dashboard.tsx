@@ -15,6 +15,7 @@ import { TestAttempt, Test } from '../../types';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { notify } from '@/src/utils/toast';
 
 export const LearnerDashboard: React.FC = () => {
   const { user } = useAuthStore();
@@ -26,7 +27,10 @@ export const LearnerDashboard: React.FC = () => {
   useEffect(() => {
     if (!user) return;
 
-    // Fetch personal attempts for analytics
+    // Reset loader states cleanly on user mount or change
+    setIsLoading(true);
+
+    // Fetch personal attempts for analytics (Requires a Composite Index in Firestore)
     const qAttempts = query(
       collection(db, 'testAttempts'),
       where('uid', '==', user.uid),
@@ -35,11 +39,20 @@ export const LearnerDashboard: React.FC = () => {
       limit(20)
     );
 
-    const unsubAttempts = onSnapshot(qAttempts, (snap) => {
-      const data = snap.docs.map(doc => doc.data() as TestAttempt);
-      setAttempts(data);
-      setIsLoading(false);
-    });
+    const unsubAttempts = onSnapshot(
+      qAttempts, 
+      (snap) => {
+        const data = snap.docs.map(doc => doc.data() as TestAttempt);
+        setAttempts(data);
+        setIsLoading(false);
+      },
+      (error) => {
+        // If your console prints a Firestore error here, click the generated link in the message to build your composite index!
+         notify.error("Failed to load analytics data.");
+         console.error("Dashboard Analytics Snapshot Failed:", error);
+         setIsLoading(false);
+      }
+    );
 
     // Fetch tests for their class
     const qTests = query(
@@ -49,9 +62,15 @@ export const LearnerDashboard: React.FC = () => {
       limit(3)
     );
 
-    const unsubTests = onSnapshot(qTests, (snap) => {
-      setRecentTests(snap.docs.map(doc => ({ ...doc.data(), testId: doc.id } as Test)));
-    });
+    const unsubTests = onSnapshot(
+      qTests, 
+      (snap) => {
+        setRecentTests(snap.docs.map(doc => ({ ...doc.data(), testId: doc.id } as Test)));
+      },
+      (error) => {
+        console.error("Dashboard Recent Tests Snapshot Failed:", error);
+      }
+    );
 
     return () => {
       unsubAttempts();
@@ -71,6 +90,7 @@ export const LearnerDashboard: React.FC = () => {
     name: a.testName
   }));
 
+  // Rest of your component returns markup elements downstream...
   return (
     <div className="space-y-8 pb-10">
       {/* Intro Section */}
