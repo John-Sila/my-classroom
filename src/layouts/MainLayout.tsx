@@ -196,21 +196,24 @@ export const MainLayout: React.FC = () => {
               Classroom
             </span>
           </div>
-
           <div className="flex items-center justify-between border-b border-slate-100 p-4 dark:border-slate-800 lg:hidden">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="h-10 w-10 shrink-0 overflow-hidden bg-transparent">
                 <img
                   src="/logo.png"
                   alt="Classroom logo"
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-contain"
                 />
               </div>
+
+              <span className="min-w-0 truncate text-base font-bold tracking-tight text-slate-900 dark:text-white">
+                Teacher Sila
+              </span>
             </div>
 
             <button
               onClick={() => setIsSidebarOpen(false)}
-              className="rounded-lg p-1 hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="shrink-0 rounded-lg p-1 hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <X className="h-6 w-6 text-slate-500" />
             </button>
