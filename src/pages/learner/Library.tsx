@@ -92,6 +92,7 @@ export default function LibraryWidget() {
           "flex flex-col transition-transform duration-300 ease-in-out",
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
+        onClick={(e) => {if (!collapsed) setCollapsed(true)}}
       >
         {/* Isolated Background Layer: Prevents full-screen blur bleeding */}
         <div className="absolute inset-0 -z-10 bg-white/95 dark:bg-slate-950/90 backdrop-blur-xl pointer-events-none" />
@@ -177,12 +178,16 @@ export default function LibraryWidget() {
                       : "text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300"
                   )}
                 />
-
-                {!collapsed && (
-                  <span className="truncate text-sm font-medium tracking-wide">
-                    {topic.title}
-                  </span>
+              <span
+                className={cn(
+                  "overflow-hidden whitespace-nowrap text-sm font-medium tracking-wide transition-all duration-300 ease-in-out",
+                  collapsed
+                    ? "max-w-0 opacity-0 translate-x-[-8px]"
+                    : "max-w-[180px] opacity-100 translate-x-0"
                 )}
+              >
+                {topic.title}
+              </span>
               </button>
             );
           })}
