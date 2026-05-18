@@ -70,6 +70,15 @@ export const CreateTest: React.FC = () => {
     setQuestions(newQuestions);
   };
 
+  const d = new Date(endTime);
+
+  const formattedDate =
+    `${d.getDate().toString().padStart(2, '0')} ` +
+    `${d.toLocaleString('en-GB', { month: 'short' })}, ` +
+    `${d.getFullYear()} at ` +
+    `${d.getHours().toString().padStart(2, '0')}:` +
+    `${d.getMinutes().toString().padStart(2, '0')}`;
+
   const handleSubmit = async () => {
     const loader = notify.loading('Creating test...');
     if (!testName || !startTime || !endTime) {
@@ -115,6 +124,22 @@ export const CreateTest: React.FC = () => {
           answeredUsers: []
         });
       }
+
+
+      await addDoc(collection(db, 'notifications'), {
+        title: `New test for ${className}`,
+        message: `A new test "${testName}" has been created for ${className}. Attempt it before ${formattedDate}!`,
+        createdAt: serverTimestamp(),
+      });
+
+      await setDoc(
+        doc(db, 'notifications', 'latestNotification'),
+        {
+          timestamp: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
       
       notify.updateSuccess(loader, 'Test created successfully!');
       navigate('/');
