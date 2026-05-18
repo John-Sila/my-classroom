@@ -118,7 +118,7 @@ export const MainLayout: React.FC = () => {
     { name: 'Notifications', icon: Bell, path: '/my_notifications' },
     !isMobile && { name: 'Library', icon: LibraryBig, path: '/my_library' },
     { name: 'Settings', icon: Settings, path: '/admin_settings' },
-  ];
+  ].filter(Boolean);
 
   const learnerNav = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
@@ -127,7 +127,7 @@ export const MainLayout: React.FC = () => {
     { name: 'Notifications', icon: Bell, path: '/notifications' },
     !isMobile && { name: 'Library', icon: LibraryBig, path: '/library' },
     { name: 'Settings', icon: Settings, path: '/personal_settings' },
-  ];
+  ].filter(Boolean);
 
   const navItems = user?.rank === 'teacher' ? teacherNav : learnerNav;
 
