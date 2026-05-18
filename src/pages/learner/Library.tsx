@@ -125,7 +125,7 @@ export default function LibraryWidget() {
   const ActiveComponent = activeTopic?.component;
 
   return (
-    <div className="flex h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-300">
+    <div className="flex h-screen w-full max-w-full overflow-x-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
       
       {/* Mobile Drawer Overlay */}
       {mobileOpen && (
@@ -138,17 +138,28 @@ export default function LibraryWidget() {
       {/* Sidebar Navigation */}
       <aside
         className={cn(
-          "fixed lg:static z-30 top-0 left-0 h-full",
+          // BASE LAYOUT: stop full-screen fixed on mobile
+          "fixed lg:static top-0 left-0 z-30 h-dvh lg:h-auto",
+
+          // WIDTH CONTROL: single source of truth
+          collapsed ? "lg:w-20 w-64" : "lg:w-72 w-64",
+
+          // MOBILE SAFETY: hard clamp to viewport
+          "max-w-[100dvw] overflow-x-hidden",
+
+          // VISUALS
           "border-r border-slate-200/80 dark:border-slate-800/80",
-          "bg-white/90 dark:bg-slate-950/80 backdrop-blur-xl",
+          "bg-white/95 dark:bg-slate-950/90 backdrop-blur-xl",
           "shadow-xl shadow-slate-200/40 dark:shadow-black/20",
-          "transition-all duration-300 ease-in-out flex flex-col",
-          collapsed ? "w-20" : "w-72",
-          mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+
+          // BEHAVIOR
+          "flex flex-col transition-transform duration-300 ease-in-out",
+
+          // MOBILE SLIDE LOGIC ONLY
+          mobileOpen
+            ? "translate-x-0"
+            : "-translate-x-full lg:translate-x-0"
         )}
-        onClick={() => {
-          if (!collapsed) setCollapsed(true);
-        }}
       >
         {/* Sidebar Header */}
         <div className="h-16 flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 px-4">
@@ -267,7 +278,7 @@ export default function LibraryWidget() {
         </div>
 
         {/* Main Fluid Container Content Box Grid View */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 bg-slate-50/50 dark:bg-slate-950/40">
+        <div className="flex-1 min-w-0 overflow-x-hidden overflow-y-auto p-4 md:p-6 lg:p-8 bg-slate-50/50 dark:bg-slate-950/40">
           <div
             className={cn(
               "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80",
