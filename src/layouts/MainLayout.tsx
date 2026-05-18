@@ -187,60 +187,70 @@ export const MainLayout: React.FC = () => {
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           )}
         >
-          <div className="flex h-full flex-col">
-            <div className="hidden items-center gap-3 p-6 lg:flex">
-              <div className="rounded-xl bg-indigo-600 p-2">
-                <GraduationCap className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-                Classroom
-              </span>
+        <div className="flex h-full flex-col">
+          <div className="hidden items-center gap-3 p-6 lg:flex">
+            <div className="rounded-xl bg-indigo-600 p-2">
+              <GraduationCap className="h-6 w-6 text-white" />
             </div>
-
-            <div className="flex items-center justify-between border-b border-slate-100 p-4 dark:border-slate-800 lg:hidden">
-              <span className="font-bold text-slate-900 dark:text-white">Teacher Sila</span>
-              <button
-                onClick={() => setIsSidebarOpen(false)}
-                className="rounded-lg p-1 hover:bg-slate-100 dark:hover:bg-slate-800"
-              >
-                <X className="h-6 w-6 text-slate-500" />
-              </button>
-            </div>
-
-            <nav className="flex-1 overflow-y-auto space-y-1 px-4 py-4">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  onClick={() => setIsSidebarOpen(false)}
-                  className={({ isActive }) =>
-                    cn(
-                      'relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all',
-                      isActive
-                        ? 'bg-indigo-50 text-indigo-600 shadow-sm dark:bg-indigo-900/40 dark:text-indigo-400'
-                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white'
-                    )
-                  }
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.name}</span>
-                  {item.path === '/notifications' && hasUnread && (
-                    <span className="absolute right-4 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-indigo-600 dark:bg-indigo-400" />
-                  )}
-                </NavLink>
-              ))}
-            </nav>
-
-            <div className="border-t border-slate-100 p-4 dark:border-slate-800">
-              <button
-                onClick={handleLogout}
-                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:hover:bg-red-900/20"
-              >
-                <LogOut className="h-5 w-5" />
-                <span>Logout</span>
-              </button>
-            </div>
+            <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Classroom
+            </span>
           </div>
+
+          <div className="flex items-center justify-between border-b border-slate-100 p-4 dark:border-slate-800 lg:hidden">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700">
+                <img
+                  src="/logo.png"
+                  alt="Classroom logo"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={() => setIsSidebarOpen(false)}
+              className="rounded-lg p-1 hover:bg-slate-100 dark:hover:bg-slate-800"
+            >
+              <X className="h-6 w-6 text-slate-500" />
+            </button>
+          </div>
+
+          <nav className="flex-1 overflow-y-auto space-y-1 px-4 py-4">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                onClick={() => setIsSidebarOpen(false)}
+                className={({ isActive }) =>
+                  cn(
+                    'relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all',
+                    isActive
+                      ? 'bg-indigo-50 text-indigo-600 shadow-sm dark:bg-indigo-900/40 dark:text-indigo-400'
+                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white'
+                  )
+                }
+              >
+                <item.icon className="h-5 w-5" />
+                <span>{item.name}</span>
+                {item.path === '/notifications' && hasUnread && (
+                  <span className="absolute right-4 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-indigo-600 dark:bg-indigo-400" />
+                )}
+              </NavLink>
+            ))}
+          </nav>
+
+          <div className="border-t border-slate-100 p-4 dark:border-slate-800">
+            <button
+              onClick={handleLogout}
+              className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:hover:bg-red-900/20"
+            >
+              <LogOut className="h-5 w-5" />
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+
         </aside>
 
 
