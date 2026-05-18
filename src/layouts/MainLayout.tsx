@@ -27,6 +27,7 @@ import { auth, db } from '../firebase/config';
 import { motion } from 'motion/react';
 import { doc, updateDoc, Timestamp, onSnapshot } from 'firebase/firestore';
 import { notify } from '../utils/toast';
+import { Footer } from '../pages/footer';
 
 export const MainLayout: React.FC = () => {
   const { user } = useAuthStore();
@@ -129,7 +130,7 @@ export const MainLayout: React.FC = () => {
   const navItems = user?.rank === 'teacher' ? teacherNav : learnerNav;
 
   return (
-    <div className="min-h-screen w-screen overflow-hidden bg-slate-100 dark:bg-slate-950 transition-colors duration-300">
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 transition-colors duration-300">
       {/* Mobile Topbar */}
       <header className="lg:hidden sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
         <div className="flex items-center gap-2">
@@ -269,7 +270,7 @@ export const MainLayout: React.FC = () => {
         )}
 
         {/* Main Workspace Frame container */}
-        <main className="relative min-h-screen flex-1 lg:ml-64">
+        <main className="relative flex min-h-dvh flex-1 flex-col lg:ml-64">
           {/* Desktop Header panel view */}
           <header className="sticky top-0 z-40 hidden items-center justify-between border-b border-slate-200 bg-white/80 px-8 py-4 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/80 lg:flex">
             <div className="flex items-center gap-4">
@@ -355,9 +356,11 @@ export const MainLayout: React.FC = () => {
           </header>
 
           {/* Page Content Injection Target */}
-          <div className="p-4 lg:p-8">
+          <div className="flex-1 w-full min-w-0 p-4 lg:p-8">
             <Outlet />
           </div>
+
+          <Footer />
         </main>
       </div>
     </div>

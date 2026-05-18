@@ -14,6 +14,9 @@ import {
   X,
   GitGraph,
   Cpu,
+  Wifi,
+  Code2,
+  Logs,
 } from 'lucide-react';
 import MouseTopic from '../library/Mouse';
 import KeyboardTopic from '../library/Keyboard';
@@ -23,6 +26,9 @@ import MalwareTopic from '../library/Malware';
 import { cn } from '@/src/lib/utils';
 import DataFlowTopic from '../library/DataFlow';
 import OperatingSystemsTopic from '../library/OperatingSystems';
+import NetworkingTechnology from '../library/Networking';
+import CodingFundamentals from '../library/Coding';
+import ShortFormsReference from '../library/ShortForms';
 
 // types
 type Topic = {
@@ -47,10 +53,10 @@ const topics: Topic[] = [
     component: KeyboardTopic,
   },
   {
-    id: 'ms-office',
-    title: 'Microsoft Office',
-    icon: Monitor,
-    component: MSOfficeTopic,
+    id: 'data_flow',
+    title: 'Data Flow',
+    icon: GitGraph,
+    component: DataFlowTopic,
   },
   {
     id: 'operating-systems',
@@ -59,16 +65,34 @@ const topics: Topic[] = [
     component: OperatingSystemsTopic,
   },
   {
+    id: 'ms-office',
+    title: 'Microsoft Office',
+    icon: Monitor,
+    component: MSOfficeTopic,
+  },
+  {
+    id: 'networking',
+    title: 'Networking',
+    icon: Wifi,
+    component: NetworkingTechnology,
+  },
+  {
     id: 'malware',
     title: 'Malware',
     icon: ShieldAlert,
     component: MalwareTopic,
   },
   {
-    id: 'data_flow',
-    title: 'Data Flow',
-    icon: GitGraph,
-    component: DataFlowTopic,
+    id: 'coding',
+    title: 'Coding',
+    icon: Code2,
+    component: CodingFundamentals,
+  },
+  {
+    id: 'short_forms',
+    title: 'Short Forms',
+    icon: Logs,
+    component: ShortFormsReference,
   },
 ];
 
@@ -115,43 +139,62 @@ export default function LibraryWidget() {
       <aside
         className={cn(
           "fixed lg:static z-30 top-0 left-0 h-full",
-          "bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800/80",
-          "transition-all duration-300 ease-in-out flex flex-col shadow-sm lg:shadow-none",
+          "border-r border-slate-200/80 dark:border-slate-800/80",
+          "bg-white/90 dark:bg-slate-950/80 backdrop-blur-xl",
+          "shadow-xl shadow-slate-200/40 dark:shadow-black/20",
+          "transition-all duration-300 ease-in-out flex flex-col",
           collapsed ? "w-20" : "w-72",
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
-        onClick={() => {if (!collapsed) setCollapsed(true)}}
+        onClick={() => {
+          if (!collapsed) setCollapsed(true);
+        }}
       >
         {/* Sidebar Header */}
-        <div className="h-16 border-b border-slate-200 dark:border-slate-800/80 flex items-center justify-between px-4">
+        <div className="h-16 flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 px-4">
           {!collapsed ? (
-            <div className="flex items-center gap-2.5 px-2">
-              <div className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
+            <div className="flex items-center gap-3 px-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 text-white shadow-lg shadow-indigo-500/20">
                 <Library className="h-5 w-5" />
               </div>
-              <span className="font-bold text-base tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-                Course Library
-              </span>
+              <div className="min-w-0">
+                <span className="block truncate font-bold text-base tracking-tight text-slate-900 dark:text-white">
+                  Course Library
+                </span>
+                <span className="block text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                  Explore learning topics
+                </span>
+              </div>
             </div>
           ) : (
-            <div className="mx-auto p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 text-white shadow-lg shadow-indigo-500/20">
               <Library className="h-5 w-5" />
             </div>
           )}
 
           {/* Collapse Trigger Action (Desktop Only) */}
           <button
-            onClick={() => setCollapsed((prev) => !prev)}
-            className="hidden lg:flex p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              setCollapsed((prev) => !prev);
+            }}
+            className="hidden lg:inline-flex items-center justify-center rounded-xl p-2 text-slate-500 transition-all hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            {collapsed ? <PanelLeftOpen className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
+            {collapsed ? (
+              <PanelLeftOpen className="h-5 w-5" />
+            ) : (
+              <PanelLeftClose className="h-5 w-5" />
+            )}
           </button>
 
           {/* Close Trigger Action (Mobile Open View Drawer Only) */}
           <button
-            onClick={() => setMobileOpen(false)}
-            className="flex lg:hidden p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              setMobileOpen(false);
+            }}
+            className="inline-flex lg:hidden items-center justify-center rounded-xl p-2 text-slate-500 transition-all hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
             aria-label="Close menu"
           >
             <X className="h-5 w-5" />
@@ -172,24 +215,29 @@ export default function LibraryWidget() {
                   setMobileOpen(false);
                 }}
                 className={cn(
-                  "w-full flex items-center rounded-xl transition-all duration-200 group relative",
-                  collapsed ? "justify-center p-3" : "gap-3 px-4 py-3",
+                  "group relative w-full rounded-2xl border transition-all duration-200",
+                  "focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-950",
+                  collapsed ? "flex justify-center p-3" : "flex items-center gap-3 px-4 py-3",
                   isActive
-                    ? "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-semibold shadow-sm shadow-indigo-100/10"
-                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40 hover:text-slate-900 dark:hover:text-white"
+                    ? "border-indigo-200 bg-gradient-to-r from-indigo-50 to-violet-50 text-indigo-700 shadow-sm shadow-indigo-100/40 dark:border-indigo-900/40 dark:from-indigo-950/50 dark:to-violet-950/30 dark:text-indigo-300"
+                    : "border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:border-slate-800 dark:hover:bg-slate-800/50 dark:hover:text-white"
                 )}
               >
                 {isActive && (
-                  <span className="absolute left-0 top-1/3 bottom-1/3 w-1 rounded-r-full bg-indigo-600 dark:bg-indigo-400" />
+                  <span className="absolute left-0 top-1/4 bottom-1/4 w-1 rounded-r-full bg-indigo-500 dark:bg-indigo-400" />
                 )}
 
-                <Icon className={cn(
-                  "h-5 w-5 flex-shrink-0 transition-transform group-hover:scale-105",
-                  isActive ? "text-indigo-600 dark:text-indigo-400" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300"
-                )} />
+                <Icon
+                  className={cn(
+                    "h-5 w-5 flex-shrink-0 transition-transform duration-200 group-hover:scale-105",
+                    isActive
+                      ? "text-indigo-600 dark:text-indigo-400"
+                      : "text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300"
+                  )}
+                />
 
                 {!collapsed && (
-                  <span className="text-sm tracking-wide truncate">
+                  <span className="truncate text-sm font-medium tracking-wide">
                     {topic.title}
                   </span>
                 )}

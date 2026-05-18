@@ -293,6 +293,28 @@ export default function MSOfficeTopic() {
         </div>
       </section>
 
+      {/* VIDEO EXPLANATION */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+          Watch: Microsoft Office Suite Overview
+        </h2>
+
+        <p className="text-sm text-slate-500 dark:text-slate-400 max-w-3xl">
+          This video breaks down how the Microsoft Office Suite works and how it is used
+          to create and manage documents, spreadsheets, and presentations.
+        </p>
+
+        <div className="relative w-full rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-black shadow-sm aspect-video">
+          <iframe
+            className="w-full h-full"
+            src="https://www.youtube.com/embed/ZXAPCy2c33o"
+            title="Computer Networks Explained"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+      </section>
+
       {/* SUMMARY BADGE SECTION CARD */}
       <section className="p-8 rounded-3xl border border-slate-200 dark:border-slate-800/60 bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-900/60 dark:to-slate-900 relative overflow-hidden shadow-sm">
         <div className="absolute top-0 right-0 p-6 text-slate-200 dark:text-slate-800/60 pointer-events-none">
