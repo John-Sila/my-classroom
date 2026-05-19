@@ -20,8 +20,11 @@ import { SettingsPage } from './pages/learner/Settings';
 import { NotificationCreator } from './pages/teacher/Notifier';
 import { NotificationViewer } from './pages/learner/Notifications';
 import LibraryWidget from './pages/learner/Library';
+import HelpCenter from './pages/Help';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
 
-const TestAnalytics = () => <ResultsAnalytics />;
+// const TestAnalytics = () => <ResultsAnalytics />;
 const PersonalAnalytics = () => <LearnerDashboard />;
 
 const DashboardSwitch = () => {
@@ -64,27 +67,14 @@ const router = createBrowserRouter([
         path: 'results-analytics',
         element: <ProtectedRoute allowedRanks={['teacher']}><ResultsAnalytics /></ProtectedRoute>,
       },
-      {
-        path: 'test-analytics',
-        element: <ProtectedRoute allowedRanks={['teacher']}><TestAnalytics /></ProtectedRoute>,
-      },
+      // {
+      //   path: 'test-analytics',
+      //   element: <ProtectedRoute allowedRanks={['teacher']}><TestAnalytics /></ProtectedRoute>,
+      // },
       {
         path: 'notifier',
         element: <ProtectedRoute allowedRanks={['teacher']}><NotificationCreator /></ProtectedRoute>,
       },
-      {
-        path: 'my_notifications',
-        element: <ProtectedRoute allowedRanks={['teacher']}><NotificationViewer /></ProtectedRoute>,
-      },
-      {
-        path: 'admin_settings',
-        element: <ProtectedRoute allowedRanks={['teacher']}><SettingsPage /></ProtectedRoute>,
-      },
-      {
-        path: 'my_library',
-        element: <ProtectedRoute allowedRanks={['teacher']}><LibraryWidget /></ProtectedRoute>,
-      },
-
 
 
 
@@ -101,17 +91,32 @@ const router = createBrowserRouter([
         path: 'results',
         element: <ProtectedRoute allowedRanks={['learner']}><MyResults /></ProtectedRoute>,
       },
+
+
+      // both routes
       {
         path: 'notifications',
-        element: <ProtectedRoute allowedRanks={['learner']}><NotificationViewer /></ProtectedRoute>,
+        element: <ProtectedRoute allowedRanks={['learner', 'teacher']}><NotificationViewer /></ProtectedRoute>,
       },
       {
-        path: 'personal_settings',
-        element: <ProtectedRoute allowedRanks={['learner']}><SettingsPage /></ProtectedRoute>,
+        path: 'profile_settings',
+        element: <ProtectedRoute allowedRanks={['learner', 'teacher']}><SettingsPage /></ProtectedRoute>,
       },
       {
         path: 'library',
-        element: <ProtectedRoute allowedRanks={['learner']}><LibraryWidget /></ProtectedRoute>,
+        element: <ProtectedRoute allowedRanks={['learner', 'teacher']}><LibraryWidget /></ProtectedRoute>,
+      },
+      {
+        path: 'help',
+        element: <ProtectedRoute allowedRanks={['learner', 'teacher']}><HelpCenter /></ProtectedRoute>,
+      },
+      {
+        path: 'privacy',
+        element: <ProtectedRoute allowedRanks={['learner', 'teacher']}><Privacy /></ProtectedRoute>,
+      },
+      {
+        path: 'terms',
+        element: <ProtectedRoute allowedRanks={['learner', 'teacher']}><Terms /></ProtectedRoute>,
       },
     ],
   },

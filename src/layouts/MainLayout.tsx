@@ -113,11 +113,11 @@ export const MainLayout: React.FC = () => {
     { name: 'Create Test', icon: PlusCircle, path: '/create-test' },
     { name: 'Manage Users', icon: Users, path: '/manage-users' },
     { name: 'Results Analytics', icon: BarChart3, path: '/results-analytics' },
-    { name: 'Test Analytics', icon: BookOpen, path: '/test-analytics' },
+    // { name: 'Test Analytics', icon: BookOpen, path: '/test-analytics' },
     { name: 'Notifier', icon: BellElectric, path: '/notifier' },
-    { name: 'Notifications', icon: Bell, path: '/my_notifications' },
-    !isMobile && { name: 'Library', icon: LibraryBig, path: '/my_library' },
-    { name: 'Settings', icon: Settings, path: '/admin_settings' },
+    { name: 'Notifications', icon: Bell, path: '/notifications' },
+    !isMobile && { name: 'Library', icon: LibraryBig, path: '/library' },
+    { name: 'Settings', icon: Settings, path: '/profile_settings' },
   ].filter(Boolean);
 
   const learnerNav = [
@@ -126,7 +126,7 @@ export const MainLayout: React.FC = () => {
     { name: 'My Results', icon: BarChart3, path: '/results' },
     { name: 'Notifications', icon: Bell, path: '/notifications' },
     !isMobile && { name: 'Library', icon: LibraryBig, path: '/library' },
-    { name: 'Settings', icon: Settings, path: '/personal_settings' },
+    { name: 'Settings', icon: Settings, path: '/profile_settings' },
   ].filter(Boolean);
 
   const navItems = user?.rank === 'teacher' ? teacherNav : learnerNav;

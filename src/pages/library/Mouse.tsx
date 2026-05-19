@@ -36,9 +36,9 @@ export default function MouseTopic() {
 
         <div className="relative group overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 shadow-md">
           <img
-            src="https://images.unsplash.com/photo-1527814050087-3793815479db?q=80&w=1600&auto=format&fit=crop"
+            src="https://cdn-shop.adafruit.com/970x728/2025-05.jpg?q=80&w=1600&auto=format&fit=crop"
             alt="Computer mouse configuration"
-            className="w-full h-[360px] object-cover object-center transform group-hover:scale-[1.01] transition-transform duration-500"
+            className="w-full h-[420px] object-cover object-center transform group-hover:scale-[1.01] transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent" />
         </div>
