@@ -23,6 +23,7 @@ import LibraryWidget from './pages/learner/Library';
 import HelpCenter from './pages/Help';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
+import Chatroom from './pages/learner/Chatroom';
 
 // const TestAnalytics = () => <ResultsAnalytics />;
 const PersonalAnalytics = () => <LearnerDashboard />;
@@ -117,6 +118,10 @@ const router = createBrowserRouter([
       {
         path: 'terms',
         element: <ProtectedRoute allowedRanks={['learner', 'teacher']}><Terms /></ProtectedRoute>,
+      },
+      {
+        path: 'chatroom',
+        element: <ProtectedRoute allowedRanks={['learner', 'teacher']}><Chatroom /></ProtectedRoute>,
       },
     ],
   },

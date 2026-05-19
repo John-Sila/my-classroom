@@ -17,6 +17,7 @@ import {
   BellElectric,
   Bell,
   LibraryBig,
+  MessageCircleCode,
 } from 'lucide-react';
 
 import { useAuthStore } from '../store/authStore';
@@ -117,6 +118,7 @@ export const MainLayout: React.FC = () => {
     { name: 'Notifier', icon: BellElectric, path: '/notifier' },
     { name: 'Notifications', icon: Bell, path: '/notifications' },
     !isMobile && { name: 'Library', icon: LibraryBig, path: '/library' },
+    { name: 'Chatroom', icon: MessageCircleCode, path: '/chatroom' },
     { name: 'Settings', icon: Settings, path: '/profile_settings' },
   ].filter(Boolean);
 
@@ -126,6 +128,7 @@ export const MainLayout: React.FC = () => {
     { name: 'My Results', icon: BarChart3, path: '/results' },
     { name: 'Notifications', icon: Bell, path: '/notifications' },
     !isMobile && { name: 'Library', icon: LibraryBig, path: '/library' },
+    { name: 'Chatroom', icon: MessageCircleCode, path: '/chatroom' },
     { name: 'Settings', icon: Settings, path: '/profile_settings' },
   ].filter(Boolean);
 
