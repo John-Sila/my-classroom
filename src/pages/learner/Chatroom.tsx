@@ -183,7 +183,7 @@ export default function Chatroom() {
                 collection(db, "classroomChats/global/messages"),
                 where("createdAt", "<", cutoff),
                 orderBy("createdAt"),
-                limit(18)
+                limit(300)
             );
 
             const snapshot = await getDocs(q);
