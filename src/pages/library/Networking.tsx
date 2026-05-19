@@ -69,8 +69,8 @@ export default function NetworkingTechnology() {
     },
   ];
 
-  const browserExamples = ["Google Chrome", "Mozilla Firefox", "Microsoft Edge", "Safari", "Opera", "Brave", "Vivaldi", "Tor Browser", "DuckDuckGo Privacy Browser", "Maxthon", "Chromium"];
-  const searchExamples = ["Google", "Bing", "Yahoo", "DuckDuckGo", "Brave Search", "Ask.com", "Ecosia", "Qwant", "Startpage", "Yandex", "Swisscows"];
+  const browserExamples = ["Google Chrome", "Mozilla Firefox", "Brave", "Maxthon", "Microsoft Edge", "Safari", "Opera", "Vivaldi", "Tor Browser", "DuckDuckGo Privacy Browser", "Chromium"];
+  const searchExamples = ["Google", "Bing", "Yahoo", "DuckDuckGo", "Brave Search", "QuadSearch", "Ask.com", "Ecosia", "Qwant", "Startpage", "Yandex", "Swisscows"];
   const kenyanISPs = ["Safaricom (Home Fibre/5G)", "Airtel Kenya", "Jamii Telecommunications (Faiba)", "Zuku Fiber"];
   const espExamples = ["Gmail (Google)", "Outlook (Microsoft)", "Yahoo Mail", "iCloud Mail", "Zoho Mail", "ProtonMail", "GMX Mail", "Yandex Mail", "AOL Mail", "Mail.com", "Fastmail"];
 

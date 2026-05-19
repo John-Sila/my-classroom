@@ -15,6 +15,9 @@ import {
   Code2,
   Logs,
   MonitorCloud,
+  Glasses,
+  RectangleGoggles,
+  Link,
 } from 'lucide-react';
 import MouseTopic from '../library/Mouse';
 import KeyboardTopic from '../library/Keyboard';
@@ -28,6 +31,8 @@ import CodingFundamentals from '../library/Coding';
 import ShortFormsReference from '../library/ShortForms';
 import { useIsCompactView } from '@/src/utils/isMobile';
 import ELearningTopic from '../library/ELearning';
+import { RealityManipulationDossier } from '../library/RealityManipulation';
+import { URLArchitectureDossier } from '../library/URLs';
 
 // types
 type Topic = {
@@ -47,6 +52,8 @@ const topics: Topic[] = [
   { id: 'networking', title: 'Networking', icon: Wifi, component: NetworkingTechnology },
   { id: 'malware', title: 'Malware', icon: ShieldAlert, component: MalwareTopic },
   { id: 'coding', title: 'Coding', icon: Code2, component: CodingFundamentals },
+  { id: 'reality', title: 'Reality Manipulation', icon: RectangleGoggles, component: RealityManipulationDossier },
+  { id: 'uniform_resource', title: 'Uniform Resource Locators', icon: Link, component: URLArchitectureDossier },
   { id: 'e_learning', title: 'e-Learning', icon: MonitorCloud, component: ELearningTopic },
   { id: 'short_forms', title: 'Short Forms', icon: Logs, component: ShortFormsReference },
 ];

@@ -37,9 +37,9 @@ export default function KeyboardTopic() {
         {/* Replaced fixed heights with responsive aspect scaling to protect 100dvh boundaries */}
         <div className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 aspect-[16/9] md:aspect-[21/9]">
           <img
-            src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1600&auto=format&fit=crop"
+            src="https://m.media-amazon.com/images/I/71zMsBPu3qL._AC_UF894,1000_QL80_.jpg?q=80&w=1600&auto=format&fit=crop"
             alt="Mechanical keyboard layout with custom tactile caps"
-            className="w-full h-full object-cover transform hover:scale-[1.01] transition-transform duration-500"
+            className="w-full h-full object-fit transform hover:scale-[1.01] transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 to-transparent" />
         </div>

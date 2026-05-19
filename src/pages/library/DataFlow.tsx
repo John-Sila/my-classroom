@@ -113,7 +113,7 @@ export default function DataFlowTopic() {
             {
               name: "Keyboard",
               icon: Keyboard,
-              img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=600&auto=format&fit=crop",
+              img: "https://laptopclinic.co.ke/cdn/shop/files/k120-gallery-01-new.png?v=1736600733&q=80&w=600&auto=format&fit=crop",
               desc: "Converts mechanical key presses into encoded character streams (ASCII / Unicode)."
             },
             {
@@ -125,7 +125,7 @@ export default function DataFlowTopic() {
             {
               name: "Microphone",
               icon: Mic,
-              img: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?q=80&w=600&auto=format&fit=crop",
+              img: "https://www.dpamicrophones.com/media/glplfsso/choosing-a-vocal-mic-header.jpg?q=80&w=600&auto=format&fit=crop",
               desc: "Samples analog air pressure waves into digital audio waveforms."
             },
             {

@@ -331,7 +331,7 @@ export default function OperatingSystemsTopic() {
 
         <div className="relative group overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 shadow-inner">
           <img
-            src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1600&auto=format&fit=crop"
+            src="https://static0.makeuseofimages.com/wordpress/wp-content/uploads/2022/08/How-the-Linux-Kernel-works.jpg?q=80&w=1600&auto=format&fit=crop"
             alt="Data center server racks running enterprise Linux server kernels"
             className="w-full h-[280px] object-cover object-center transform group-hover:scale-[1.005] transition-transform duration-500"
           />

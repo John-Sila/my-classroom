@@ -39,6 +39,7 @@ interface ChatMessage {
   text: string;
   createdAt?: Timestamp;
   expiresAt?: Timestamp;
+  type?: 'message' | 'system';
 }
 
 interface ClassroomUser {
@@ -234,14 +235,31 @@ export default function Chatroom() {
     }, [users, search]);
 
     const toggleChatAccess = async (target: ClassroomUser) => {
-        if (!isTeacher) return;
+        if (!isTeacher || !user) return;
 
         try {
-        await updateDoc(doc(db, 'users', target.uid), {
-            canChat: target.canChat === false ? true : false,
-        });
+            const disabling = target.canChat !== false;
+
+            await updateDoc(doc(db, 'users', target.uid), {
+            canChat: !disabling,
+            });
+
+            // push system event
+            await addDoc(collection(db, 'classroomChats/global/messages'), {
+            uid: user.uid,
+            fullName: user.fullName,
+            type: 'system',
+            text: disabling
+                ? `${target.fullName} was muted by ${user.fullName}`
+                : `${target.fullName} was unmuted by ${user.fullName}`,
+            createdAt: serverTimestamp(),
+            expiresAt: Timestamp.fromDate(
+                new Date(Date.now() + 12 * 60 * 60 * 1000)
+            ),
+            });
+
         } catch (err) {
-        console.error(err);
+            console.error(err);
         }
     };
 
@@ -295,84 +313,97 @@ export default function Chatroom() {
                 {messages.map((msg) => {
                     const mine = msg.uid === user?.uid;
 
+                    if (msg.type === 'system') {
+                        return (
+                            <div
+                            key={msg.id}
+                            className="flex justify-center py-1"
+                            >
+                            <div className="rounded-full bg-slate-200/70 px-4 py-1 text-[11px] font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                                {msg.text}
+                            </div>
+                            </div>
+                        );
+                    }
+
                     return (
-                    <div
-                        key={msg.id}
-                        className={cn(
-                        'flex w-full',
-                        mine ? 'justify-end' : 'justify-start'
-                        )}
-                    >
                         <div
-                        className={cn(
-                            'group flex max-w-[88%] gap-3 xl:max-w-[72%]',
-                            mine ? 'flex-row-reverse' : 'flex-row'
-                        )}
-                        >
-                        {/* AVATAR */}
-                        <div className="shrink-0">
-                            {msg.photoURL ? (
-                            <img
-                                src={msg.photoURL}
-                                alt={msg.fullName}
-                                className="h-10 w-10 rounded-2xl border border-slate-200 object-cover shadow-sm dark:border-slate-700"
-                            />
-                            ) : (
-                            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 text-xs font-bold text-white shadow-md">
-                                {getInitials(msg.fullName)}
-                            </div>
-                            )}
-                        </div>
-
-                        {/* BUBBLE */}
-                        <div
+                            key={msg.id}
                             className={cn(
-                            'rounded-3xl border px-5 py-4 shadow-sm',
-                            mine
-                                ? 'rounded-br-md border-indigo-500 bg-indigo-600 text-white'
-                                : 'rounded-bl-md border-slate-200 bg-white/95 text-slate-800 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/95 dark:text-slate-100'
+                            'flex w-full',
+                            mine ? 'justify-end' : 'justify-start'
                             )}
                         >
-                            <div className="mb-2 flex items-center gap-2">
-                            <span
-                                className={cn(
-                                'text-[11px] font-bold tracking-wide',
-                                mine
-                                    ? 'text-indigo-100'
-                                    : 'text-slate-500 dark:text-slate-400'
-                                )}
-                            >
-                                {msg.fullName}
-                            </span>
-
-                            <span
-                                className={cn(
-                                'text-[10px]',
-                                mine
-                                    ? 'text-indigo-200'
-                                    : 'text-slate-400 dark:text-slate-500'
-                                )}
-                            >
-                                {msg.createdAt?.toDate?.().toLocaleTimeString([], {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                })}
-                            </span>
-                            </div>
-
-                            <p
+                            <div
                             className={cn(
-                                'whitespace-pre-wrap break-words text-sm leading-relaxed',
-                                mine
-                                ? 'text-white'
-                                : 'text-slate-700 dark:text-slate-300'
+                                'group flex max-w-[88%] gap-3 xl:max-w-[72%]',
+                                mine ? 'flex-row-reverse' : 'flex-row'
                             )}
                             >
-                            {msg.text}
-                            </p>
+                            {/* AVATAR */}
+                            <div className="shrink-0">
+                                {msg.photoURL ? (
+                                <img
+                                    src={msg.photoURL}
+                                    alt={msg.fullName}
+                                    className="h-10 w-10 rounded-2xl border border-slate-200 object-cover shadow-sm dark:border-slate-700"
+                                />
+                                ) : (
+                                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 text-xs font-bold text-white shadow-md">
+                                    {getInitials(msg.fullName)}
+                                </div>
+                                )}
+                            </div>
+
+                            {/* BUBBLE */}
+                            <div
+                                className={cn(
+                                'rounded-3xl border px-5 py-4 shadow-sm',
+                                mine
+                                    ? 'rounded-br-md border-indigo-500 bg-indigo-600 text-white'
+                                    : 'rounded-bl-md border-slate-200 bg-white/95 text-slate-800 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/95 dark:text-slate-100'
+                                )}
+                            >
+                                <div className="mb-2 flex items-center gap-2">
+                                <span
+                                    className={cn(
+                                    'text-[11px] font-bold tracking-wide',
+                                    mine
+                                        ? 'text-indigo-100'
+                                        : 'text-slate-500 dark:text-slate-400'
+                                    )}
+                                >
+                                    {msg.fullName}
+                                </span>
+
+                                <span
+                                    className={cn(
+                                    'text-[10px]',
+                                    mine
+                                        ? 'text-indigo-200'
+                                        : 'text-slate-400 dark:text-slate-500'
+                                    )}
+                                >
+                                    {msg.createdAt?.toDate?.().toLocaleTimeString([], {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    })}
+                                </span>
+                                </div>
+
+                                <p
+                                className={cn(
+                                    'whitespace-pre-wrap break-words text-sm leading-relaxed',
+                                    mine
+                                    ? 'text-white'
+                                    : 'text-slate-700 dark:text-slate-300'
+                                )}
+                                >
+                                {msg.text}
+                                </p>
+                            </div>
+                            </div>
                         </div>
-                        </div>
-                    </div>
                     );
                 })}
 
