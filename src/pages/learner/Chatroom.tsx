@@ -10,6 +10,10 @@ import {
   doc,
   updateDoc,
   Timestamp,
+  where,
+  writeBatch,
+  getDocs,
+  limit,
 } from 'firebase/firestore';
 import {
   ShieldAlert,
@@ -60,6 +64,7 @@ export default function Chatroom() {
 
     const bottomRef = useRef<HTMLDivElement | null>(null);
     const isTeacher = user?.rank === 'teacher';
+    const lastCleanupRef = useRef<number>(0);
 
     useEffect(() => {
         if (!user?.uid) return;
@@ -151,6 +156,54 @@ export default function Chatroom() {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
+    useEffect(() => {
+        if (user?.rank !== "teacher") return;
+
+        const runCleanup = async () => {
+            const now = Date.now();
+
+            // execution throttle (30 min window)
+            if (now - lastCleanupRef.current < 30 * 60 * 1000) return;
+
+            lastCleanupRef.current = now;
+
+            await cleanupOldMessages();
+        };
+
+        runCleanup();
+    }, [user?.uid]);
+
+    const cleanupOldMessages = async () => {
+        if (user?.rank !== "teacher") return;
+
+        try {
+            const cutoff = Timestamp.fromMillis(Date.now() - 1 * 60 * 60 * 1000);
+
+            const q = query(
+                collection(db, "classroomChats/global/messages"),
+                where("createdAt", "<", cutoff),
+                orderBy("createdAt"),
+                limit(18)
+            );
+
+            const snapshot = await getDocs(q);
+
+            if (snapshot.empty) return;
+
+            const batch = writeBatch(db);
+
+            snapshot.docs.forEach((doc) => {
+            batch.delete(doc.ref);
+            });
+
+            await batch.commit();
+
+            console.log(`Client cleanup deleted ${snapshot.size} messages`);
+        } catch (err) {
+            console.error("Cleanup failed:", err);
+        }
+    };
+
     const sendMessage = async () => {
         if (!input.trim() || !user || !canChat) return;
 
@@ -228,7 +281,7 @@ export default function Chatroom() {
 
                 <div className="inline-flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-semibold text-amber-700 dark:border-amber-900/40 dark:bg-amber-950/20 dark:text-amber-300">
                 <ShieldAlert className="h-4 w-4 shrink-0" />
-                Auto-deletion after 12 hours
+                Auto-deletion after 1 hour
                 </div>
             </div>
             </header>

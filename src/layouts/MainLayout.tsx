@@ -104,6 +104,7 @@ export const MainLayout: React.FC = () => {
       await signOut(auth);
       notify.updateSuccess(loader, 'Logged out successfully!');
       navigate('/login');
+      window.location.reload();
     } catch (error) {
       notify.updateError(loader, 'Logout failed:');
     }
@@ -118,7 +119,7 @@ export const MainLayout: React.FC = () => {
     { name: 'Notifier', icon: BellElectric, path: '/notifier' },
     { name: 'Notifications', icon: Bell, path: '/notifications' },
     !isMobile && { name: 'Library', icon: LibraryBig, path: '/library' },
-    { name: 'Chatroom', icon: MessageCircleCode, path: '/chatroom' },
+    !isMobile && { name: 'Chatroom', icon: MessageCircleCode, path: '/chatroom' },
     { name: 'Settings', icon: Settings, path: '/profile_settings' },
   ].filter(Boolean);
 
@@ -128,7 +129,7 @@ export const MainLayout: React.FC = () => {
     { name: 'My Results', icon: BarChart3, path: '/results' },
     { name: 'Notifications', icon: Bell, path: '/notifications' },
     !isMobile && { name: 'Library', icon: LibraryBig, path: '/library' },
-    { name: 'Chatroom', icon: MessageCircleCode, path: '/chatroom' },
+    !isMobile && { name: 'Chatroom', icon: MessageCircleCode, path: '/chatroom' },
     { name: 'Settings', icon: Settings, path: '/profile_settings' },
   ].filter(Boolean);
 
