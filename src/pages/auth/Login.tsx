@@ -132,7 +132,6 @@ export const Login: React.FC = () => {
 
           <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-4 text-center">
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-               Teacher access: Use your admin credentials.<br/>
                Learner access: Contact your teacher for account details.
             </p>
           </div>
