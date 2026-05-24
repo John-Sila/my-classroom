@@ -104,7 +104,7 @@ export const MainLayout: React.FC = () => {
       await signOut(auth);
       notify.updateSuccess(loader, 'Logged out successfully!');
       navigate('/login');
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       notify.updateError(loader, 'Logout failed:');
     }
