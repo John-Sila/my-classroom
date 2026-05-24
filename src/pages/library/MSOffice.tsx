@@ -23,9 +23,20 @@ import {
   ShieldAlert,
 } from 'lucide-react';
 import { motion, AnimatePresence } from "motion/react";
+import WorkspaceHeroSlider from "./components/WorkspaceHeroSlider";
 
 export default function MSOfficeTopic() {
   const [activeTab, setActiveTab] = useState<"concepts" | "suite" | "future">("concepts");
+  const heroImages = [
+  "https://framerusercontent.com/images/YbNcsAudo7Vo7NycWEhEMyDf4I.png?width=1833&height=816",
+  "https://store-images.s-microsoft.com/image/apps.36093.14374512070697751.25968c71-506c-4ac6-a02b-fe78a2531693.7546e29f-df1b-48ac-bd54-c5179c99acd6",
+  "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/Meet-from-anywhere_1920x1240?resMode=sharp2&op_usm=1.5,0.65,15,0&wid=1920&qlt=100&fit=constrain",
+  "https://gdm-catalog-fmapi-prod.imgix.net/ProductScreenshot/c708eac9-157f-4691-82bb-b330bee12496.png?auto=format&q=50",
+  "https://www.lifewire.com/thmb/wQinT8sOFaGie1JnBLv4EZy_YO0=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/publisher-built-in-birthday-templates-f5c8d5b23ed146c4bdfcaabd3ba1f31f.png",
+  "https://crestwood.com/wp-content/uploads/2025/03/PPT-Tip1-Pic1.png",
+  "https://media.clipchamp.com/powerpoint/2048/5XIoCDafPm51gGsRD4EHAL",
+  "https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/Communicate-in-real-time_1920x1240?resMode=sharp2&op_usm=1.5,0.65,15,0&wid=1920&qlt=100&fit=constrain",
+];
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans p-4 md:p-8 selection:bg-indigo-500/20 overflow-x-hidden antialiased transition-colors duration-300">
@@ -101,15 +112,7 @@ export default function MSOfficeTopic() {
               exit={{ opacity: 0, y: -15 }}
               className="space-y-8"
             >
-              {/* Hero workspace image */}
-              <div className="rounded-3xl border border-slate-200 dark:border-slate-900 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 to-transparent z-10 pointer-events-none" />
-                <img
-                  src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1600&auto=format&fit=crop&q=80"
-                  alt="Corporate workspace utilizing enterprise applications"
-                  className="w-full h-64 md:h-80 object-cover"
-                />
-              </div>
+              <WorkspaceHeroSlider images={heroImages} />
 
               {/* Timeline block */}
               <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-900 bg-white dark:bg-slate-900/20 shadow-sm">

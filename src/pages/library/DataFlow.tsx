@@ -24,6 +24,7 @@ import {
   Zap,
   Fingerprint,
 } from "lucide-react";
+import WorkspaceHeroSlider from "./components/WorkspaceHeroSlider";
 
 // Animation presets
 const fadeInUp = {
@@ -140,6 +141,19 @@ export default function DataFlowTopic() {
     },
   ];
 
+  const heroImages = [
+    "https://www.hungarianconservative.com/wp-content/uploads/2023/05/neumann_janos_elete_es_munkassaga.jpg",
+    "https://techterms.com/img/lg/cpu_27.jpg",
+    "https://pyxis.nymag.com/v1/imgs/dfb/03c/bbf932df3accf8c09ebbbae70a438f45d4-2----.2x.h473.w710.jpg",
+    "https://kreo-tech.com/cdn/shop/files/preview_images/44cc98b1362b450fba05c1f1e4c085c7.thumbnail.0000000000.jpg?v=1758707143&width=1280",
+    "https://afatrading.co.ke/cdn/shop/files/transcend-classic-usb3-0-pen-drive-64gb-black-ts64gjf700--1-30358190129321_800x.jpg?v=1700558544",
+    "https://backbone.com/cdn/shop/files/240222_BB-Gen2-LGT_B_Front-noPhone_Light_0b4455ac-3d7a-40f1-9735-e75d9ddfb4ed.png?v=1756413752&width=1200",
+    "https://media.wired.com/photos/65fe1ae0a2eb37a9facd50b8/3:2/w_2560%2Cc_limit/Polaroid-Camera-With-Film-Spirit-600-IMG_2999-Reviewers-Photo-SOURCE-ERIC-RAVENSCRAFT.jpg",
+    "https://cdn.thewirecutter.com/wp-content/media/2025/04/BEST-USB-FLASH-DRIVES-2048px-9578-3x2-1.jpg?auto=webp&quality=75&crop=16:9,smart&width=1024",
+    "https://deprimesolutions.co.ke/wp-content/uploads/2017/07/3590837.jpg",
+    "https://i5.walmartimages.com/asr/9079aced-aec4-4ec8-aa91-8c9411cee609.f2016b8e84fb1802777b1ea2f15b8f83.jpeg"
+  ]
+
   return (
     <div className="space-y-24 text-slate-700 dark:text-slate-300 leading-7 max-w-6xl mx-auto px-4 py-12">
       
@@ -164,18 +178,7 @@ export default function DataFlowTopic() {
           A modern computer system is an elegant, deterministic machine designed to execute instructions through a continuous lifecycle: 
           <span className="font-semibold text-slate-900 dark:text-white bg-emerald-100/50 dark:bg-emerald-950/30 px-1.5 py-0.5 rounded ml-1">Input, Processing, Storage, and Output</span>. Data shifts state constantly, morphing from raw human actions into stable magnetic patterns.
         </p>
-
-        <motion.div 
-          whileHover={{ scale: 1.01 }}
-          className="rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-xl relative group group-hover:shadow-2xl transition-all duration-500"
-        >
-          <div className="absolute inset-0 bg-linear-to-t from-slate-950/50 via-transparent to-transparent z-10 opacity-60 group-hover:opacity-40 transition-opacity" />
-          <img
-            src="https://www.totalphase.com/media/blog/2022/08/Intel-CPU1.jpg?q=80&w=1600&auto=format&fit=crop"
-            className="w-full h-[350px] md:h-[450px] object-cover transform scale-100 group-hover:scale-105 transition-transform duration-750 ease-out"
-            alt="Silicon wafer microarchitecture"
-          />
-        </motion.div>
+        <WorkspaceHeroSlider images={heroImages} />
       </motion.section>
 
       {/* PIPELINE OVERVIEW */}

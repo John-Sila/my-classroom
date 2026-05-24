@@ -21,9 +21,104 @@ export default function OperatingSystemsTopic() {
   >("concepts");
 
   const distros = [
-    "Ubuntu", "Debian", "Fedora", "Arch Linux", "Linux Mint",
-    "Kali Linux", "openSUSE", "Gentoo", "Slackware", "NixOS",
-    "ChromeOS", "Android-x86", "FreeBSD", "Haiku OS",
+    {
+      name: "Ubuntu",
+      family: "Debian-Based",
+      color: "from-orange-500/20 to-red-500/10",
+      border: "border-orange-500/20",
+      glow: "group-hover:shadow-orange-500/10",
+    },
+    {
+      name: "Debian",
+      family: "Universal GNU/Linux",
+      color: "from-pink-500/20 to-rose-500/10",
+      border: "border-pink-500/20",
+      glow: "group-hover:shadow-pink-500/10",
+    },
+    {
+      name: "Fedora",
+      family: "Red Hat Ecosystem",
+      color: "from-blue-500/20 to-cyan-500/10",
+      border: "border-blue-500/20",
+      glow: "group-hover:shadow-blue-500/10",
+    },
+    {
+      name: "Arch Linux",
+      family: "Rolling Release",
+      color: "from-cyan-500/20 to-sky-500/10",
+      border: "border-cyan-500/20",
+      glow: "group-hover:shadow-cyan-500/10",
+    },
+    {
+      name: "Linux Mint",
+      family: "Beginner Friendly",
+      color: "from-emerald-500/20 to-green-500/10",
+      border: "border-emerald-500/20",
+      glow: "group-hover:shadow-emerald-500/10",
+    },
+    {
+      name: "Kali Linux",
+      family: "Security Research",
+      color: "from-indigo-500/20 to-violet-500/10",
+      border: "border-indigo-500/20",
+      glow: "group-hover:shadow-indigo-500/10",
+    },
+    {
+      name: "openSUSE",
+      family: "Enterprise Linux",
+      color: "from-lime-500/20 to-green-500/10",
+      border: "border-lime-500/20",
+      glow: "group-hover:shadow-lime-500/10",
+    },
+    {
+      name: "Gentoo",
+      family: "Source-Based",
+      color: "from-violet-500/20 to-fuchsia-500/10",
+      border: "border-violet-500/20",
+      glow: "group-hover:shadow-violet-500/10",
+    },
+    {
+      name: "Slackware",
+      family: "Classic UNIX Style",
+      color: "from-slate-500/20 to-slate-700/10",
+      border: "border-slate-500/20",
+      glow: "group-hover:shadow-slate-500/10",
+    },
+    {
+      name: "NixOS",
+      family: "Declarative OS",
+      color: "from-sky-500/20 to-blue-500/10",
+      border: "border-sky-500/20",
+      glow: "group-hover:shadow-sky-500/10",
+    },
+    {
+      name: "ChromeOS",
+      family: "Cloud-Centric",
+      color: "from-yellow-500/20 to-orange-500/10",
+      border: "border-yellow-500/20",
+      glow: "group-hover:shadow-yellow-500/10",
+    },
+    {
+      name: "Android-x86",
+      family: "Mobile Hybrid",
+      color: "from-green-500/20 to-emerald-500/10",
+      border: "border-green-500/20",
+      glow: "group-hover:shadow-green-500/10",
+    },
+    {
+      name: "FreeBSD",
+      family: "BSD UNIX",
+      color: "from-red-500/20 to-rose-500/10",
+      border: "border-red-500/20",
+      glow: "group-hover:shadow-red-500/10",
+    },
+    {
+      name: "Haiku OS",
+      family: "BeOS Inspired",
+      color: "from-amber-500/20 to-yellow-500/10",
+      border: "border-amber-500/20",
+      glow: "group-hover:shadow-amber-500/10",
+    },
   ];
 
   const tabs = [
@@ -41,7 +136,7 @@ export default function OperatingSystemsTopic() {
     },
     {
       id: "kernel",
-      label: "Kernel Layer",
+      label: "Linux as a Kernel",
       icon: Layers,
       color: "emerald",
     },
@@ -209,19 +304,93 @@ export default function OperatingSystemsTopic() {
                 </h3>
                 <p className="text-xs text-slate-500 mt-2 leading-relaxed">
                   The kernel operates in privileged execution space, mediating
-                  hardware access, process scheduling, and system calls.
+                  hardware access, process scheduling, and system calls. Below are some distros under the Linux kernel.
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-2">
-                {distros.map((d) => (
-                  <span
-                    key={d}
-                    className="px-3 py-1.5 rounded-xl text-xs border border-slate-200 dark:border-slate-900 bg-white dark:bg-slate-900/20"
-                  >
-                    {d}
-                  </span>
-                ))}
+              <div className="space-y-5">
+
+                <div className="flex items-center justify-between gap-4 flex-wrap">
+                  <div>
+                    <h3 className="text-lg font-black tracking-tight text-slate-900 dark:text-white">
+                      Distribution Ecosystem Matrix
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      Modern Linux and UNIX-like operating environments engineered for different deployment pipelines.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    Active Distros
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {distros.map((d) => (
+                    <div
+                      key={d.name}
+                      className={`
+                        group relative overflow-hidden rounded-2xl border
+                        ${d.border}
+                        bg-white/80 dark:bg-slate-900/30
+                        backdrop-blur-sm
+                        p-4
+                        transition-all duration-300
+                        hover:-translate-y-1
+                        hover:shadow-xl
+                        ${d.glow}
+                      `}
+                    >
+
+                      {/* Ambient Gradient */}
+                      <div
+                        className={`
+                          absolute inset-0 opacity-0 group-hover:opacity-100
+                          transition-opacity duration-500
+                          bg-gradient-to-br ${d.color}
+                        `}
+                      />
+
+                      {/* Top Glow Orb */}
+                      <div className="absolute -top-10 -right-10 w-24 h-24 rounded-full bg-white/10 blur-3xl pointer-events-none" />
+
+                      <div className="relative z-10 space-y-3">
+
+                        {/* Header */}
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <h4 className="text-sm font-black tracking-tight text-slate-900 dark:text-white">
+                              {d.name}
+                            </h4>
+
+                            <p className="text-[10px] uppercase tracking-[0.18em] font-bold text-slate-400 mt-1">
+                              {d.family}
+                            </p>
+                          </div>
+
+                          <div className="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 shadow-lg shadow-cyan-500/20 mt-1 shrink-0" />
+                        </div>
+
+                        {/* Divider */}
+                        <div className="h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-700 to-transparent" />
+
+                        {/* Footer Meta */}
+                        <div className="flex items-center justify-between text-[10px] font-medium text-slate-400">
+
+                          <span className="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+                            OS
+                          </span>
+
+                          <span className="group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">
+                            Kernel-Based
+                          </span>
+
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </motion.section>
           )}

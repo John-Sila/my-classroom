@@ -13,7 +13,7 @@ export const Footer = () => {
           <span className="font-medium text-slate-700 dark:text-slate-300">
             Managed by Teacher Sila
           </span>
-          <span className="text-slate-400 dark:text-slate-500">• v1.0.0</span>
+          <span className="text-slate-400 dark:text-slate-500">• v1.8.3</span>
           <span className="hidden sm:inline text-slate-400 dark:text-slate-500">
             • © {year}
           </span>
