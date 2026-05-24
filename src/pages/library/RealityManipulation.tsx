@@ -47,6 +47,7 @@ interface RealityExample {
 interface RealityParadigm {
   title: string;
   tagline: string;
+  videoURL?: string;
   icon: React.ComponentType<any>;
   accentColor: string;
   glowColor: string;
@@ -65,6 +66,7 @@ export const RealityManipulationDossier: React.FC = () => {
     ar: {
       title: "Augmented Reality",
       tagline: "The Spatial Overlayer",
+      videoURL: "https://www.youtube.com/embed/QpbJwad6v_s",
       icon: Layers,
       accentColor: "border-cyan-500/20 dark:border-cyan-500/30 text-cyan-600 dark:text-cyan-400 bg-cyan-50/50 dark:bg-cyan-950/20",
       glowColor: "shadow-[0_0_30px_rgba(6,182,212,0.08)] dark:shadow-[0_0_30px_rgba(34,211,238,0.15)]",
@@ -96,6 +98,7 @@ export const RealityManipulationDossier: React.FC = () => {
     vr: {
       title: "Virtual Reality",
       tagline: "The Sensory Substitute",
+      videoURL: "https://www.youtube.com/embed/i4Zt3JZejbg",
       icon: Glasses,
       accentColor: "border-fuchsia-500/20 dark:border-fuchsia-500/30 text-fuchsia-600 dark:text-fuchsia-400 bg-fuchsia-50/50 dark:bg-fuchsia-950/20",
       glowColor: "shadow-[0_0_30px_rgba(217,70,239,0.08)] dark:shadow-[0_0_30px_rgba(217,70,239,0.15)]",
@@ -162,35 +165,38 @@ export const RealityManipulationDossier: React.FC = () => {
           <div className="flex flex-wrap gap-2 mt-8 pt-6 border-t border-slate-100 dark:border-slate-900">
             <button
               onClick={() => setActiveTab('ar')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs tracking-wider uppercase transition-all ${
-                activeTab === 'ar' 
-                  ? 'bg-cyan-600 dark:bg-cyan-500 text-white dark:text-slate-950 shadow-md shadow-cyan-500/10 dark:shadow-cyan-500/20 font-bold scale-105' 
-                  : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-850'
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs tracking-wider uppercase transition-colors duration-200 ${
+                activeTab === 'ar'
+                  ? 'bg-cyan-600 dark:bg-cyan-500 text-white dark:text-slate-950 shadow-md shadow-cyan-500/10 dark:shadow-cyan-500/20 font-bold scale-105'
+                  : 'bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800'
               }`}
             >
               <Layers className="w-4 h-4" /> Augmented Reality
             </button>
+
             <button
               onClick={() => setActiveTab('vr')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs tracking-wider uppercase transition-all ${
-                activeTab === 'vr' 
-                  ? 'bg-fuchsia-600 dark:bg-fuchsia-500 text-white dark:text-slate-950 shadow-md shadow-fuchsia-500/10 dark:shadow-fuchsia-500/20 font-bold scale-105' 
-                  : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-850'
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs tracking-wider uppercase transition-colors duration-200 ${
+                activeTab === 'vr'
+                  ? 'bg-fuchsia-600 dark:bg-fuchsia-500 text-white dark:text-slate-950 shadow-md shadow-fuchsia-500/10 dark:shadow-fuchsia-500/20 font-bold scale-105'
+                  : 'bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800'
               }`}
             >
               <Glasses className="w-4 h-4" /> Virtual Reality
             </button>
+
             <button
               onClick={() => setActiveTab('comparison')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs tracking-wider uppercase transition-all ${
-                activeTab === 'comparison' 
-                  ? 'bg-gradient-to-r from-cyan-600 to-fuchsia-600 dark:from-cyan-500 dark:to-fuchsia-500 text-white dark:text-slate-950 shadow-md font-bold scale-105' 
-                  : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-850'
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs tracking-wider uppercase transition-colors duration-200 ${
+                activeTab === 'comparison'
+                  ? 'bg-gradient-to-r from-cyan-600 to-fuchsia-600 dark:from-cyan-500 dark:to-fuchsia-500 text-white dark:text-slate-950 shadow-md font-bold scale-105'
+                  : 'bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800'
               }`}
             >
               <Shuffle className="w-4 h-4" /> Core Matrix Comparison
             </button>
           </div>
+
         </header>
 
         {/* --- Content Area --- */}
@@ -313,6 +319,19 @@ export const RealityManipulationDossier: React.FC = () => {
                   })}
                 </div>
               </div>
+              {/* MEDIA */}
+              <section className="rounded-3xl border border-slate-200 dark:border-slate-900 overflow-hidden">
+
+                <div className="relative w-full rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-black shadow-md aspect-video">
+                  <iframe
+                    className="absolute top-0 left-0 w-full h-full"
+                    src={activeTab === 'ar' ? paradigms.ar.videoURL : paradigms.vr.videoURL}
+                    title="Programming Languages Explained"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              </section>
             </motion.div>
           )}
 
@@ -372,6 +391,13 @@ export const RealityManipulationDossier: React.FC = () => {
             </motion.div>
           )}
         </AnimatePresence>
+
+        <footer className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400 dark:text-slate-600 pt-4 border-t border-slate-200 dark:border-slate-900">
+          <div className="flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-ping mr-1" />
+            VIRTUAL & AUGMENTED REALITY
+          </div>
+        </footer>
 
 
       </div>

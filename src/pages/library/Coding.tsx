@@ -133,35 +133,38 @@ export default function CodingFundamentals() {
           <div className="flex flex-wrap gap-2 mt-8 pt-6 border-t border-slate-100 dark:border-slate-900">
             <button
               onClick={() => setActiveTab('lifecycle')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs tracking-wider uppercase transition-all ${
-                activeTab === 'lifecycle' 
-                  ? 'bg-indigo-600 dark:bg-indigo-500 text-white dark:text-slate-950 shadow-md shadow-indigo-500/10 dark:shadow-indigo-500/20 font-bold scale-105' 
-                  : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-850'
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs tracking-wider uppercase transition-colors duration-200 ${
+                activeTab === 'lifecycle'
+                  ? 'bg-indigo-600 dark:bg-indigo-500 text-white dark:text-slate-950 shadow-md shadow-indigo-500/10 dark:shadow-indigo-500/20 font-bold scale-105'
+                  : 'bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800'
               }`}
             >
               <Cpu className="w-4 h-4" /> The 5-Step Lifecycle
             </button>
+
             <button
               onClick={() => setActiveTab('languages')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs tracking-wider uppercase transition-all ${
-                activeTab === 'languages' 
-                  ? 'bg-violet-600 dark:bg-violet-500 text-white dark:text-slate-950 shadow-md shadow-violet-500/10 dark:shadow-violet-500/20 font-bold scale-105' 
-                  : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-850'
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs tracking-wider uppercase transition-colors duration-200 ${
+                activeTab === 'languages'
+                  ? 'bg-violet-600 dark:bg-violet-500 text-white dark:text-slate-950 shadow-md shadow-violet-500/10 dark:shadow-violet-500/20 font-bold scale-105'
+                  : 'bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800'
               }`}
             >
               <Terminal className="w-4 h-4" /> Syntactic Engines
             </button>
+
             <button
               onClick={() => setActiveTab('media')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs tracking-wider uppercase transition-all ${
-                activeTab === 'media' 
-                  ? 'bg-emerald-600 dark:bg-emerald-500 text-white dark:text-slate-950 shadow-md shadow-emerald-500/10 dark:shadow-emerald-500/20 font-bold scale-105' 
-                  : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-850'
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs tracking-wider uppercase transition-colors duration-200 ${
+                activeTab === 'media'
+                  ? 'bg-emerald-600 dark:bg-emerald-500 text-white dark:text-slate-950 shadow-md shadow-emerald-500/10 dark:shadow-emerald-500/20 font-bold scale-105'
+                  : 'bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800'
               }`}
             >
               <BookOpen className="w-4 h-4" /> Video Briefing
             </button>
           </div>
+
         </header>
 
         {/* --- Main Workspace Sub-Sections --- */}
@@ -424,10 +427,9 @@ export default function CodingFundamentals() {
 
         {/* --- Global Ledger Footer Signature --- */}
         <footer className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400 dark:text-slate-600 pt-4 border-t border-slate-200 dark:border-slate-900">
-          <div>LOGIC DESIGN ARCHIVE V4.1 // SYSTEM AUTHENTICATED</div>
           <div className="flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-ping mr-1" />
-            SYNTAX VERIFICATION MODULE: ONLINE
+            CODING
           </div>
         </footer>
 

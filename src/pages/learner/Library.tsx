@@ -18,6 +18,7 @@ import {
   Glasses,
   RectangleGoggles,
   Link,
+  Cable,
 } from 'lucide-react';
 import MouseTopic from '../library/Mouse';
 import KeyboardTopic from '../library/Keyboard';
@@ -33,6 +34,7 @@ import { useIsCompactView } from '@/src/utils/isMobile';
 import ELearningTopic from '../library/ELearning';
 import { RealityManipulationDossier } from '../library/RealityManipulation';
 import { URLArchitectureDossier } from '../library/URLs';
+import PortsAndCablesTopic from '../library/PortsAndCables';
 
 // types
 type Topic = {
@@ -55,6 +57,7 @@ const topics: Topic[] = [
   { id: 'reality', title: 'Reality Manipulation', icon: RectangleGoggles, component: RealityManipulationDossier },
   { id: 'uniform_resource', title: 'Uniform Resource Locators', icon: Link, component: URLArchitectureDossier },
   { id: 'e_learning', title: 'e-Learning', icon: MonitorCloud, component: ELearningTopic },
+  { id: 'ports_cables', title: 'Cables and Ports', icon: Cable, component: PortsAndCablesTopic },
   { id: 'short_forms', title: 'Short Forms', icon: Logs, component: ShortFormsReference },
 ];
 
