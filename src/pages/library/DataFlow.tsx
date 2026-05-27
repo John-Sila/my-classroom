@@ -564,12 +564,7 @@ export default function DataFlowTopic() {
         </div>
 
         <div className="aspect-video max-w-4xl mx-auto rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl relative group bg-black">
-          <iframe
-            className="w-full h-full opacity-90 group-hover:opacity-100 transition-opacity duration-300"
-            src="https://www.youtube.com/embed/CBf-jIn44X0"
-            title="Data flow explanation guide video"
-            allowFullScreen
-          />
+          <iframe className="w-full h-full opacity-90 group-hover:opacity-100 transition-opacity duration-300" src="https://www.youtube.com/embed/CBf-jIn44X0" title="CS Basics: Input Process Output" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
         </div>
       </motion.section>
 

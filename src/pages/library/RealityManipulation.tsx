@@ -324,10 +324,12 @@ export const RealityManipulationDossier: React.FC = () => {
 
                 <div className="relative w-full rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-black shadow-md aspect-video">
                   <iframe
-                    className="absolute top-0 left-0 w-full h-full"
+                    className="w-full h-full opacity-90 group-hover:opacity-100 transition-opacity duration-300"
                     src={activeTab === 'ar' ? paradigms.ar.videoURL : paradigms.vr.videoURL}
-                    title="Programming Languages Explained"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    title="Paradigm Demonstration for Computer Graphics & Reality Manipulation"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
                     allowFullScreen
                   />
                 </div>

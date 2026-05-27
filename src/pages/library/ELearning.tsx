@@ -338,14 +338,6 @@ export default function ELearningTopic() {
                   <p className="text-xs text-slate-500 dark:text-slate-400">
                     Watch this video demonstrating the inner workings of a modern e‑learning platform, showcasing content delivery and interaction layers in action.
                   </p>
-                  <div className="aspect-video rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-900 shadow-inner">
-                    <iframe
-                      className="w-full h-full rounded-[inherit]"
-                      src="https://www.youtube.com/embed/ZPs3URGs0KQ"
-                      title="Data flow explanation guide video"
-                      allowFullScreen
-                    />
-                  </div>
                 </div>
               </div>
             </motion.div>
@@ -367,6 +359,9 @@ export default function ELearningTopic() {
             </p>
           </div>
         </section>
+        <div className="aspect-video rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-900 shadow-inner">
+          <iframe className="w-full h-full opacity-90 group-hover:opacity-100 transition-opacity duration-300" src="https://www.youtube.com/embed/ZPs3URGs0KQ" title="What is eLearning?" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+        </div>
 
         <footer className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400 dark:text-slate-600 pt-4 border-t border-slate-200 dark:border-slate-900">
           <div className="flex items-center gap-1">

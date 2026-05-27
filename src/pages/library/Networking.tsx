@@ -508,14 +508,6 @@ export default function NetworkingTechnology() {
                   <h3 className="text-sm font-bold text-slate-900 dark:text-white">Technical Deep Dive</h3>
                   <p className="text-xs text-slate-400">Understanding how networks operate at each layer and potential attack surfaces.</p>
                 </div>
-                <div className="relative w-full rounded-2xl overflow-hidden bg-black shadow-inner aspect-video border border-slate-200 dark:border-slate-900">
-                  <iframe
-                    className="absolute top-0 left-0 w-full h-full"
-                    src="https://www.youtube.com/embed/tSodBEAJz9Y"
-                    title="Computer Networks Explained"
-                    allowFullScreen
-                  />
-                </div>
               </div>
             </motion.div>
           )}
@@ -537,6 +529,9 @@ export default function NetworkingTechnology() {
             </p>
           </div>
         </section>
+        <div className="relative w-full rounded-2xl overflow-hidden bg-black shadow-inner aspect-video border border-slate-200 dark:border-slate-900">
+          <iframe className="w-full h-full opacity-90 group-hover:opacity-100 transition-opacity duration-300" src="https://www.youtube.com/embed/tSodBEAJz9Y" title="Computer Networking Explained | Cisco CCNA 200-301" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+        </div>
       </div>
       <footer className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400 dark:text-slate-600 pt-4 border-t border-slate-200 dark:border-slate-900">
         <div className="flex items-center gap-1">

@@ -374,14 +374,7 @@ export default function MSOfficeTopic() {
                 <p className="text-xs text-slate-400">
                   This video breaks down how the Microsoft Office Suite works and how it is used to create and manage documents, spreadsheets, and presentations.
                 </p>
-                <div className="aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-slate-900 shadow-inner">
-                  <iframe
-                    className="w-full h-full rounded-[inherit]"
-                    src="https://www.youtube.com/embed/ZXAPCy2c33o"
-                    title="Microsoft Office Suite overview"
-                    allowFullScreen
-                  />
-                </div>
+
               </div>
             </motion.div>
           )}
@@ -402,6 +395,9 @@ export default function MSOfficeTopic() {
             </p>
           </div>
         </section>
+        <div className="aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-slate-900 shadow-inner">
+          <iframe className="w-full h-full opacity-90 group-hover:opacity-100 transition-opacity duration-300" src="https://www.youtube.com/embed/ZXAPCy2c33o" title="INTRODUCTION TO MS-OFFICE || MS-OFFICE" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+        </div>
 
         <footer className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400 dark:text-slate-600 pt-4 border-t border-slate-200 dark:border-slate-900">
           <div className="flex items-center gap-1">

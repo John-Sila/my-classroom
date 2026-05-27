@@ -2,415 +2,607 @@ import React, { useState, useEffect } from "react";
 import {
   Computer,
   Brain,
-  Network,
-  Cpu,
-  Zap,
   Globe,
   Smartphone,
   Database,
   Code,
   Rocket,
-  History,
-  Moon,
   Box,
   MessageSquare,
   Video,
   Lock,
-  Shield,
-  Activity,
+  Cpu,
+  Zap,
   Info,
   ArrowRight,
   ArrowLeft,
   RefreshCw,
+  Sparkles,
+  Clock3,
+  Orbit,
+  Layers3,
+  ShieldCheck,
+  Stars,
+  Binary,
+  Gauge,
+  Activity,
 } from "lucide-react";
+
 import { motion, AnimatePresence } from "motion/react";
+import { funFacts } from "./components/FunFacts";
+
+// motion
+const slideVariants = {
+  enter: (direction: "next" | "prev") => ({
+    x: direction === "next" ? 120 : -120,
+    opacity: 0,
+    scale: 0.96,
+    filter: "blur(10px)",
+  }),
+
+  center: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+    filter: "blur(0px)",
+  },
+
+  exit: (direction: "next" | "prev") => ({
+    x: direction === "next" ? -120 : 120,
+    opacity: 0,
+    scale: 0.96,
+    filter: "blur(10px)",
+  }),
+};
 
 // ============================================================================
-// LOOPABLE FACTS ARRAY (OOP-friendly, easy to extend)
+// COMPONENT
 // ============================================================================
-const funFacts = [
-  {
-    id: 1,
-    category: "Computers & History",
-    icon: Computer,
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=600&auto=format&fit=crop",
-    fact: "The first electronic computer ENIAC weighed more than 27 tons and took up 1,800 square feet of floor space.",
-    extra: "That's roughly the size of a large bedroom!",
-  },
-  {
-    id: 2,
-    category: "Internet & Adoption",
-    icon: Globe,
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600&auto=format&fit=crop",
-    fact: "The internet reached 50 million users in just 4 years. The radio took 38 years, and television took 13 years.",
-    extra: "Internet adoption was 9.5× faster than radio!",
-  },
-  {
-    id: 3,
-    category: "Programming & Debugging",
-    icon: Code,
-    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format&fit=crop",
-    fact: "The term 'bug' for a computer error came from a real moth found inside a computer in 1947. Admiral Grace Hopper removed it and taped it in her logbook.",
-    extra: "This is where 'debugging' got its name!",
-  },
-  {
-    id: 4,
-    category: "Smartphones & Space",
-    icon: Smartphone,
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=600&auto=format&fit=crop",
-    fact: "The computing power in today's cell phones is much higher than the processing power of all computers in the Apollo 11 Lunar Lander that put humans on the moon.",
-    extra: "Your phone is more powerful than the mission that landed on the moon!",
-  },
-  {
-    id: 5,
-    category: "Storage Evolution",
-    icon: Database,
-    image: "https://images.unsplash.com/photo-1558494949-ef2bb6db8744?q=80&w=600&auto=format&fit=crop",
-    fact: "Early hard disks in personal computers held only 20 MB and cost around $800. In 2010, you could get a 2 GB flash drive for about $8.",
-    extra: "That's a 100-fold reduction in price and 100-fold increase in capacity!",
-  },
-  {
-    id: 6,
-    category: "First Hard Drive",
-    icon: Box,
-    image: "https://images.unsplash.com/photo-1558494949-ef2bb6db8744?q=80&w=600&auto=format&fit=crop",
-    fact: "The first hard disk drive was created in 1979 by Seagate. Its capacity was a whopping 5 MB.",
-    extra: "A single high-resolution photo today is larger than that!",
-  },
-  {
-    id: 7,
-    category: "Tech Giants",
-    icon: Rocket,
-    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=600&auto=format&fit=crop",
-    fact: "HP, Google, Microsoft, and Apple all started in garages. Four of the world's biggest tech companies began in home garages.",
-    extra: "Great ideas can start anywhere!",
-  },
-  {
-    id: 8,
-    category: "Domain Names",
-    icon: Globe,
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600&auto=format&fit=crop",
-    fact: "The first and oldest domain name is Symbolics.com, registered on March 15, 1985. It's still active today!",
-    extra: "Over 39 years old and still online!",
-  },
-  {
-    id: 9,
-    category: "CPU Overclocking",
-    icon: Cpu,
-    image: "https://images.unsplash.com/photo-1591405351990-4726e331f141?q=80&w=600&auto=format&fit=crop",
-    fact: "Most CPUs are sold as a bit slower than they actually run. By overclocking them, you can get them to run faster—for free!",
-    extra: "Your CPU might be hiding extra power!",
-  },
-  {
-    id: 10,
-    category: "Programming Languages",
-    icon: Code,
-    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format&fit=crop",
-    fact: "The first computer programmer was a woman: Ada Lovelace, who wrote the first algorithm for Charles Babbage's Analytical Engine in the 1840s.",
-    extra: "Programming is older than computers themselves!",
-  },
-  {
-    id: 11,
-    category: "AI History",
-    icon: Brain,
-    image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=600&auto=format&fit=crop",
-    fact: "AI has been around for decades. The term 'Artificial Intelligence' was coined in 1956 at the Dartmouth Conference.",
-    extra: "AI is older than most people think!",
-  },
-  {
-    id: 12,
-    category: "Email & Spam",
-    icon: MessageSquare,
-    image: "https://images.unsplash.com/photo-1557200130-4b774fc4082a?q=80&w=600&auto=format&fit=crop",
-    fact: "Over 80% of the total emails that an average person receives daily are spam.",
-    extra: "Only 1 in 5 emails is actually legitimate!",
-  },
-  {
-    id: 13,
-    category: "YouTube & Video",
-    icon: Video,
-    image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=600&auto=format&fit=crop",
-    fact: "Every minute, 10 hours of video are uploaded to YouTube. That's 600 hours every hour!",
-    extra: "You'd need 41 years to watch all videos uploaded in a single day!",
-  },
-  {
-    id: 14,
-    category: "Facebook Population",
-    icon: Globe,
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600&auto=format@format=crop",
-    fact: "Facebook has over 1 billion registered users. If it were a country, it would have the 3rd largest population in the world.",
-    extra: "Only China and India are more populous!",
-  },
-  {
-    id: 15,
-    category: "Internet Users & Language",
-    icon: MessageSquare,
-    image: "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?q=80&w=600&auto=format&fit=crop",
-    fact: "About 1.8 billion people connect to the Internet, but only 450 million of them speak English.",
-    extra: "Most internet users speak other languages!",
-  },
-  {
-    id: 16,
-    category: "Computer Mouse",
-    icon: Zap,
-    image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?q=80&w=600&auto=format&fit=crop",
-    fact: "The computer mouse was invented by Doug Engelbart in 1963. It was made out of wood!",
-    extra: "The first mouse was a literal wooden block!",
-  },
-  {
-    id: 17,
-    category: "Digital Currency",
-    icon: Database,
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=600&auto=format&fit=crop",
-    fact: "90% of the total currency of the world population exists in databases. Only 10% is physical cash.",
-    extra: "Most money is digital, not paper!",
-  },
-  {
-    id: 18,
-    category: "Cybersecurity",
-    icon: Lock,
-    image: "https://images.unsplash.com/photo-1563206767-5b1d972b9fb1?q=80&w=600&auto=format&fit=crop",
-    fact: "70% of virus writers actually work under contract for an organization.",
-    extra: "Many 'hackers' are working for companies or governments!",
-  },
-  {
-    id: 19,
-    category: "First Web Browser",
-    icon: Globe,
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600&auto=format&fit=crop",
-    fact: "Mosaic was the first popular web browser, released in 1993. It paved the way for modern browsers like Chrome and Firefox.",
-    extra: "Before Mosaic, the web was mostly text-only!",
-  },
-  {
-    id: 20,
-    category: "Gaming & Screen Time",
-    icon: Smartphone,
-    image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600&auto=format&fit=crop",
-    fact: "The average 21-year-old has spent 5,000 hours playing video games, exchanged 250,000 messages, and spent 10,000 hours on their mobile phone.",
-    extra: "That's over 1 year of total screen time!",
-  },
-];
 
 export default function FunFactsTopic() {
   const [currentIndex, setCurrentIndex] = useState(0);
+
   const [direction, setDirection] = useState<"next" | "prev">("next");
 
   const currentFact = funFacts[currentIndex];
 
+  const Icon = currentFact.icon;
+
   const nextFact = () => {
     setDirection("next");
+
     setCurrentIndex((prev) => (prev + 1) % funFacts.length);
   };
 
   const prevFact = () => {
     setDirection("prev");
-    setCurrentIndex((prev) => (prev - 1 + funFacts.length) % funFacts.length);
+
+    setCurrentIndex(
+      (prev) => (prev - 1 + funFacts.length) % funFacts.length
+    );
   };
 
   const randomFact = () => {
     let newIndex;
+
     do {
       newIndex = Math.floor(Math.random() * funFacts.length);
     } while (newIndex === currentIndex);
-    setDirection("next");
+
+    setDirection(newIndex > currentIndex ? "next" : "prev");
+
     setCurrentIndex(newIndex);
   };
 
-  const slideVariants = {
-    enter: (direction: "next" | "prev") => ({
-      x: direction === "next" ? 300 : -300,
-      opacity: 0,
-      scale: 0.95,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      scale: 1,
-    },
-    exit: (direction: "next" | "prev") => ({
-      x: direction === "next" ? -300 : 300,
-      opacity: 0,
-      scale: 0.95,
-    }),
-  };
+  // Auto play
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextFact();
+    }, 7000);
 
-  const Icon = currentFact.icon;
+    return () => clearInterval(interval);
+  }, [currentIndex]);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans p-4 md:p-8 selection:bg-indigo-500/20 overflow-x-hidden antialiased transition-colors duration-300">
-      {/* Ambient glows */}
-      <div className="absolute top-0 left-1/3 w-96 h-96 bg-indigo-500/[0.015] dark:bg-indigo-500/[0.03] rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-sky-500/[0.015] dark:bg-sky-500/[0.03] rounded-full blur-[140px] pointer-events-none" />
+    <div className="relative overflow-hidden min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-800 dark:text-slate-100 px-4 py-8 md:px-6 selection:bg-indigo-500/20">
 
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* Header */}
-        <header className="border border-slate-200 dark:border-slate-900 rounded-3xl p-6 md:p-8 bg-white/60 dark:bg-slate-900/20 backdrop-blur-md shadow-sm dark:shadow-none relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-6 opacity-[0.03] dark:opacity-10">
-            <Rocket className="w-24 h-24 text-slate-900 dark:text-slate-400" />
-          </div>
+      {/* ========================================================================= */}
+      {/* GLOBAL AMBIENT FX */}
+      {/* ========================================================================= */}
 
-          <div className="flex items-center gap-2.5 text-indigo-600 dark:text-indigo-400 font-mono text-xs tracking-widest uppercase mb-3">
-            <Zap className="w-4 h-4" />
-            Fun & Trivia
-          </div>
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute top-[-10rem] left-[-8rem] w-[32rem] h-[32rem] rounded-full bg-indigo-500/[0.06] blur-[140px]" />
 
-          <h1 className="text-3xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-slate-700 to-slate-500 dark:from-white dark:via-slate-200 dark:to-slate-400">
-            ICT Fun Facts & Tech Trivia
-          </h1>
+        <div className="absolute bottom-[-12rem] right-[-10rem] w-[34rem] h-[34rem] rounded-full bg-sky-500/[0.06] blur-[160px]" />
 
-          <div className="space-y-3 text-sm text-slate-500 dark:text-slate-400">
-            <p>
-              Discover fascinating, surprising, and sometimes hilarious facts about computers, the internet, programming, AI, and technology. Each fact is hand-picked to make you go "wow!"
-            </p>
-            <p>
-              Use the navigation below to cycle through the facts. The array is loopable and OOP-friendly, so you can easily add more facts on demand.
-            </p>
-          </div>
-        </header>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[28rem] h-[28rem] rounded-full bg-fuchsia-500/[0.03] blur-[150px]" />
+      </div>
 
-        {/* Fact Card */}
-        <div className="relative">
-          <div className="max-w-4xl mx-auto">
-            <AnimatePresence initial={false} custom={direction} mode="wait">
-              <motion.div
-                key={currentIndex}
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{
-                  x: { type: "spring", stiffness: 300, damping: 30 },
-                  opacity: { duration: 0.2 },
-                }}
-                className="rounded-3xl border border-slate-200 dark:border-slate-900 bg-white dark:bg-slate-900/20 shadow-xl overflow-hidden"
-              >
-                {/* Image */}
-                <div className="relative h-48 md:h-64 overflow-hidden">
-                  <img
-                    src={currentFact.image}
-                    alt={currentFact.category}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
-                  
-                  {/* Category Badge */}
-                  <div className="absolute top-4 left-4">
-                    <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-lg">
-                      <Icon className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                      <span className="text-xs font-bold tracking-wider uppercase text-slate-900 dark:text-white">
-                        {currentFact.category}
-                      </span>
+      <div className="relative max-w-7xl mx-auto space-y-10">
+
+        {/* ========================================================================= */}
+        {/* HERO */}
+        {/* ========================================================================= */}
+
+        <section className="relative overflow-hidden rounded-[2rem] border border-slate-200/70 dark:border-slate-800/70 bg-white/80 dark:bg-slate-900/40 backdrop-blur-xl shadow-[0_10px_60px_-15px_rgba(0,0,0,0.15)]">
+
+          {/* Mesh */}
+          <div className="absolute inset-0 opacity-[0.05] dark:opacity-[0.08] bg-[radial-gradient(circle_at_top_right,_white,_transparent_25%),radial-gradient(circle_at_bottom_left,_white,_transparent_20%)]" />
+
+          <div className="relative z-10 p-6 md:p-10 lg:p-12">
+
+            <div className="flex flex-wrap items-center gap-3 mb-6">
+
+              <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200 dark:border-indigo-900/60 bg-indigo-50 dark:bg-indigo-950/40 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.25em] text-indigo-700 dark:text-indigo-300">
+                <Sparkles className="w-3.5 h-3.5" />
+                ICT Trivia Engine
+              </div>
+
+              <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                <Orbit className="w-3.5 h-3.5" />
+                Interactive Knowledge Feed
+              </div>
+
+            </div>
+
+            <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-10 items-center">
+
+              <div className="space-y-6">
+
+                <div className="space-y-4">
+
+                  <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-none">
+
+                    <span className="bg-gradient-to-r from-slate-950 via-slate-700 to-indigo-600 dark:from-white dark:via-slate-200 dark:to-indigo-400 bg-clip-text text-transparent">
+                      ICT Fun Facts
+                    </span>
+
+                    <br />
+
+                    <span className="text-slate-400 dark:text-slate-600">
+                      & Tech Trivia
+                    </span>
+                  </h1>
+
+                  <p className="max-w-2xl text-sm md:text-base leading-relaxed text-slate-600 dark:text-slate-400">
+                    Explore bizarre, historical, and genuinely impressive
+                    discoveries from computing, programming, AI,
+                    cybersecurity, storage engineering, and internet culture.
+                    Built as a cinematic knowledge carousel with immersive
+                    interaction patterns and animated transitions.
+                  </p>
+
+                </div>
+
+                {/* Stats */}
+
+                <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
+
+                  {[
+                    {
+                      icon: Layers3,
+                      label: "Fact Modules",
+                      value: funFacts.length,
+                    },
+
+                    {
+                      icon: Globe,
+                      label: "Topics",
+                      value: "Global",
+                    },
+
+                  ].map(({ icon: StatIcon, label, value }) => (
+                    <div
+                      key={label}
+                      className="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 bg-white/70 dark:bg-slate-950/40 p-4 backdrop-blur-sm"
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400">
+                          <StatIcon className="w-4 h-4" />
+                        </div>
+
+                        <Binary className="w-4 h-4 text-slate-300 dark:text-slate-700" />
+                      </div>
+
+                      <p className="text-lg font-black text-slate-900 dark:text-white">
+                        {value}
+                      </p>
+
+                      <p className="text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                        {label}
+                      </p>
                     </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Floating visual */}
+
+              <div className="relative">
+
+                <div className="absolute inset-0 blur-3xl bg-gradient-to-br from-indigo-500/20 via-fuchsia-500/10 to-sky-500/20 rounded-full scale-110" />
+
+                <div className="relative rounded-[2rem] border border-slate-200/70 dark:border-slate-800/70 bg-gradient-to-br from-white to-slate-100 dark:from-slate-900 dark:to-slate-950 p-8 overflow-hidden shadow-2xl">
+
+                  <div className="absolute inset-0 opacity-[0.06] bg-[linear-gradient(to_right,#64748b_1px,transparent_1px),linear-gradient(to_bottom,#64748b_1px,transparent_1px)] bg-[size:24px_24px]" />
+
+                  <div className="relative z-10 flex flex-col items-center text-center space-y-6">
+
+                    <div className="relative">
+                      <div className="absolute inset-0 rounded-full bg-indigo-500/20 blur-2xl animate-pulse" />
+
+                      <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-indigo-500 to-sky-500 flex items-center justify-center shadow-2xl shadow-indigo-500/30">
+                        <Rocket className="w-10 h-10 text-white" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-black text-slate-900 dark:text-white">
+                        Knowledge Stream
+                      </h3>
+
+                      <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                        Swipe through curated technology trivia with animated
+                        storytelling and modern UI transitions.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap justify-center gap-2">
+                      {[
+                        "AI",
+                        "History",
+                        "Internet",
+                        "Programming",
+                        "Hardware",
+                        "Cybersecurity",
+                      ].map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-3 py-1.5 rounded-xl text-[11px] font-semibold border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 text-slate-600 dark:text-slate-300"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* MAIN FACT CARD */}
+        {/* ========================================================================= */}
+
+        <div className="relative max-w-5xl mx-auto">
+
+          {/* Side glow */}
+          <div
+            className={`absolute -inset-4 rounded-[2.5rem] bg-gradient-to-br ${currentFact.accent} blur-3xl opacity-80`}
+          />
+
+          <AnimatePresence mode="wait" initial={false} custom={direction}>
+
+            <motion.div
+              key={currentIndex}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{
+                x: {
+                  type: "spring",
+                  stiffness: 280,
+                  damping: 26,
+                },
+                opacity: { duration: 0.25 },
+              }}
+              className="relative overflow-hidden rounded-[2rem] border border-slate-200/70 dark:border-slate-800/70 bg-white/90 dark:bg-slate-900/50 backdrop-blur-xl shadow-[0_25px_80px_-25px_rgba(0,0,0,0.35)]"
+            >
+
+              {/* IMAGE */}
+
+              <div className="relative h-64 md:h-[26rem] overflow-hidden">
+
+                <img
+                  src={currentFact.image}
+                  alt={currentFact.category}
+                  className="w-full h-full object-cover scale-[1.02]"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
+
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_25%)]" />
+
+                {/* Floating Badge */}
+
+                <div className="absolute top-6 left-6 flex items-center gap-3">
+
+                  <div className="p-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/30 dark:border-slate-800 shadow-xl">
+                    <Icon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                   </div>
 
-                  {/* Fact Number */}
-                  <div className="absolute bottom-4 right-4">
-                    <div className="px-4 py-2 rounded-xl bg-indigo-600 dark:bg-indigo-500 text-white font-bold text-sm shadow-lg">
-                      Fact #{currentFact.id}
-                    </div>
+                  <div className="rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/30 dark:border-slate-800 px-4 py-3 shadow-xl">
+                    <p className="text-[11px] uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400 font-bold">
+                      Category
+                    </p>
+
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                      {currentFact.category}
+                    </h3>
+                  </div>
+
+                </div>
+
+                {/* Fact ID */}
+
+                <div className="absolute bottom-6 right-6">
+
+                  <div className="rounded-2xl border border-white/20 bg-black/40 backdrop-blur-xl px-5 py-3 shadow-2xl">
+
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-slate-300 font-bold mb-1">
+                      Trivia Unit
+                    </p>
+
+                    <p className="text-white font-black text-xl">
+                      #{currentFact.id}
+                    </p>
+
                   </div>
                 </div>
 
-                {/* Content */}
-                <div className="p-6 md:p-8 space-y-4">
-                  <p className="text-base md:text-lg text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
+              </div>
+
+              {/* CONTENT */}
+
+              <div className="p-6 md:p-8 lg:p-10 space-y-6">
+
+                {/* Top meta */}
+
+                <div className="flex flex-wrap items-center gap-3">
+
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-xs font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">
+                    <Clock3 className="w-3.5 h-3.5 text-indigo-500" />
+                    Rotating Fact Stream
+                  </div>
+
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-xs font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300">
+                    <Stars className="w-3.5 h-3.5 text-amber-500" />
+                    Curated Knowledge
+                  </div>
+
+                </div>
+
+                {/* Main fact */}
+
+                <div className="space-y-4">
+
+                  <p className="text-xl md:text-2xl font-semibold leading-relaxed text-slate-800 dark:text-slate-100">
                     {currentFact.fact}
                   </p>
-                  
-                  <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900/50">
-                    <p className="text-xs md:text-sm text-amber-700 dark:text-amber-300 leading-relaxed flex items-start gap-2">
-                      <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                      <span className="font-semibold">{currentFact.extra}</span>
-                    </p>
+
+                  <div className="relative overflow-hidden rounded-2xl border border-amber-200 dark:border-amber-900/40 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/10 p-5">
+
+                    <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-amber-400/10 blur-2xl" />
+
+                    <div className="relative flex items-start gap-3">
+
+                      <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300">
+                        <Info className="w-4 h-4" />
+                      </div>
+
+                      <div>
+                        <p className="text-[11px] uppercase tracking-[0.2em] text-amber-600 dark:text-amber-300 font-bold mb-2">
+                          Did You Know?
+                        </p>
+
+                        <p className="text-sm md:text-base leading-relaxed text-amber-800 dark:text-amber-200 font-medium">
+                          {currentFact.extra}
+                        </p>
+                      </div>
+
+                    </div>
                   </div>
                 </div>
 
-                {/* Navigation */}
-                <div className="px-6 md:px-8 pb-6 flex items-center justify-between gap-4">
-                  <button
-                    onClick={prevFact}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs tracking-wider uppercase bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-all"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                    Previous
-                  </button>
+                {/* CONTROLS */}
+
+                <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
 
                   <button
-                    onClick={randomFact}
-                    className="flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-xs tracking-wider uppercase bg-indigo-600 dark:bg-indigo-500 text-white dark:text-slate-950 shadow-lg shadow-indigo-500/20 dark:shadow-indigo-500/30 hover:bg-indigo-700 dark:hover:bg-indigo-400 transition-all scale-105"
+                    onClick={prevFact}
+                    className="group flex items-center gap-2 px-5 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
                   >
-                    <RefreshCw className="w-4 h-4" />
-                    Random Fact
+                    <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+
+                    <span className="text-xs font-bold uppercase tracking-widest">
+                      Previous
+                    </span>
                   </button>
+
+                  <div className="flex items-center gap-3">
+
+                    <button
+                      onClick={randomFact}
+                      className="group relative overflow-hidden px-7 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-sky-500 text-white font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-indigo-500/20"
+                    >
+                      <span className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+
+                      <span className="relative flex items-center gap-2">
+                        <RefreshCw className="w-4 h-4" />
+                        Random Fact
+                      </span>
+                    </button>
+
+                  </div>
 
                   <button
                     onClick={nextFact}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs tracking-wider uppercase bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-all"
+                    className="group flex items-center gap-2 px-5 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
                   >
-                    Next
-                    <ArrowRight className="w-4 h-4" />
+                    <span className="text-xs font-bold uppercase tracking-widest">
+                      Next
+                    </span>
+
+                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                   </button>
+
                 </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
 
-        {/* Progress Indicator */}
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-center gap-2">
-            {funFacts.map((_, index) => (
+        {/* ========================================================================= */}
+        {/* PROGRESS */}
+        {/* ========================================================================= */}
+
+        <div className="max-w-5xl mx-auto space-y-4">
+
+          <div className="flex flex-wrap justify-center gap-2">
+
+            {funFacts.map((fact, index) => (
               <button
-                key={index}
+                key={fact.id}
                 onClick={() => {
                   setDirection(index > currentIndex ? "next" : "prev");
                   setCurrentIndex(index);
                 }}
-                className={`h-2 rounded-full transition-all ${
+                className={`group relative overflow-hidden rounded-2xl border transition-all duration-300 ${
                   index === currentIndex
-                    ? "w-8 bg-indigo-600 dark:bg-indigo-500"
-                    : "w-2 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600"
+                    ? "border-indigo-500 bg-indigo-500 text-white shadow-lg shadow-indigo-500/20"
+                    : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700"
                 }`}
-              />
-            ))}
-          </div>
-          <p className="text-center text-xs text-slate-500 dark:text-slate-400 mt-3">
-            Fact {currentIndex + 1} of {funFacts.length}
-          </p>
-        </div>
-
-        {/* Quick category chips */}
-        <div className="max-w-4xl mx-auto">
-          <div className="flex flex-wrap justify-center gap-2">
-            {[
-              ...new Set(funFacts.map((f) => f.category)),
-            ].map((category) => (
-              <span
-                key={category}
-                className="px-4 py-1.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
               >
-                {category}
-              </span>
+                <div className="flex items-center gap-2 px-4 py-2.5">
+
+                  <span className="text-[11px] font-black tracking-widest uppercase">
+                    {fact.id}
+                  </span>
+
+                  <div
+                    className={`h-1.5 w-1.5 rounded-full ${
+                      index === currentIndex
+                        ? "bg-white"
+                        : "bg-slate-400 dark:bg-slate-600"
+                    }`}
+                  />
+
+                  <span className="hidden sm:block text-[11px] font-semibold">
+                    {fact.category}
+                  </span>
+
+                </div>
+              </button>
             ))}
+          </div>
+
+          <div className="text-center">
+
+            <p className="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 px-4 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
+              <Activity className="w-3.5 h-3.5 text-indigo-500" />
+              Fact {currentIndex + 1} of {funFacts.length}
+            </p>
+
           </div>
         </div>
 
-        {/* Summary banner */}
-        <section className="p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-900 bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950/50 relative overflow-hidden shadow-sm">
-          <div className="absolute top-0 right-0 p-6 text-slate-100 dark:text-slate-900 pointer-events-none">
-            <Rocket className="h-24 w-24 stroke-[3]" />
-          </div>
-          <div className="max-w-3xl relative z-10 space-y-2">
-            <h3 className="text-sm font-bold tracking-wider font-mono uppercase text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
-              <Zap className="w-4 h-4" />
-              Fun Facts Summary
-            </h3>
-            <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-              ICT is full of surprising facts: from the wooden computer mouse to ENIAC's 27-ton weight, from Grace Hopper's moth to your phone being more powerful than the Apollo 11 Lunar Lander. Technology progresses faster than you think, and the fun doesn't stop here—add more facts to the array and keep exploring!
-            </p>
+        {/* category cloud */}
+
+        <section className="max-w-5xl mx-auto">
+
+          <div className="rounded-[2rem] border border-slate-200/70 dark:border-slate-800/70 bg-white/70 dark:bg-slate-900/30 backdrop-blur-xl p-6">
+
+            <div className="flex items-center gap-2 mb-5">
+              <Layers3 className="w-4 h-4 text-indigo-500" />
+
+              <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-700 dark:text-slate-200">
+                Topic Categories
+              </h3>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+
+              {[...new Set(funFacts.map((f) => f.category))].map(
+                (category) => (
+                  <div
+                    key={category}
+                    className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 px-4 py-3 transition-all hover:-translate-y-0.5"
+                  >
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-r from-indigo-500/5 via-sky-500/5 to-fuchsia-500/5" />
+
+                    <span className="relative text-xs font-semibold tracking-wide text-slate-600 dark:text-slate-300">
+                      {category}
+                    </span>
+                  </div>
+                )
+              )}
+
+            </div>
           </div>
         </section>
+
+        {/* ========================================================================= */}
+        {/* SUMMARY */}
+        {/* ========================================================================= */}
+
+        <section className="relative overflow-hidden max-w-6xl mx-auto rounded-[2rem] border border-slate-200/70 dark:border-slate-800/70 bg-gradient-to-br from-white to-slate-100 dark:from-slate-900 dark:to-slate-950 p-8 md:p-10 shadow-sm">
+
+          <div className="absolute top-0 right-0 translate-x-10 -translate-y-10 opacity-[0.05] dark:opacity-[0.08]">
+            <Rocket className="w-64 h-64" />
+          </div>
+
+          <div className="relative z-10 max-w-3xl space-y-5">
+
+            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200 dark:border-indigo-900/50 bg-indigo-50 dark:bg-indigo-950/30 px-4 py-2 text-[11px] font-black uppercase tracking-[0.22em] text-indigo-700 dark:text-indigo-300">
+              <Zap className="w-3.5 h-3.5" />
+              Knowledge Recap
+            </div>
+
+            <h2 className="text-2xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
+              Technology History Is Wild
+            </h2>
+
+            <p className="text-sm md:text-base leading-relaxed text-slate-600 dark:text-slate-400">
+              Computing evolved from room-sized machines into pocket-scale
+              supercomputers within a few decades. Behind every operating
+              system, browser, AI model, and application stack lies a history
+              filled with strange inventions, engineering breakthroughs,
+              accidental discoveries, and rapid innovation cycles.
+            </p>
+
+            <div className="flex flex-wrap gap-3 pt-2">
+
+              {[
+                "Computing",
+                "Innovation",
+                "AI",
+                "Cybersecurity",
+                "Internet",
+                "Programming",
+              ].map((tag) => (
+                <span
+                  key={tag}
+                  className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300"
+                >
+                  {tag}
+                </span>
+              ))}
+
+            </div>
+          </div>
+        </section>
+        <div className="aspect-video max-w-4xl mx-auto rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl relative group bg-black">
+          <iframe
+            className="w-full h-full opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+            src="https://www.youtube.com/embed/Ow1BLT29p9w"
+            title="DHistory Of Computer | Full History And Evolution Of Computers Till Date"
+            allowFullScreen
+          />
+        </div>
       </div>
     </div>
   );

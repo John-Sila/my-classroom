@@ -653,13 +653,7 @@ export default function OperatingSystemsTopic() {
         <section className="rounded-3xl border border-slate-200 dark:border-slate-900 overflow-hidden">
 
           <div className="relative w-full rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-black shadow-md aspect-video">
-            <iframe
-              className="absolute top-0 left-0 w-full h-full"
-              src="https://www.youtube.com/embed/26QPDBe-NB8"
-              title="Programming Languages Explained"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+            <iframe className="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/kK7L2ISGucM" title="Every Operating System Explained in 8 Minutes" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
           </div>
         </section>
 

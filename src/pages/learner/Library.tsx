@@ -15,7 +15,6 @@ import {
   Code2,
   Logs,
   MonitorCloud,
-  Glasses,
   RectangleGoggles,
   Link,
   Cable,
@@ -24,6 +23,8 @@ import {
   Binary,
   BookA,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
 import MouseTopic from '../library/Mouse';
 import KeyboardTopic from '../library/Keyboard';
 import MSOfficeTopic from '../library/MSOffice';
@@ -44,75 +45,64 @@ import RoboticsTopic from '../library/Robotics';
 import IntelligenceTopic from '../library/Intelligence';
 import FunFactsTopic from '../library/FunFacts';
 
-// types
 type Topic = {
   id: string;
   title: string;
   icon: React.ComponentType<{ className?: string }>;
   component: React.ComponentType;
+  group: 'foundations' | 'systems' | 'networks' | 'intelligence' | 'culture';
 };
 
-// topics config
 const topics: Topic[] = [
-  { id: 'mouse', title: 'The Mouse', icon: MousePointer2, component: MouseTopic },
-  { id: 'keyboard', title: 'The Keyboard', icon: Keyboard, component: KeyboardTopic },
-  { id: 'data_flow', title: 'Data Flow', icon: GitGraph, component: DataFlowTopic },
-  { id: 'operating-systems', title: 'Operating Systems', icon: Cpu, component: OperatingSystemsTopic },
-  { id: 'ms-office', title: 'Microsoft Office', icon: Monitor, component: MSOfficeTopic },
-  { id: 'networking', title: 'Networking Technology', icon: Wifi, component: NetworkingTechnology },
-  { id: 'malware', title: 'Malware & Cybersecurity', icon: ShieldAlert, component: MalwareTopic },
-  { id: 'reality', title: 'Reality Manipulation', icon: RectangleGoggles, component: RealityManipulationDossier },
-  { id: 'uniform_resource', title: 'Uniform Resource Locators', icon: Link, component: URLArchitectureDossier },
-  { id: 'e_learning', title: 'E-Learning', icon: MonitorCloud, component: ELearningTopic },
-  { id: 'intelligence', title: 'Intelligence', icon: Binary, component: IntelligenceTopic },
-  { id: 'coding', title: 'Coding', icon: Code2, component: CodingFundamentals },
-  { id: 'robotics', title: 'Robotics', icon: Origami, component: RoboticsTopic },
-  { id: 'ports_cables', title: 'Cables and Ports', icon: Cable, component: PortsAndCablesTopic },
-  { id: 'law', title: 'Cyber Law', icon: BookLock, component: CyberLawTopic },
-  { id: 'fun_facts', title: 'Fun Facts', icon: BookA, component: FunFactsTopic },
-  { id: 'short_forms', title: 'Short Forms', icon: Logs, component: ShortFormsReference },
+  { id: 'mouse', title: 'Input: Mouse Systems', icon: MousePointer2, component: MouseTopic, group: 'foundations' },
+  { id: 'keyboard', title: 'Input: Keyboard Architecture', icon: Keyboard, component: KeyboardTopic, group: 'foundations' },
+  { id: 'data_flow', title: 'Data Flow Models', icon: GitGraph, component: DataFlowTopic, group: 'systems' },
+  { id: 'operating-systems', title: 'Operating Systems Layer', icon: Cpu, component: OperatingSystemsTopic, group: 'systems' },
+  { id: 'ms-office', title: 'Productivity Stack (Office)', icon: Monitor, component: MSOfficeTopic, group: 'systems' },
+  { id: 'networking', title: 'Network Infrastructure', icon: Wifi, component: NetworkingTechnology, group: 'networks' },
+  { id: 'ports_cables', title: 'Physical Connectivity', icon: Cable, component: PortsAndCablesTopic, group: 'networks' },
+  { id: 'uniform_resource', title: 'URL & Web Routing', icon: Link, component: URLArchitectureDossier, group: 'networks' },
+  { id: 'malware', title: 'Threat Systems (Cybersecurity)', icon: ShieldAlert, component: MalwareTopic, group: 'intelligence' },
+  { id: 'intelligence', title: 'Computational Intelligence', icon: Binary, component: IntelligenceTopic, group: 'intelligence' },
+  { id: 'coding', title: 'Programming Fundamentals', icon: Code2, component: CodingFundamentals, group: 'intelligence' },
+  { id: 'robotics', title: 'Robotics Systems', icon: Origami, component: RoboticsTopic, group: 'intelligence' },
+  { id: 'reality', title: 'Reality Simulation Layer', icon: RectangleGoggles, component: RealityManipulationDossier, group: 'culture' },
+  { id: 'e_learning', title: 'E-Learning Systems', icon: MonitorCloud, component: ELearningTopic, group: 'culture' },
+  { id: 'law', title: 'Cyber Law Frameworks', icon: BookLock, component: CyberLawTopic, group: 'culture' },
+  { id: 'fun_facts', title: 'System Trivia Engine', icon: BookA, component: FunFactsTopic, group: 'culture' },
+  { id: 'short_forms', title: 'Abbreviation Index', icon: Logs, component: ShortFormsReference, group: 'culture' },
 ];
+
+const groupLabels: Record<Topic['group'], string> = {
+  foundations: 'Foundations',
+  systems: 'System Architecture',
+  networks: 'Networks & Infrastructure',
+  intelligence: 'Compute & Intelligence',
+  culture: 'Knowledge & Context',
+};
 
 export default function LibraryWidget() {
   const [selectedTopic, setSelectedTopic] = useState('mouse');
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
   const isCompact = useIsCompactView();
-  const [showNotice, setShowNotice] = useState(true);
-  const [tooltip, setTooltip] = useState<null | {
-    text: string;
-    x: number;
-    y: number;
-  }>(null);
 
+  const [tooltip, setTooltip] = useState<null | { text: string; x: number; y: number }>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    let hideTimeout: any;
-
+    let hideTimeout: NodeJS.Timeout;
     const show = (e: any) => {
       clearTimeout(hideTimeout);
       setTooltip(e.detail);
-
-      // allow DOM paint before animation
-      requestAnimationFrame(() => {
-        setVisible(true);
-      });
+      requestAnimationFrame(() => setVisible(true));
     };
-
     const hide = () => {
       setVisible(false);
-
-      // delay unmount for exit animation
-      hideTimeout = setTimeout(() => {
-        setTooltip(null);
-      }, 150);
+      hideTimeout = setTimeout(() => setTooltip(null), 150);
     };
-
     window.addEventListener("tooltip-show", show);
     window.addEventListener("tooltip-hide", hide);
-
     return () => {
       window.removeEventListener("tooltip-show", show);
       window.removeEventListener("tooltip-hide", hide);
@@ -120,266 +110,206 @@ export default function LibraryWidget() {
     };
   }, []);
 
-
-  useEffect(() => {
-    setIsAnimating(false);
-    const frame = requestAnimationFrame(() => {
-      setIsAnimating(true);
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [selectedTopic]);
-
-  const activeTopic = useMemo(
-    () => topics.find((t) => t.id === selectedTopic),
-    [selectedTopic]
-  );
-
+  const activeTopic = useMemo(() => topics.find((t) => t.id === selectedTopic), [selectedTopic]);
   const ActiveComponent = activeTopic?.component;
 
-  return (
-    <div className="flex h-dvh w-full overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+  const groupedTopics = useMemo(() => {
+    return topics.reduce((acc, topic) => {
+      acc[topic.group] ??= [];
+      acc[topic.group].push(topic);
+      return acc;
+    }, {} as Record<string, Topic[]>);
+  }, []);
 
-      {/* Mobile Drawer Overlay */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 lg:hidden transition-opacity duration-300"
-          onClick={() => setMobileOpen(false)}
-        />
+  return (
+    <div className="flex h-dvh w-full overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased">
+      
+      {/* MOBILE TRIGGER ACTION BAR */}
+      {isCompact && (
+        <div className="fixed top-4 left-4 z-40">
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md text-slate-700 dark:text-slate-300"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        </div>
       )}
 
-      {/* Sidebar Navigation */}
-      <aside
+      {/* SIDEBAR WRAPPER COMPONENT */}
+      <motion.aside
+        animate={{ width: collapsed ? 80 : 288 }}
+        transition={{ type: "spring", stiffness: 300, damping: 32 }}
         className={cn(
-          "fixed lg:static top-0 left-0 z-50 lg:z-30 h-dvh lg:h-full",
-          collapsed ? "lg:w-20 w-64" : "lg:w-72 w-64",
-          "max-w-dvw overflow-visible",
+          "fixed lg:static top-0 left-0 h-dvh flex flex-col shrink-0",
           "border-r border-slate-200/80 dark:border-slate-800/80",
-          "shadow-xl shadow-slate-200/40 dark:shadow-black/20",
-          "flex flex-col transition-transform duration-300 ease-in-out",
-          mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          "bg-white/95 dark:bg-slate-950/90 backdrop-blur-xl z-30 lg:z-10",
+          "overflow-hidden select-none",
+          isCompact && (mobileOpen ? "translate-x-0 w-72" : "-translate-x-full")
         )}
-        onClick={(e) => {
-          if (!collapsed) setCollapsed(true);
-        }}
       >
-        {/* Isolated Background Layer */}
-        <div className="absolute inset-0 -z-10 bg-white/95 dark:bg-slate-950/90 backdrop-blur-xl pointer-events-none" />
-
-        {/* Sidebar Header */}
-        <div className="h-16 shrink-0 flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 px-4">
-          {!collapsed ? (
-            <div className="flex items-center gap-3 px-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 text-white shadow-lg shadow-indigo-500/20">
-                <Library className="h-5 w-5" />
-              </div>
-
-              <div className="min-w-0">
-                <span className="block truncate font-bold text-base tracking-tight text-slate-900 dark:text-white">
-                  Course Library
-                </span>
-
-                <span className="block text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                  Explore learning topics
-                </span>
-              </div>
+        {/* HEADER BRANDING LAYER */}
+        <div className="h-16 flex items-center justify-between px-4 border-b border-slate-100 dark:border-slate-900 shrink-0">
+          <div className="flex items-center gap-3 overflow-hidden min-w-0">
+            <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 shrink-0">
+              <Library className="w-4 h-4" />
             </div>
-          ) : (
-            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 text-white shadow-lg shadow-indigo-500/20">
-              <Library className="h-5 w-5" />
-            </div>
-          )}
-
-          {/* Collapse Toggle */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setCollapsed((prev) => !prev);
-            }}
-            className="hidden lg:inline-flex items-center justify-center rounded-xl p-2 text-slate-500 transition-all hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            {collapsed ? (
-              <PanelLeftOpen className="h-5 w-5" />
-            ) : (
-              <PanelLeftClose className="h-5 w-5" />
-            )}
-          </button>
-
-          {/* Mobile Close */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setMobileOpen(false);
-            }}
-            className="inline-flex lg:hidden items-center justify-center rounded-xl p-2 text-slate-500 transition-all hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
-            aria-label="Close menu"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-
-        {/* Sidebar Scroll Area */}
-        <nav className="flex-1 min-h-0 overflow-y-auto px-3 py-4 space-y-1">
-          {topics.map((topic) => {
-            const isActive = selectedTopic === topic.id;
-            const Icon = topic.icon;
-
-            return (
-              <button
-                key={topic.id}
-                onClick={() => {
-                  setSelectedTopic(topic.id);
-                  setMobileOpen(false);
-                }}
-                onMouseEnter={(e) => {
-                  if (!collapsed) return;
-
-                  const rect = e.currentTarget.getBoundingClientRect();
-
-                  window.dispatchEvent(
-                    new CustomEvent("tooltip-show", {
-                      detail: {
-                        text: topic.title,
-                        x: rect.right + 12,
-                        y: rect.top + rect.height / 2,
-                      },
-                    })
-                  );
-                }}
-
-                onMouseLeave={() => {
-                  window.dispatchEvent(new CustomEvent("tooltip-hide"));
-                }}
-
-                className={cn(
-                  "group relative w-full rounded-2xl border transition-all duration-300 ease-in-out",
-                  "focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-950",
-                  collapsed
-                    ? "flex items-center justify-center p-3"
-                    : "flex items-center gap-3 px-4 py-3",
-                  isActive
-                    ? "border-indigo-200 bg-gradient-to-r from-indigo-50 to-violet-50 text-indigo-700 shadow-sm shadow-indigo-100/40 dark:border-indigo-900/40 dark:from-indigo-950/50 dark:to-violet-950/30 dark:text-indigo-300"
-                    : "border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:border-slate-800 dark:hover:bg-slate-800/50 dark:hover:text-white"
-                )}
+            {!collapsed && (
+              <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                className="truncate"
               >
-                {isActive && (
-                  <span className="absolute left-0 top-1/4 bottom-1/4 w-1 rounded-r-full bg-indigo-500 dark:bg-indigo-400" />
-                )}
+                <div className="font-bold text-sm tracking-tight text-slate-900 dark:text-white">Library</div>
+                <div className="text-[10px] opacity-60 font-mono tracking-wider uppercase">Digital Architecture</div>
+              </motion.div>
+            )}
+          </div>
 
-                <Icon
-                  className={cn(
-                    "h-5 w-5 flex-shrink-0 transition-transform duration-300 group-hover:scale-105",
-                    isActive
-                      ? "text-indigo-600 dark:text-indigo-400"
-                      : "text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-300"
-                  )}
-                />
-
-                {/* Normal Label */}
-                <span
-                  className={cn(
-                    "overflow-hidden whitespace-nowrap text-sm font-medium tracking-wide transition-all duration-300 ease-in-out",
-                    collapsed
-                      ? "max-w-0 opacity-0 translate-x-[-8px]"
-                      : "max-w-[180px] opacity-100 translate-x-0"
-                  )}
-                >
-                  {topic.title}
-                </span>
-
-              </button>
-
-            );
-          })}
-        </nav>
-      </aside>
-
-      {/* Main Workspace */}
-      <main className="flex flex-1 flex-col min-h-0 min-w-0 overflow-hidden">
-
-        {/* Mobile Header */}
-        <div className="h-16 shrink-0 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800/80 flex items-center px-4 lg:hidden justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setMobileOpen(true)}
-              className="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-              aria-label="Open menu"
+          {!isCompact && (
+            <button 
+              onClick={() => setCollapsed(v => !v)}
+              className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-500 transition-colors"
             >
-              <Menu className="h-5 w-5" />
+              {collapsed ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
             </button>
-
-            <h2 className="font-bold text-slate-800 dark:text-white text-base tracking-wide">
-              {activeTopic?.title}
-            </h2>
-          </div>
-        </div>
-
-        {/* Main Scroll Area */}
-        <div className="flex-1 min-h-0 w-full min-w-0 max-w-full overflow-x-hidden overflow-y-auto p-4 md:p-6 lg:p-8 bg-slate-50/50 dark:bg-slate-950/40">
-
-          {isCompact && showNotice && (
-            <div className="sticky top-0 z-20 mb-4 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 px-4 py-3 rounded-xl flex items-center justify-between">
-              <p className="text-xs md:text-sm text-amber-800 dark:text-amber-200 font-medium">
-                Library experience is optimized for tablets and desktop devices for better layout stability and readability.
-              </p>
-
-              <button
-                onClick={() => setShowNotice(false)}
-                className="text-amber-700 dark:text-amber-300 font-bold text-sm px-3 py-1 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-800"
-              >
-                Dismiss
-              </button>
-            </div>
           )}
 
-          <div
-            className={cn(
-              "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80",
-              "shadow-sm shadow-slate-100/50 dark:shadow-none min-h-full transition-all duration-200",
-              isAnimating
-                ? "animate-in fade-in-0 zoom-in-[0.99] slide-in-from-bottom-3 duration-300 ease-out"
-                : "opacity-0"
-            )}
-          >
-            <div className="p-6 md:p-8 w-full min-w-0 max-w-full overflow-x-hidden">
-              {ActiveComponent ? (
-                <ActiveComponent />
-              ) : (
-                <div className="flex flex-col items-center justify-center py-20 text-slate-400 dark:text-slate-500">
-                  <Library className="h-12 w-12 stroke-[1.5] mb-3" />
-                  <p className="text-sm font-medium">
-                    No course topic selected.
-                  </p>
-                </div>
+          {isCompact && (
+            <button onClick={() => setMobileOpen(false)} className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-900">
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
+        {/* SCROLLABLE INNER MENU NAVIGATION */}
+        <nav className="flex-1 overflow-y-auto p-2 space-y-4 scrollbar-none">
+          {Object.entries(groupedTopics).map(([group, items]) => (
+            <div key={group} className="space-y-1">
+              {!collapsed && (
+                <motion.div 
+                  initial={{ opacity: 0 }} 
+                  animate={{ opacity: 1 }}
+                  className="px-3 pt-3 text-[10px] font-black uppercase tracking-widest opacity-50 text-slate-500 dark:text-slate-400"
+                >
+                  {groupLabels[group as keyof typeof groupLabels]}
+                </motion.div>
               )}
+
+              {items.map((topic) => {
+                const isActive = selectedTopic === topic.id;
+                const Icon = topic.icon;
+
+                return (
+                  <button
+                    key={topic.id}
+                    onClick={() => {
+                      setSelectedTopic(topic.id);
+                      if (isCompact) setMobileOpen(false);
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!collapsed) return;
+
+                      const topicTitle = topic.title;
+
+                      // Fixed horizontal position: center of the viewport
+                      const viewportWidth = window.innerWidth;
+                      const x = viewportWidth / 2;
+                      const isMobileViewport = window.innerWidth < 1024;
+                      const topOffset = isMobileViewport ? 64 : 0;
+
+                      const y = topOffset;
+
+                      window.dispatchEvent(new CustomEvent("tooltip-show", {
+                        detail: {
+                          text: topicTitle,
+                          x,
+                          y,
+                        }
+                      }));
+                    }}
+
+                    onMouseLeave={() => {
+                      window.dispatchEvent(new CustomEvent("tooltip-hide"));
+                    }}
+                    className={cn(
+                      "w-full flex items-center gap-3 rounded-xl px-3 py-2.5 relative group outline-none transition-all border",
+                      isActive 
+                        ? "bg-indigo-50 dark:bg-indigo-950/40 border-indigo-200 dark:border-indigo-900 text-indigo-600 dark:text-indigo-400" 
+                        : "border-transparent text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
+                    )}
+                  >
+                    <Icon className={cn(
+                      "w-5 h-5 transition-transform group-hover:scale-105",
+                      isActive ? "text-indigo-500" : "opacity-60"
+                    )} />
+
+                    {!collapsed && (
+                      <motion.span 
+                        initial={{ opacity: 0 }} 
+                        animate={{ opacity: 1 }}
+                        className="text-sm font-medium truncate relative z-10"
+                      >
+                        {topic.title}
+                      </motion.span>
+                    )}
+
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeLibraryNavBg"
+                        className="absolute inset-0 bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-100/50 dark:border-indigo-900/40 rounded-xl z-0"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
             </div>
-          </div>
+          ))}
+        </nav>
+      </motion.aside>
+
+      {/* MAIN VIEW CONTENT CONTAINER */}
+      <main className="flex-1 min-w-0 overflow-hidden relative">
+        <div className="h-full overflow-y-auto p-4 lg:p-6">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={selectedTopic}
+              initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="min-h-full w-full rounded-3xl border border-slate-200/60 dark:border-slate-900 bg-white dark:bg-slate-900/40 backdrop-blur-md shadow-sm p-4 lg:p-6"
+            >
+              {ActiveComponent ? <ActiveComponent /> : null}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </main>
 
-      {tooltip && (
-        <div
-          className="fixed z-[9999] pointer-events-none transition-all duration-200 ease-out"
-          style={{
-            left: tooltip.x,
-            top: tooltip.y,
-            transform: visible
-              ? "translate(-0px, -50%) scale(1)"
-              : "translate(-6px, -50%) scale(0.96)",
-            opacity: visible ? 1 : 0,
-          }}
-        >
-          <div className="relative whitespace-nowrap rounded-xl px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl shadow-xl">
-            <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+      {/* ACCURATE INDEPENDENT FLOATING TOOLTIP - FIXED TOP POSITION */}
+      <AnimatePresence>
+        {tooltip && visible && (
+          <motion.div
+            initial={{ opacity: 0, y: -8, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.95 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="fixed z-50 pointer-events-none"
+            style={{
+              left: "50%",
+              top: tooltip.y,
+              transform: "translateX(-50%)",
+            }}
+          >
+            <div className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 whitespace-nowrap">
               {tooltip.text}
-            </span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-            <div className="absolute left-[-6px] top-1/2 h-3 w-3 -translate-y-1/2 rotate-45 border-l border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900" />
-          </div>
-        </div>
-      )}
+
     </div>
   );
-
-
 }
