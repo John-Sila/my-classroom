@@ -19,6 +19,10 @@ import {
   RectangleGoggles,
   Link,
   Cable,
+  BookLock,
+  Origami,
+  Binary,
+  BookA,
 } from 'lucide-react';
 import MouseTopic from '../library/Mouse';
 import KeyboardTopic from '../library/Keyboard';
@@ -35,6 +39,10 @@ import ELearningTopic from '../library/ELearning';
 import { RealityManipulationDossier } from '../library/RealityManipulation';
 import { URLArchitectureDossier } from '../library/URLs';
 import PortsAndCablesTopic from '../library/PortsAndCables';
+import CyberLawTopic from '../library/Law';
+import RoboticsTopic from '../library/Robotics';
+import IntelligenceTopic from '../library/Intelligence';
+import FunFactsTopic from '../library/FunFacts';
 
 // types
 type Topic = {
@@ -51,13 +59,17 @@ const topics: Topic[] = [
   { id: 'data_flow', title: 'Data Flow', icon: GitGraph, component: DataFlowTopic },
   { id: 'operating-systems', title: 'Operating Systems', icon: Cpu, component: OperatingSystemsTopic },
   { id: 'ms-office', title: 'Microsoft Office', icon: Monitor, component: MSOfficeTopic },
-  { id: 'networking', title: 'Networking', icon: Wifi, component: NetworkingTechnology },
-  { id: 'malware', title: 'Malware', icon: ShieldAlert, component: MalwareTopic },
-  { id: 'coding', title: 'Coding', icon: Code2, component: CodingFundamentals },
+  { id: 'networking', title: 'Networking Technology', icon: Wifi, component: NetworkingTechnology },
+  { id: 'malware', title: 'Malware & Cybersecurity', icon: ShieldAlert, component: MalwareTopic },
   { id: 'reality', title: 'Reality Manipulation', icon: RectangleGoggles, component: RealityManipulationDossier },
   { id: 'uniform_resource', title: 'Uniform Resource Locators', icon: Link, component: URLArchitectureDossier },
-  { id: 'e_learning', title: 'e-Learning', icon: MonitorCloud, component: ELearningTopic },
+  { id: 'e_learning', title: 'E-Learning', icon: MonitorCloud, component: ELearningTopic },
+  { id: 'intelligence', title: 'Intelligence', icon: Binary, component: IntelligenceTopic },
+  { id: 'coding', title: 'Coding', icon: Code2, component: CodingFundamentals },
+  { id: 'robotics', title: 'Robotics', icon: Origami, component: RoboticsTopic },
   { id: 'ports_cables', title: 'Cables and Ports', icon: Cable, component: PortsAndCablesTopic },
+  { id: 'law', title: 'Cyber Law', icon: BookLock, component: CyberLawTopic },
+  { id: 'fun_facts', title: 'Fun Facts', icon: BookA, component: FunFactsTopic },
   { id: 'short_forms', title: 'Short Forms', icon: Logs, component: ShortFormsReference },
 ];
 

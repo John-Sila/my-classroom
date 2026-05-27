@@ -8,7 +8,8 @@ import {
   BookOpen,
   CheckCircle2,
   Lock,
-  Loader2
+  Loader2,
+  Filter // Added for visual feedback on toggle button
 } from 'lucide-react';
 import { collection, query, onSnapshot, where, orderBy, getDocs } from 'firebase/firestore';
 import { db, auth } from '../../firebase/config';
@@ -23,6 +24,7 @@ export const AvailableTests: React.FC = () => {
   const [tests, setTests] = useState<Test[]>([]);
   const [attempts, setAttempts] = useState<Record<string, TestAttempt>>({});
   const [isLoading, setIsLoading] = useState(true);
+  const [showOnlyMyClass, setShowOnlyMyClass] = useState(true); // Added: Defaults to true
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -122,6 +124,11 @@ export const AvailableTests: React.FC = () => {
     );
   }
 
+  // Filter logic runs inline here, keeping core snapshot array safe
+  const displayedTests = showOnlyMyClass 
+    ? tests.filter(test => test.className === user?.className)
+    : tests;
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -130,14 +137,31 @@ export const AvailableTests: React.FC = () => {
           <p className="text-slate-500 dark:text-slate-400">View and participate in scheduled examinations</p>
         </div>
         
-        <div className="bg-white dark:bg-slate-900 px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center gap-3">
-           <Search className="w-4 h-4 text-slate-400" />
-           <input type="text" placeholder="Search tests..." className="bg-transparent border-none outline-none text-sm text-slate-900 dark:text-white" />
+        {/* Action Button Controls Row */}
+        <div className="flex items-center gap-3 self-start md:self-auto w-full md:w-auto">
+          {/* Added: Toggler Button */}
+          <button
+            onClick={() => setShowOnlyMyClass(!showOnlyMyClass)}
+            className={cn(
+              "flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-2xl border transition-all duration-300 cursor-pointer select-none whitespace-nowrap",
+              showOnlyMyClass
+                ? "bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-100 dark:shadow-none"
+                : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+            )}
+          >
+            <Filter className="w-4 h-4" />
+            <span>Just my class</span>
+          </button>
+
+          <div className="bg-white dark:bg-slate-900 px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center gap-3 flex-1 md:flex-initial">
+             <Search className="w-4 h-4 text-slate-400" />
+             <input type="text" placeholder="Search tests..." className="bg-transparent border-none outline-none text-sm text-slate-900 dark:text-white w-full md:w-auto" />
+          </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {tests.map((test) => {
+        {displayedTests.map((test) => {
           const isForUserClass = test.className === user?.className;
           const attempt = attempts[test.testId];
           const isSubmitted = attempt?.isSubmitted;
@@ -172,7 +196,7 @@ export const AvailableTests: React.FC = () => {
                       ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300"
                       : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
                   )}>
-                    Class {test.className}
+                    Grade {test.className}
                   </span>
                   {isSubmitted && (
                     <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase">
@@ -228,11 +252,15 @@ export const AvailableTests: React.FC = () => {
           );
         })}
 
-        {tests.length === 0 && (
+        {displayedTests.length === 0 && (
           <div className="col-span-full bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-slate-100 dark:border-slate-800">
              <ClipboardList className="w-16 h-16 text-slate-200 mx-auto mb-4" />
              <h3 className="text-xl font-bold text-slate-900 dark:text-white">No active tests</h3>
-             <p className="text-slate-500">Scheduled tests will appear here when they are active.</p>
+             <p className="text-slate-500">
+               {showOnlyMyClass 
+                 ? "There are no active tests scheduled for your class right now." 
+                 : "Scheduled tests will appear here when they are active."}
+             </p>
           </div>
         )}
       </div>

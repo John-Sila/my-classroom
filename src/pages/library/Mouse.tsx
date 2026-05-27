@@ -103,7 +103,7 @@ export default function MouseTopic() {
 
         <div className="aspect-[16/9] overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950">
           <img
-            src="https://cdn-shop.adafruit.com/970x728/2025-05.jpg?q=80&w=1600&auto=format&fit=crop"
+            src="https://i.pcmag.com/imagery/reviews/04hwDTKJZZzjX1jLPkwU9QW-1.fit_lim.size_1050x591.v1743187064.jpg"
             alt="Mouse device"
             className="w-full h-full object-cover"
           />
