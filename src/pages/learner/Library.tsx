@@ -56,19 +56,19 @@ type Topic = {
 const topics: Topic[] = [
   { id: 'mouse', title: 'Input: Mouse Systems', icon: MousePointer2, component: MouseTopic, group: 'foundations' },
   { id: 'keyboard', title: 'Input: Keyboard Architecture', icon: Keyboard, component: KeyboardTopic, group: 'foundations' },
-  { id: 'data_flow', title: 'Data Flow Models', icon: GitGraph, component: DataFlowTopic, group: 'systems' },
-  { id: 'operating-systems', title: 'Operating Systems Layer', icon: Cpu, component: OperatingSystemsTopic, group: 'systems' },
-  { id: 'ms-office', title: 'Productivity Stack (Office)', icon: Monitor, component: MSOfficeTopic, group: 'systems' },
-  { id: 'networking', title: 'Network Infrastructure', icon: Wifi, component: NetworkingTechnology, group: 'networks' },
+  { id: 'data_flow', title: 'Data Flow', icon: GitGraph, component: DataFlowTopic, group: 'systems' },
+  { id: 'operating-systems', title: 'Operating Systems', icon: Cpu, component: OperatingSystemsTopic, group: 'systems' },
+  { id: 'ms-office', title: 'Microsoft Office', icon: Monitor, component: MSOfficeTopic, group: 'systems' },
+  { id: 'networking', title: 'Networking Technology', icon: Wifi, component: NetworkingTechnology, group: 'networks' },
   { id: 'ports_cables', title: 'Physical Connectivity', icon: Cable, component: PortsAndCablesTopic, group: 'networks' },
   { id: 'uniform_resource', title: 'URL & Web Routing', icon: Link, component: URLArchitectureDossier, group: 'networks' },
   { id: 'malware', title: 'Threat Systems (Cybersecurity)', icon: ShieldAlert, component: MalwareTopic, group: 'intelligence' },
-  { id: 'intelligence', title: 'Computational Intelligence', icon: Binary, component: IntelligenceTopic, group: 'intelligence' },
+  { id: 'intelligence', title: 'Artificial Intelligence', icon: Binary, component: IntelligenceTopic, group: 'intelligence' },
   { id: 'coding', title: 'Programming Fundamentals', icon: Code2, component: CodingFundamentals, group: 'intelligence' },
-  { id: 'robotics', title: 'Robotics Systems', icon: Origami, component: RoboticsTopic, group: 'intelligence' },
-  { id: 'reality', title: 'Reality Simulation Layer', icon: RectangleGoggles, component: RealityManipulationDossier, group: 'culture' },
+  { id: 'robotics', title: 'Robotics & Embedded Systems', icon: Origami, component: RoboticsTopic, group: 'intelligence' },
+  { id: 'reality', title: 'Reality Simulation & CGI', icon: RectangleGoggles, component: RealityManipulationDossier, group: 'culture' },
   { id: 'e_learning', title: 'E-Learning Systems', icon: MonitorCloud, component: ELearningTopic, group: 'culture' },
-  { id: 'law', title: 'Cyber Law Frameworks', icon: BookLock, component: CyberLawTopic, group: 'culture' },
+  { id: 'law', title: 'Cyber Law', icon: BookLock, component: CyberLawTopic, group: 'culture' },
   { id: 'fun_facts', title: 'System Trivia Engine', icon: BookA, component: FunFactsTopic, group: 'culture' },
   { id: 'short_forms', title: 'Abbreviation Index', icon: Logs, component: ShortFormsReference, group: 'culture' },
 ];
@@ -271,20 +271,20 @@ export default function LibraryWidget() {
 
       {/* MAIN VIEW CONTENT CONTAINER */}
       <main className="flex-1 min-w-0 overflow-hidden relative">
-        <div className="h-full overflow-y-auto p-4 lg:p-6">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={selectedTopic}
-              initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              className="min-h-full w-full rounded-3xl border border-slate-200/60 dark:border-slate-900 bg-white dark:bg-slate-900/40 backdrop-blur-md shadow-sm p-4 lg:p-6"
-            >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={selectedTopic}
+            initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="h-full overflow-y-auto p-4 lg:p-6"
+          >
+            <div className="min-h-full w-full rounded-3xl border border-slate-200/60 dark:border-slate-900 bg-white dark:bg-slate-900/40 backdrop-blur-md shadow-sm p-4 lg:p-6">
               {ActiveComponent ? <ActiveComponent /> : null}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* ACCURATE INDEPENDENT FLOATING TOOLTIP - FIXED TOP POSITION */}
