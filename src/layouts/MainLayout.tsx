@@ -128,8 +128,8 @@ export const MainLayout: React.FC = () => {
       <div className="fixed top-0 left-1/3 w-96 h-96 bg-indigo-500/[0.03] dark:bg-indigo-500/[0.05] rounded-full blur-[140px] pointer-events-none" />
       <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-sky-500/[0.03] dark:bg-sky-500/[0.05] rounded-full blur-[140px] pointer-events-none" />
 
-      {/* Mobile Topbar */}
-      <header className="lg:hidden sticky top-0 z-50 flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl px-4 py-3">
+      {/* Mobile Topbar - reduced blur and more opaque */}
+      <header className="lg:hidden sticky top-0 z-50 flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900 backdrop-blur-md px-4 py-3">
         <div className="flex items-center gap-2">
           {user?.photoURL ? (
             <img
@@ -180,10 +180,17 @@ export const MainLayout: React.FC = () => {
         {/* Sidebar */}
         <aside
           className={cn(
-            'fixed left-0 top-0 h-dvh w-64 overflow-hidden border-r border-slate-200/80 dark:border-slate-800/80',
-            'bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl',
+            'fixed left-0 top-0 h-dvh w-64 overflow-hidden',
+            'border-r border-slate-200/80 dark:border-slate-800/80',
+            'bg-white dark:bg-slate-950',
             'transform transition-transform duration-300 ease-out lg:translate-x-0',
-            'z-10',
+
+            // CRITICAL: isolate stacking + remove blur contamination
+            'isolate backdrop-blur-0',
+
+            // z-index contract
+            'z-[60] lg:z-[30]',
+
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           )}
         >
@@ -309,7 +316,7 @@ export const MainLayout: React.FC = () => {
 
         {/* Main Workspace */}
         <main className="relative flex min-h-dvh flex-1 flex-col lg:ml-64">
-          {/* Desktop Header */}
+          {/* Desktop Header - kept blur for aesthetics */}
           <header className="sticky top-0 z-40 hidden items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl px-8 py-4 lg:flex">
             <div className="flex items-center gap-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-indigo-400 shadow-lg shadow-indigo-500/20 overflow-hidden">
