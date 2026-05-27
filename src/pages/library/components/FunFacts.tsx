@@ -1,36 +1,23 @@
-// ============================================================================
-// FACT MODULE SYSTEM
-// Move this into: data/funFacts.ts
-// Highly extensible + category scalable
-// ============================================================================
-
 import {
   Brain,
   Globe,
   Smartphone,
-  Database,
   Code,
   Rocket,
   Lock,
   Cpu,
-  Zap,
   Shield,
   Network,
   Activity,
   Box,
   Computer,
   Video,
-  MessageSquare,
   Moon,
   History,
-  Radio,
-  Sparkles,
   Binary,
   Server,
   Cloud,
   Bot,
-  Orbit,
-  HardDrive,
   Monitor,
   Wifi,
   Search,
@@ -40,16 +27,11 @@ import {
   Gamepad2,
   Satellite,
   Bug,
-  KeyRound,
   Microchip,
   AudioWaveform,
 } from "lucide-react";
 
 export const funFacts = [
-  // =========================================================================
-  // COMPUTING HISTORY
-  // =========================================================================
-
   {
     id: 1,
     category: "Computers & History",
@@ -57,7 +39,7 @@ export const funFacts = [
     accent:
       "from-indigo-500/20 via-violet-500/10 to-sky-500/20",
     image:
-      "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1400&auto=format&fit=crop",
+      "https://meetingtomorrow.com/wp-content/uploads/2019/09/8BF79EAA-C291-890F-3B4303804F13173B.jpg?q=80&w=1400&auto=format&fit=crop",
     fact:
       "The first electronic computer ENIAC weighed over 27 tons and consumed enormous amounts of electricity.",
     extra:
@@ -85,7 +67,7 @@ export const funFacts = [
     accent:
       "from-orange-500/20 via-amber-500/10 to-yellow-500/20",
     image:
-      "https://images.unsplash.com/photo-1558494949-ef2bb6db8744?q=80&w=1400&auto=format&fit=crop",
+      "https://www.edn.com/wp-content/uploads/IBM_305_RAMAC.jpg?resize=500%2C339?q=80&w=1400&auto=format&fit=crop",
     fact:
       "The first hard drive by IBM stored only 5MB of data.",
     extra:
@@ -105,11 +87,6 @@ export const funFacts = [
     extra:
       "Color displays became common years later.",
   },
-
-  // =========================================================================
-  // INTERNET
-  // =========================================================================
-
   {
     id: 5,
     category: "Internet & Web",
@@ -159,17 +136,12 @@ export const funFacts = [
     accent:
       "from-indigo-500/20 via-sky-500/10 to-cyan-500/20",
     image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1400&auto=format&fit=crop",
+      "https://aimconsulting.com/wp-content/uploads/2022/11/cloud-computing-benefits.jpg?q=80&w=1400&auto=format&fit=crop",
     fact:
       "Cloud computing powers most major apps people use daily.",
     extra:
       "Many users rely on cloud systems without realizing it.",
   },
-
-  // =========================================================================
-  // PROGRAMMING
-  // =========================================================================
-
   {
     id: 9,
     category: "Programming",
@@ -225,11 +197,6 @@ export const funFacts = [
     extra:
       "Computers fundamentally understand only electrical states.",
   },
-
-  // =========================================================================
-  // AI
-  // =========================================================================
-
   {
     id: 13,
     category: "Artificial Intelligence",
@@ -265,16 +232,12 @@ export const funFacts = [
     accent:
       "from-indigo-500/20 via-violet-500/10 to-fuchsia-500/20",
     image:
-      "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1400&auto=format&fit=crop",
+      "https://cdn.thenewstack.io/media/2025/11/b326f5d6-coding-assistant.jpg?q=80&w=1400&auto=format&fit=crop",
     fact:
       "Neural networks are inspired loosely by biological brains.",
     extra:
       "The math is simplified, but the inspiration came from neuroscience.",
   },
-
-  // =========================================================================
-  // CYBERSECURITY
-  // =========================================================================
 
   {
     id: 16,
@@ -318,10 +281,6 @@ export const funFacts = [
       "Fingerprints and face scans are now mainstream login systems.",
   },
 
-  // =========================================================================
-  // MOBILE & DEVICES
-  // =========================================================================
-
   {
     id: 19,
     category: "Mobile Technology",
@@ -364,10 +323,6 @@ export const funFacts = [
       "AI processing improves photos before you even see them.",
   },
 
-  // =========================================================================
-  // SPACE & SCIENCE
-  // =========================================================================
-
   {
     id: 22,
     category: "Space & Technology",
@@ -395,10 +350,6 @@ export const funFacts = [
     extra:
       "Even tiny timing errors would break navigation accuracy.",
   },
-
-  // =========================================================================
-  // GAMING
-  // =========================================================================
 
   {
     id: 24,
@@ -428,10 +379,6 @@ export const funFacts = [
       "Higher refresh rates improve motion clarity and responsiveness.",
   },
 
-  // =========================================================================
-  // NETWORKING
-  // =========================================================================
-
   {
     id: 26,
     category: "Networking",
@@ -453,16 +400,12 @@ export const funFacts = [
     accent:
       "from-slate-500/20 via-zinc-500/10 to-indigo-500/20",
     image:
-      "https://images.unsplash.com/photo-1558494949-ef2bb6db8744?q=80&w=1400&auto=format&fit=crop",
+      "https://energyforgrowth.org/wp-content/uploads/2025/02/image-from-rawpixel-id-9648108-original-1-1000x638.jpg?q=80&w=1400&auto=format&fit=crop",
     fact:
       "Massive data centers power modern streaming and cloud platforms.",
     extra:
       "Some facilities contain hundreds of thousands of servers.",
   },
-
-  // =========================================================================
-  // RANDOM COOL TECH
-  // =========================================================================
 
   {
     id: 28,
@@ -471,7 +414,7 @@ export const funFacts = [
     accent:
       "from-slate-500/20 via-indigo-500/10 to-violet-500/20",
     image:
-      "https://images.unsplash.com/photo-1539721972319-f0e80a00d424?q=80&w=1400&auto=format&fit=crop",
+      "https://www.buerklin.com/wp-content/uploads/2023/05/axel-r-2jXSnvMRwbc-unsplash.jpg?q=80&w=1400&auto=format&fit=crop",
     fact:
       "A smartphone contains more transistors than early supercomputers.",
     extra:
