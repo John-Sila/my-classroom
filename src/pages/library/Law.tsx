@@ -459,6 +459,11 @@ export default function CyberLawTopic() {
           </p>
         </div>
       </div>
+      
+      <footer className="flex items-center gap-1 text-xs font-mono text-slate-400 dark:text-slate-600 pt-4 border-t border-slate-200 dark:border-slate-800">
+        <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
+        CYBER LAW
+      </footer>
     </div>
   );
 }

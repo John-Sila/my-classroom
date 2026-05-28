@@ -410,6 +410,11 @@ export default function IntelligenceTopic() {
           AI creates machines that learn, reason, perceive, and decide. Smart devices are connected and context-aware; intelligent devices learn, adapt, and make autonomous decisions. ANNs power modern AI, enabling pattern recognition, predictions, and natural human interaction.
         </p>
       </div>
+      
+      <footer className="flex items-center gap-1 text-xs font-mono text-slate-400 dark:text-slate-600 pt-4 border-t border-slate-200 dark:border-slate-800">
+        <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
+        ARTIFICIAL INTELLIGENCE
+      </footer>
     </div>
   );
 }
