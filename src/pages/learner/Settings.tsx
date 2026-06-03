@@ -501,303 +501,316 @@ export const SettingsPage: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-8 pb-10">
-      {/* HEADER */}
 
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-          Settings
-        </h1>
+   <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.35,
+        ease: 'easeOut',
+      }}
+      className="h-full"
+    >
+      <div className="space-y-8 pb-10">
+        {/* HEADER */}
 
-        <p className="mt-2 text-slate-500 dark:text-slate-400">
-          Manage your account preferences, security,
-          notifications and profile.
-        </p>
-      </div>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Settings
+          </h1>
 
-      {/* LAYOUT */}
-
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {/* PROFILE */}
-
-        <div className={sectionClass}>
-          <div className="flex flex-col items-center text-center">
-            {/* PROFILE IMAGE */}
-
-            {profileImage ? (
-              <img
-                src={profileImage}
-                alt="Profile"
-                className="h-28 w-28 rounded-full border-4 border-indigo-500 object-cover"
-              />
-            ) : (
-              <div className="flex h-28 w-28 items-center justify-center rounded-full bg-indigo-600 text-4xl font-bold text-white">
-                {user?.userName?.[0]?.toUpperCase()}
-              </div>
-            )}
-
-            <h2 className="mt-5 text-xl font-bold text-slate-900 dark:text-white">
-              {user?.fullName}
-            </h2>
-
-            <p className="mt-1 text-sm capitalize text-slate-500 dark:text-slate-400">
-              {user?.rank}
-            </p>
-
-            {/* AVATARS */}
-
-            <button
-              onClick={() =>
-                setShowAvatars((prev) => !prev)
-              }
-              className="mt-6 flex items-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3 font-semibold text-white transition hover:bg-indigo-700"
-            >
-              <Palette className="h-4 w-4" />
-              Choose Avatar
-            </button>
-
-            <AnimatePresence>
-              {showAvatars && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{
-                    opacity: 1,
-                    height: 'auto',
-                  }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="mt-6 grid grid-cols-3 gap-3 overflow-hidden"
-                >
-                  {avatars.map((avatar) => (
-                    <button
-                      key={avatar.id}
-                      onClick={() =>
-                        handleAvatarSelect(avatar.url)
-                      }
-                      className="group relative"
-                    >
-                      <img
-                        src={avatar.url}
-                        alt={avatar.id}
-                        className="h-20 w-20 rounded-2xl border-2 border-transparent object-cover transition-all duration-200 group-hover:border-indigo-500 group-hover:scale-105"
-                      />
-
-                      {user?.photoURL === avatar.url && (
-                        <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/40">
-                          <Check className="h-6 w-6 text-white" />
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* GUIDELINES */}
-
-            <div className="mt-6 w-full rounded-2xl bg-indigo-50 p-4 text-left dark:bg-indigo-900/20">
-              <p className="text-xs font-semibold uppercase tracking-widest text-indigo-700 dark:text-indigo-300">
-                Avatar System
-              </p>
-
-              <p className="mt-2 text-sm leading-relaxed text-indigo-800 dark:text-indigo-200">
-                Select a predefined avatar for a cleaner,
-                safer and more consistent profile experience.
-              </p>
-            </div>
-          </div>
+          <p className="mt-2 text-slate-500 dark:text-slate-400">
+            Manage your account preferences, security,
+            notifications and profile.
+          </p>
         </div>
 
-        {/* MAIN SETTINGS */}
+        {/* LAYOUT */}
 
-        <div className="space-y-8 lg:col-span-2">
-          {/* PERSONAL */}
-
-          <div className={sectionClass}>
-            <SectionHeader
-              icon={User}
-              title="Personal Information"
-              description="Your public profile details"
-              color="bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
-            />
-
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <InfoField
-                icon={UserCheck}
-                label="Full Name"
-                value={formData.fullName}
-              />
-
-              <InfoField
-                icon={UserCheck}
-                label="Username"
-                value={formData.userName}
-              />
-
-              <InfoField
-                icon={Mail}
-                label="Email"
-                value={formData.email}
-              />
-
-              <InfoField
-                icon={School}
-                label="Class"
-                value={formData.className}
-              />
-            </div>
-          </div>
-
-          {/* APPEARANCE */}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          {/* PROFILE */}
 
           <div className={sectionClass}>
-            <SectionHeader
-              icon={theme === 'dark' ? Moon : Sun}
-              title="Appearance"
-              description="Customize the application interface"
-              color="bg-amber-50 text-amber-500 dark:bg-amber-900/30"
-            />
+            <div className="flex flex-col items-center text-center">
+              {/* PROFILE IMAGE */}
 
-            <button
-              onClick={toggleTheme}
-              className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 transition hover:border-indigo-500 dark:border-slate-700 dark:bg-slate-800"
-            >
-              <div className="flex items-center gap-4">
-                <div className="rounded-xl bg-white p-2 shadow-sm dark:bg-slate-900">
-                  {theme === 'dark' ? (
-                    <Moon className="h-5 w-5 text-indigo-500" />
-                  ) : (
-                    <Sun className="h-5 w-5 text-amber-500" />
-                  )}
+              {profileImage ? (
+                <img
+                  src={profileImage}
+                  alt="Profile"
+                  className="h-28 w-28 rounded-full border-4 border-indigo-500 object-cover"
+                />
+              ) : (
+                <div className="flex h-28 w-28 items-center justify-center rounded-full bg-indigo-600 text-4xl font-bold text-white">
+                  {user?.userName?.[0]?.toUpperCase()}
                 </div>
+              )}
 
-                <div className="text-left">
-                  <p className="font-semibold text-slate-900 dark:text-white">
-                    Theme Mode
-                  </p>
+              <h2 className="mt-5 text-xl font-bold text-slate-900 dark:text-white">
+                {user?.fullName}
+              </h2>
 
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
-                    Current: {theme}
-                  </p>
-                </div>
-              </div>
+              <p className="mt-1 text-sm capitalize text-slate-500 dark:text-slate-400">
+                {user?.rank}
+              </p>
 
-              <div
-                className={cn(
-                  toggleClass,
-                  theme === 'dark'
-                    ? 'bg-indigo-600'
-                    : 'bg-slate-300'
-                )}
+              {/* AVATARS */}
+
+              <button
+                onClick={() =>
+                  setShowAvatars((prev) => !prev)
+                }
+                className="mt-6 flex items-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3 font-semibold text-white transition hover:bg-indigo-700"
               >
-                <div
-                  className={cn(
-                    'h-5 w-5 rounded-full bg-white transition-all',
-                    theme === 'dark'
-                      ? 'translate-x-7'
-                      : 'translate-x-0'
-                  )}
-                />
+                <Palette className="h-4 w-4" />
+                Choose Avatar
+              </button>
+
+              <AnimatePresence>
+                {showAvatars && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{
+                      opacity: 1,
+                      height: 'auto',
+                    }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mt-6 grid grid-cols-3 gap-3 overflow-hidden"
+                  >
+                    {avatars.map((avatar) => (
+                      <button
+                        key={avatar.id}
+                        onClick={() =>
+                          handleAvatarSelect(avatar.url)
+                        }
+                        className="group relative"
+                      >
+                        <img
+                          src={avatar.url}
+                          alt={avatar.id}
+                          className="h-20 w-20 rounded-2xl border-2 border-transparent object-cover transition-all duration-200 group-hover:border-indigo-500 group-hover:scale-105"
+                        />
+
+                        {user?.photoURL === avatar.url && (
+                          <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/40">
+                            <Check className="h-6 w-6 text-white" />
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* GUIDELINES */}
+
+              <div className="mt-6 w-full rounded-2xl bg-indigo-50 p-4 text-left dark:bg-indigo-900/20">
+                <p className="text-xs font-semibold uppercase tracking-widest text-indigo-700 dark:text-indigo-300">
+                  Avatar System
+                </p>
+
+                <p className="mt-2 text-sm leading-relaxed text-indigo-800 dark:text-indigo-200">
+                  Select a predefined avatar for a cleaner,
+                  safer and more consistent profile experience.
+                </p>
               </div>
-            </button>
-          </div>
-
-          {/* NOTIFICATIONS */}
-
-          <div className={sectionClass}>
-            <SectionHeader
-              icon={Bell}
-              title="Notifications"
-              description="Control alerts and reminders"
-              color="bg-emerald-50 text-emerald-500 dark:bg-emerald-900/30"
-            />
-
-            <div className="space-y-4">
-              {notificationItems.map((item) => (
-                <ToggleRow
-                  key={item.key}
-                  icon={item.icon}
-                  label={item.label}
-                  value={
-                    preferences[
-                      item.key as keyof typeof preferences
-                    ]
-                  }
-                  onToggle={() =>
-                    setPreferences((prev) => ({
-                      ...prev,
-                      [item.key]:
-                        !prev[
-                          item.key as keyof typeof preferences
-                        ],
-                    }))
-                  }
-                />
-              ))}
             </div>
           </div>
 
-          {/* SECURITY */}
+          {/* MAIN SETTINGS */}
 
-          <div className={sectionClass}>
-            <SectionHeader
-              icon={Shield}
-              title="Security"
-              description="Manage your account credentials"
-              color="bg-red-50 text-red-500 dark:bg-red-900/30"
-            />
+          <div className="space-y-8 lg:col-span-2">
+            {/* PERSONAL */}
 
-            <div className="space-y-6">
-              <PasswordField
-                label="Current Password"
-                value={passwords.currentPassword}
-                visible={showCurrentPassword}
-                onToggle={() =>
-                  setShowCurrentPassword((prev) => !prev)
-                }
-                onChange={(value) =>
-                  setPasswords((prev) => ({
-                    ...prev,
-                    currentPassword: value,
-                  }))
-                }
+            <div className={sectionClass}>
+              <SectionHeader
+                icon={User}
+                title="Personal Information"
+                description="Your public profile details"
+                color="bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
               />
 
-              <PasswordField
-                label="New Password"
-                value={passwords.newPassword}
-                visible={showNewPassword}
-                onToggle={() =>
-                  setShowNewPassword((prev) => !prev)
-                }
-                onChange={(value) =>
-                  setPasswords((prev) => ({
-                    ...prev,
-                    newPassword: value,
-                  }))
-                }
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <InfoField
+                  icon={UserCheck}
+                  label="Full Name"
+                  value={formData.fullName}
+                />
+
+                <InfoField
+                  icon={UserCheck}
+                  label="Username"
+                  value={formData.userName}
+                />
+
+                <InfoField
+                  icon={Mail}
+                  label="Email"
+                  value={formData.email}
+                />
+
+                <InfoField
+                  icon={School}
+                  label="Class"
+                  value={formData.className}
+                />
+              </div>
+            </div>
+
+            {/* APPEARANCE */}
+
+            <div className={sectionClass}>
+              <SectionHeader
+                icon={theme === 'dark' ? Moon : Sun}
+                title="Appearance"
+                description="Customize the application interface"
+                color="bg-amber-50 text-amber-500 dark:bg-amber-900/30"
               />
 
               <button
-                onClick={handleChangePassword}
-                className="flex items-center gap-2 rounded-2xl bg-red-600 px-6 py-3 font-semibold text-white transition hover:bg-red-700"
+                onClick={toggleTheme}
+                className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 transition hover:border-indigo-500 dark:border-slate-700 dark:bg-slate-800"
               >
-                <KeyRound className="h-5 w-5" />
-                Update Password
+                <div className="flex items-center gap-4">
+                  <div className="rounded-xl bg-white p-2 shadow-sm dark:bg-slate-900">
+                    {theme === 'dark' ? (
+                      <Moon className="h-5 w-5 text-indigo-500" />
+                    ) : (
+                      <Sun className="h-5 w-5 text-amber-500" />
+                    )}
+                  </div>
+
+                  <div className="text-left">
+                    <p className="font-semibold text-slate-900 dark:text-white">
+                      Theme Mode
+                    </p>
+
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      Current: {theme}
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  className={cn(
+                    toggleClass,
+                    theme === 'dark'
+                      ? 'bg-indigo-600'
+                      : 'bg-slate-300'
+                  )}
+                >
+                  <div
+                    className={cn(
+                      'h-5 w-5 rounded-full bg-white transition-all',
+                      theme === 'dark'
+                        ? 'translate-x-7'
+                        : 'translate-x-0'
+                    )}
+                  />
+                </div>
               </button>
+            </div>
+
+            {/* NOTIFICATIONS */}
+
+            <div className={sectionClass}>
+              <SectionHeader
+                icon={Bell}
+                title="Notifications"
+                description="Control alerts and reminders"
+                color="bg-emerald-50 text-emerald-500 dark:bg-emerald-900/30"
+              />
+
+              <div className="space-y-4">
+                {notificationItems.map((item) => (
+                  <ToggleRow
+                    key={item.key}
+                    icon={item.icon}
+                    label={item.label}
+                    value={
+                      preferences[
+                        item.key as keyof typeof preferences
+                      ]
+                    }
+                    onToggle={() =>
+                      setPreferences((prev) => ({
+                        ...prev,
+                        [item.key]:
+                          !prev[
+                            item.key as keyof typeof preferences
+                          ],
+                      }))
+                    }
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* SECURITY */}
+
+            <div className={sectionClass}>
+              <SectionHeader
+                icon={Shield}
+                title="Security"
+                description="Manage your account credentials"
+                color="bg-red-50 text-red-500 dark:bg-red-900/30"
+              />
+
+              <div className="space-y-6">
+                <PasswordField
+                  label="Current Password"
+                  value={passwords.currentPassword}
+                  visible={showCurrentPassword}
+                  onToggle={() =>
+                    setShowCurrentPassword((prev) => !prev)
+                  }
+                  onChange={(value) =>
+                    setPasswords((prev) => ({
+                      ...prev,
+                      currentPassword: value,
+                    }))
+                  }
+                />
+
+                <PasswordField
+                  label="New Password"
+                  value={passwords.newPassword}
+                  visible={showNewPassword}
+                  onToggle={() =>
+                    setShowNewPassword((prev) => !prev)
+                  }
+                  onChange={(value) =>
+                    setPasswords((prev) => ({
+                      ...prev,
+                      newPassword: value,
+                    }))
+                  }
+                />
+
+                <button
+                  onClick={handleChangePassword}
+                  className="flex items-center gap-2 rounded-2xl bg-red-600 px-6 py-3 font-semibold text-white transition hover:bg-red-700"
+                >
+                  <KeyRound className="h-5 w-5" />
+                  Update Password
+                </button>
+              </div>
             </div>
           </div>
         </div>
+
+        {/* MODAL */}
+
+        <ConfirmModal
+          open={showAvatarConfirm}
+          title="Use this avatar?"
+          description="This avatar will become your new profile picture."
+          onCancel={() => setShowAvatarConfirm(false)}
+          onConfirm={handleConfirmAvatar}
+        />
       </div>
 
-      {/* MODAL */}
-
-      <ConfirmModal
-        open={showAvatarConfirm}
-        title="Use this avatar?"
-        description="This avatar will become your new profile picture."
-        onCancel={() => setShowAvatarConfirm(false)}
-        onConfirm={handleConfirmAvatar}
-      />
-    </div>
+    </motion.div>
+    
   );
 };

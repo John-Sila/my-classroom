@@ -231,23 +231,56 @@ export const MainLayout: React.FC = () => {
 
           <nav className="flex-1 overflow-y-auto space-y-1 px-4 py-4">
             {navItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={() => setIsSidebarOpen(false)}
-                className={({ isActive }) =>
-                  cn(
-                    'relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all',
-                    isActive
-                      ? 'bg-indigo-50 text-indigo-600 shadow-sm dark:bg-indigo-900/40 dark:text-indigo-400'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/50 dark:hover:text-white'
-                  )
-                }
-              >
-                <item.icon className="h-5 w-5" />
-                <span>{item.name}</span>
-                {item.path === '/notifications' && hasUnread && (
-                  <span className="absolute right-4 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-indigo-600 dark:bg-indigo-400" />
+              <NavLink key={item.path} to={item.path} onClick={() => setIsSidebarOpen(false)}>
+                {({ isActive }) => (
+                  <motion.div
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={cn(
+                      "relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors duration-200 overflow-visible",
+                      isActive
+                        ? "text-slate-900 dark:text-white"
+                        : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                    )}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeSidebarNav"
+                        className="absolute inset-0 rounded-xl bg-white dark:bg-indigo-600 border border-slate-200/80 dark:border-transparent shadow-sm dark:shadow-lg dark:shadow-indigo-500/10"
+                        transition={{
+                          type: "spring",
+                          stiffness: 500,
+                          damping: 35,
+                        }}
+                      />
+                    )}
+
+                    <div
+                      className={cn(
+                        "relative z-10 flex items-center justify-center",
+                        isActive
+                          ? "text-indigo-600 dark:text-white"
+                          : "text-slate-400 dark:text-slate-500"
+                      )}
+                    >
+                      <item.icon className="h-5 w-5" />
+                    </div>
+
+                    <span className="relative z-10">
+                      {item.name}
+                    </span>
+
+                    {item.path === "/notifications" && hasUnread && (
+                      <span
+                        className={cn(
+                          "absolute right-4 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full z-20",
+                          isActive
+                            ? "bg-indigo-600 dark:bg-white"
+                            : "bg-indigo-600 dark:bg-indigo-400"
+                        )}
+                      />
+                    )}
+                  </motion.div>
                 )}
               </NavLink>
             ))}

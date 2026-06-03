@@ -97,6 +97,15 @@ export const NotificationCreator: React.FC = () => {
     };
 
     return (
+   <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.35,
+        ease: 'easeOut',
+      }}
+      className="h-full"
+    >
         <div className="relative min-h-screen bg-gradient-to-br from-indigo-50 via-white to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-4 transition-colors">
             <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
                 <motion.div
@@ -239,5 +248,7 @@ export const NotificationCreator: React.FC = () => {
                 )}
             </AnimatePresence>
         </div>
+    </motion.div>
+    
     );
 };

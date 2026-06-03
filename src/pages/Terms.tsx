@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Scale, CheckCircle, AlertTriangle, FileText, ChevronDown, Compass, ShieldAlert, HeartHandshake } from "lucide-react";
+import { motion } from "motion/react";
 
 export default function Terms() {
   const [activeTab, setActiveTab] = useState("conduct");
@@ -85,24 +86,60 @@ export default function Terms() {
         
         {/* Left Sticky Navigation Tabs */}
         <nav className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0 sticky top-6 z-10 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md md:bg-transparent p-2 md:p-0 rounded-xl border border-slate-200/60 md:border-0">
-          {Object.entries(sections).map(([key, value]) => (
-            <button
-              key={key}
-              onClick={() => {
-                setActiveTab(key);
-                setOpenSection(null); // Reset open sub-accordions on tab switch
-              }}
-              className={`flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl whitespace-nowrap transition-all duration-150 w-full text-left ${
-                activeTab === key
-                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-800"
-                  : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/50 dark:hover:bg-slate-900/40"
-              }`}
-            >
-              {value.icon}
-              {value.title}
-            </button>
-          ))}
+          {Object.entries(sections).map(([key, value]) => {
+            const isActive = activeTab === key;
+
+            return (
+              <motion.button
+                key={key}
+                onClick={() => {
+                  setActiveTab(key);
+                  setOpenSection(null);
+                }}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.98 }}
+                className={`
+                  relative flex items-center gap-3 px-4 py-3
+                  text-sm font-semibold rounded-xl whitespace-nowrap
+                  w-full text-left transition-colors duration-200
+                  overflow-visible
+                  ${
+                    isActive
+                      ? "text-slate-900 dark:text-white"
+                      : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                  }
+                `}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="activeSettingsTab"
+                    className="absolute inset-0 rounded-xl bg-white dark:bg-indigo-600 border border-slate-200/80 dark:border-transparent shadow-sm dark:shadow-lg dark:shadow-indigo-500/10"
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 35,
+                    }}
+                  />
+                )}
+
+                <div
+                  className={`relative z-10 flex items-center justify-center ${
+                    isActive
+                      ? "text-indigo-600 dark:text-white"
+                      : "text-slate-400 dark:text-slate-500"
+                  }`}
+                >
+                  {value.icon}
+                </div>
+
+                <span className="relative z-10">
+                  {value.title}
+                </span>
+              </motion.button>
+            );
+          })}
         </nav>
+
 
         {/* Right Active Content Panel */}
         <div className="space-y-4">
