@@ -26,17 +26,17 @@ import {
 } from "lucide-react";
 import WorkspaceHeroSlider from "./components/WorkspaceHeroSlider";
 
-// Animation presets
+// Clean, smooth optimization curves
 const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  hidden: { opacity: 0, y: 15 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
 };
 
 const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.08 }
+    transition: { staggerChildren: 0.05 }
   }
 };
 
@@ -64,81 +64,17 @@ export default function DataFlowTopic() {
   ];
 
   const secondaryStorage = [
-    // Solid‑state / Flash
-    {
-      type: "Solid State Drive (SSD)",
-      tech: "NAND Flash Memory",
-      img: "https://www.firstshop.co.za/cdn/shop/files/ts250gssd225s-internal-solid-state-drives-59485259071855.jpg?v=1747636334&width=1214?q=80&w=600&auto=format&fit=crop",
-      desc: "High‑speed electronic storage with no moving parts. Optimized for fast boot and low latency access.",
-    },
-    {
-      type: "NVMe SSD",
-      tech: "PCIe NAND Flash",
-      img: "https://images-na.ssl-images-amazon.com/images/I/71KeDAkw+0L.jpg",
-      desc: "PCIe‑connected NVMe SSDs deliver ultra‑fast read/write speeds by bypassing traditional SATA bottlenecks.",
-    },
-    {
-      type: "USB Flash Drive",
-      tech: "Portable NAND Flash",
-      img: "https://rapidtech.co.ke/wp-content/uploads/2025/12/SanDisk-Ultra-Flair-USB-3.0-Flash-Drive-%E2%80%93-64GB-SDCZ73-064G-G46.png?q=80&w=600&auto=format&fit=crop",
-      desc: "Compact removable storage used for quick file transfer and portable file access.",
-    },
-    {
-      type: "Memory Card (SD / microSD)",
-      tech: "Embedded NAND Flash",
-      img: "https://5.imimg.com/data5/SELLER/Default/2023/3/YR/XT/IB/148865312/51nqyjhesql-sl1001-.jpg?q=80&w=600&auto=format&fit=crop",
-      desc: "Ultra‑compact flash storage widely used in phones, cameras, and embedded systems.",
-    },
-
-    // Magnetic / HDD variants
-    {
-      type: "Hard Disk Drive (HDD)",
-      tech: "Magnetic Storage",
-      img: "https://shop.telkos.co.ke/wp-content/uploads/2023/06/Seagate-Internal-Hard-Disk-Drive-1TB-Desktop-7200-RPM-4-1-1.jpg?q=80&w=600&auto=format&fit=crop",
-      desc: "Mechanical storage using spinning magnetic platters and read/write heads for large capacity.",
-    },
-    {
-      type: "External HDD",
-      tech: "Portable Magnetic Storage",
-      img: "https://www.pcworld.com/wp-content/uploads/2025/05/externe_ssds_im_eigenbau.jpg?quality=50&strip=all&w=1024?q=80&w=600&auto=format&fit=crop",
-      desc: "Externally connected HDDs used for backups, media libraries, and system expansion.",
-    },
-
-    // Optical drives
-    {
-      type: "Compact Disk (CD)",
-      tech: "Laser‑Based Optical",
-      img: "https://i0.wp.com/www.deskdecode.com/wp-content/uploads/2017/06/Optical-Disc-Writer-min.jpg?fit=3504%2C2336&ssl=1&q=80&w=600&auto=format&fit=crop",
-      desc: "Optical drive, often used for legacy software and media. Usually about 700MB capacity and read/write speeds up to 52x.",
-    },
-    {
-      type: "Digital Versatile Disk (DVD)",
-      tech: "Laser‑Based Optical",
-      img: "https://www.fgee.co.ke/wp-content/uploads/2023/08/Untitled-design-2023-08-18T115056.786.png",
-      desc: "Optical drive, often used for legacy software and media. Usually about 4.7GB capacity (single layer) and read/write speeds up to 16x.",
-    },
-    {
-      type: "Blu‑ray Drive (BD)",
-      tech: "High‑Density Optical",
-      img: "https://m.media-amazon.com/images/I/81wDKSNuu9L.jpg", // generic BD‑drive image placeholder
-      desc: "Higher‑density optical drive for Blu‑ray discs, used for HD video and large‑data archives.",
-    },
-
-    // Tape and archival
-    {
-      type: "Magnetic Tape Drive",
-      tech: "Sequential Magnetic Tape",
-      img: "https://images.mr-resistor.co.uk/ranges/823/image/surface-mounted-sensors-2000-1.jpg?q=80&w=600&auto=format&fit=crop", // replace with tape‑drive if you wish
-      desc: "Legacy tape‑based storage used for long‑term backups and archival due to high capacity and low cost per GB.",
-    },
-
-    // Network / Cloud‑style (for completeness)
-    {
-      type: "Network Attached Storage (NAS)",
-      tech: "Network‑Attached Raid",
-      img: "https://www.reichelt.com/magazin/wp-content/uploads/2017/01/NAS-1.jpg", // NAS device image
-      desc: "Box‑style device that provides shared storage over a local network, often using RAID‑protected HDDs.",
-    },
+    { type: "Solid State Drive (SSD)", tech: "NAND Flash Memory", img: "https://www.firstshop.co.za/cdn/shop/files/ts250gssd225s-internal-solid-state-drives-59485259071855.jpg?v=1747636334&width=1214?q=80&w=600&auto=format&fit=crop", desc: "High‑speed electronic storage with no moving parts. Optimized for fast boot and low latency access." },
+    { type: "NVMe SSD", tech: "PCIe NAND Flash", img: "https://images-na.ssl-images-amazon.com/images/I/71KeDAkw+0L.jpg", desc: "PCIe‑connected NVMe SSDs deliver ultra‑fast read/write speeds by bypassing traditional SATA bottlenecks." },
+    { type: "USB Flash Drive", tech: "Portable NAND Flash", img: "https://rapidtech.co.ke/wp-content/uploads/2025/12/SanDisk-Ultra-Flair-USB-3.0-Flash-Drive-%E2%80%93-64GB-SDCZ73-064G-G46.png?q=80&w=600&auto=format&fit=crop", desc: "Compact removable storage used for quick file transfer and portable file access." },
+    { type: "Memory Card (microSD)", tech: "Embedded NAND Flash", img: "https://5.imimg.com/data5/SELLER/Default/2023/3/YR/XT/IB/148865312/51nqyjhesql-sl1001-.jpg?q=80&w=600&auto=format&fit=crop", desc: "Ultra‑compact flash storage widely used in phones, cameras, and embedded systems." },
+    { type: "Hard Disk Drive (HDD)", tech: "Magnetic Storage", img: "https://shop.telkos.co.ke/wp-content/uploads/2023/06/Seagate-Internal-Hard-Disk-Drive-1TB-Desktop-7200-RPM-4-1-1.jpg?q=80&w=600&auto=format&fit=crop", desc: "Mechanical storage using spinning magnetic platters and read/write heads for large capacity." },
+    { type: "External HDD", tech: "Portable Magnetic Storage", img: "https://www.pcworld.com/wp-content/uploads/2025/05/externe_ssds_im_eigenbau.jpg?quality=50&strip=all&w=1024?q=80&w=600&auto=format&fit=crop", desc: "Externally connected HDDs used for backups, media libraries, and system expansion." },
+    { type: "Compact Disk (CD)", tech: "Laser‑Based Optical", img: "https://i0.wp.com/www.deskdecode.com/wp-content/uploads/2017/06/Optical-Disc-Writer-min.jpg?fit=3504%2C2336&ssl=1&q=80&w=600&auto=format&fit=crop", desc: "Optical drive, often used for legacy software and media. Usually about 700MB capacity." },
+    { type: "Digital Versatile Disk (DVD)", tech: "Laser‑Based Optical", img: "https://www.fgee.co.ke/wp-content/uploads/2023/08/Untitled-design-2023-08-18T115056.786.png", desc: "Optical drive, often used for legacy software and media. Usually about 4.7GB capacity." },
+    { type: "Blu‑ray Drive (BD)", tech: "High‑Density Optical", img: "https://m.media-amazon.com/images/I/81wDKSNuu9L.jpg", desc: "Higher‑density optical drive for Blu‑ray discs, used for HD video and large‑data archives." },
+    { type: "Magnetic Tape Drive", tech: "Sequential Magnetic Tape", img: "https://images.mr-resistor.co.uk/ranges/823/image/surface-mounted-sensors-2000-1.jpg?q=80&w=600&auto=format&fit=crop", desc: "Legacy tape‑based storage used for long‑term backups and archival due to low cost per GB." },
+    { type: "Network Attached Storage (NAS)", tech: "Network‑Attached Raid", img: "https://www.reichelt.com/magazin/wp-content/uploads/2017/01/NAS-1.jpg", desc: "Box‑style device that provides shared storage over a local network, often using RAID configurations." }
   ];
 
   const heroImages = [
@@ -152,72 +88,71 @@ export default function DataFlowTopic() {
     "https://cdn.thewirecutter.com/wp-content/media/2025/04/BEST-USB-FLASH-DRIVES-2048px-9578-3x2-1.jpg?auto=webp&quality=75&crop=16:9,smart&width=1024",
     "https://deprimesolutions.co.ke/wp-content/uploads/2017/07/3590837.jpg",
     "https://i5.walmartimages.com/asr/9079aced-aec4-4ec8-aa91-8c9411cee609.f2016b8e84fb1802777b1ea2f15b8f83.jpeg"
-  ]
+  ];
 
   return (
-    <div className="space-y-24 text-slate-700 dark:text-slate-300 leading-7 max-w-6xl mx-auto px-4 py-12">
+    <div className="w-full max-w-6xl mx-auto px-4 py-10 space-y-12 antialiased selection:bg-indigo-500/30 text-slate-600 dark:text-slate-300 overflow-hidden">
       
       {/* HERO SECTION */}
       <motion.section 
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: "-20px" }}
         variants={fadeInUp}
         className="space-y-6 text-center md:text-left"
       >
         <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 dark:bg-emerald-950/50 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/30 shadow-xs">
-          <Network className="h-3.5 w-3.5 animate-spin-slow" />
+          <Network className="h-3.5 w-3.5" />
           Von Neumann Architecture Foundations
         </div>
 
-        <h1 className="text-4xl md:text-6xl font-black tracking-tight text-slate-900 dark:text-white bg-clip-text bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 dark:from-white dark:via-slate-200 dark:to-slate-400">
+        <h1 className="text-4xl md:text-6xl font-black tracking-tight text-slate-900 dark:text-white">
           The Data Flow Engine
         </h1>
 
-        <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-4xl font-normal leading-relaxed">
+        <p className="text-base md:text-lg text-slate-600 dark:text-slate-400 max-w-4xl font-normal leading-relaxed">
           A modern computer system is an elegant, deterministic machine designed to execute instructions through a continuous lifecycle: 
-          <span className="font-semibold text-slate-900 dark:text-white bg-emerald-100/50 dark:bg-emerald-950/30 px-1.5 py-0.5 rounded ml-1">Input, Processing, Storage, and Output</span>. Data shifts state constantly, morphing from raw human actions into stable magnetic patterns.
+          <span className="font-semibold text-slate-900 dark:text-white bg-emerald-100/50 dark:bg-emerald-950/30 px-1.5 py-0.5 rounded ml-1">Input, Processing, Storage, and Output</span>.
         </p>
-        <WorkspaceHeroSlider images={heroImages} />
+        <div className="w-full overflow-hidden rounded-2xl">
+          <WorkspaceHeroSlider images={heroImages} />
+        </div>
       </motion.section>
 
       {/* PIPELINE OVERVIEW */}
       <motion.section 
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: true, margin: "-20px" }}
         variants={fadeInUp}
-        className="p-8 rounded-3xl bg-slate-100/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-xs shadow-inner"
+        className="p-6 md:p-8 rounded-3xl bg-slate-100/80 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-xs"
       >
-        <div className="space-y-2 mb-8">
+        <div className="space-y-1 mb-6">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Layers className="h-5 w-5 text-indigo-500 animate-pulse" />
+            <Layers className="h-5 w-5 text-indigo-500" />
             The Unified Execution Pipeline
           </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Every operational execution file transaction sequences through this loop natively:
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Every operational transaction sequences through this loop natively:
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             { label: "INPUT", colorClass: "text-blue-600 dark:text-blue-400 border-blue-200/70 bg-blue-50/50 dark:bg-blue-950/20", icon: LogIn },
             { label: "PROCESSING", colorClass: "text-purple-600 dark:text-purple-400 border-purple-200/70 bg-purple-50/50 dark:bg-purple-950/20", icon: Cpu },
             { label: "STORAGE", colorClass: "text-amber-600 dark:text-amber-400 border-amber-200/70 bg-amber-50/50 dark:bg-amber-950/20", icon: Database },
             { label: "OUTPUT", colorClass: "text-emerald-600 dark:text-emerald-400 border-emerald-200/70 bg-emerald-50/50 dark:bg-emerald-950/20", icon: LogOut },
           ].map((item, i) => (
-            <div key={item.label} className="flex items-center gap-3 w-full">
-              <motion.div 
-                whileHover={{ y: -4, shadow: "0 10px 25px -5px rgba(0,0,0,0.1)" }}
-                className={`flex items-center gap-3 px-6 py-4 rounded-2xl border w-full font-bold backdrop-blur-xs transition-all ${item.colorClass}`}
-              >
-                <div className="p-2 rounded-xl bg-white dark:bg-slate-900 shadow-xs">
-                  <item.icon className="h-5 w-5" />
+            <div key={item.label} className="flex items-center gap-2 w-full min-w-0">
+              <div className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl border w-full font-bold transition-all min-w-0 ${item.colorClass}`}>
+                <div className="p-1.5 rounded-xl bg-white dark:bg-slate-900 shrink-0">
+                  <item.icon className="h-4 w-4" />
                 </div>
-                <span className="tracking-wider text-sm">{item.label}</span>
-              </motion.div>
+                <span className="tracking-wider text-xs truncate">{item.label}</span>
+              </div>
               {i < 3 && (
-                <ArrowRight className="h-5 w-5 text-slate-400 dark:text-slate-600 hidden lg:block animate-pulse shrink-0" />
+                <ArrowRight className="h-4 w-4 text-slate-400 dark:text-slate-600 hidden lg:block shrink-0" />
               )}
             </div>
           ))}
@@ -225,40 +160,39 @@ export default function DataFlowTopic() {
       </motion.section>
 
       {/* 1. INPUT LAYER */}
-      <section className="space-y-8">
-        <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
-          <h2 className="text-3xl font-bold flex items-center gap-3 text-slate-900 dark:text-white">
-            <LogIn className="h-7 w-7 text-blue-500" />
-            1. The Input Layer <span className="text-lg font-normal text-slate-400 dark:text-slate-500">(Data Ingestion)</span>
+      <section className="space-y-6">
+        <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
+          <h2 className="text-2xl md:text-3xl font-bold flex flex-wrap items-baseline gap-2 text-slate-900 dark:text-white">
+            <span className="flex items-center gap-2"><LogIn className="h-6 w-6 text-blue-500" /> 1. The Input Layer</span>
+            <span className="text-sm md:text-base font-normal text-slate-400 dark:text-slate-500">(Data Ingestion)</span>
           </h2>
         </div>
-        <p className="text-slate-600 dark:text-slate-400 max-w-4xl">
-          Computers interpret all external signals through input transducers that convert physical phenomena into structured binary data streams. These devices define the system’s perception boundary with the real world.
+        <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 max-w-4xl leading-relaxed">
+          Computers interpret external signals through transducers that convert physical variables into binary streams.
         </p>
 
         <motion.div 
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true, margin: "-20px" }}
           variants={staggerContainer}
-          className="grid sm:grid-cols-2 md:grid-cols-4 gap-6"
+          className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4"
         >
           {inputDevices.map((dev) => (
             <motion.div
               variants={fadeInUp}
-              whileHover={{ y: -6 }}
               key={dev.name}
-              className="flex flex-col rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 group"
+              className="flex flex-col rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs hover:shadow-md transition-all duration-200"
             >
-              <div className="h-32 w-full overflow-hidden relative">
-                <img src={dev.img} alt={dev.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div className="h-28 w-full overflow-hidden">
+                <img src={dev.img} alt={dev.name} className="h-full w-full object-cover" />
               </div>
-              <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
-                <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm">
+              <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
+                <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-xs md:text-sm">
                   <dev.icon className="h-4 w-4 text-blue-500 shrink-0" />
-                  {dev.name}
+                  <span className="truncate">{dev.name}</span>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{dev.desc}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">{dev.desc}</p>
               </div>
             </motion.div>
           ))}
@@ -269,54 +203,43 @@ export default function DataFlowTopic() {
       <motion.section 
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: true, margin: "-20px" }}
         variants={fadeInUp}
-        className="space-y-8"
+        className="space-y-6"
       >
-        <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
-          <h2 className="text-3xl font-bold flex items-center gap-3 text-slate-900 dark:text-white">
-            <Cpu className="h-7 w-7 text-purple-500" />
-            2. The Processing Core <span className="text-lg font-normal text-slate-400 dark:text-slate-500">(The Central Brain)</span>
+        <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
+          <h2 className="text-2xl md:text-3xl font-bold flex flex-wrap items-baseline gap-2 text-slate-900 dark:text-white">
+            <span className="flex items-center gap-2"><Cpu className="h-6 w-6 text-purple-500" /> 2. The Processing Core</span>
+            <span className="text-sm md:text-base font-normal text-slate-400 dark:text-slate-500">(The Central Brain)</span>
           </h2>
         </div>
-        <p className="text-slate-600 dark:text-slate-400">
-          Once raw streams sit in memory, the Central Processing Unit (CPU) executes them via the <strong>Machine Cycle</strong> (Fetch, Decode, Execute, Store). Operating at billions of calculations per second (GHz), it breaks tasks down into three internal execution blocks:
-        </p>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
-            { title: "Control Unit (CU)", icon: Activity, desc: "Acts as the command dispatcher. It fetches operational opcodes from memory, interprets what tasks need doing, and synchronizes the system clock to safely direct data lines through processing paths." },
-            { title: "Arithmetic Logic Unit (ALU)", icon: Binary, desc: "The pure mathematical engine. Executes all direct logic checks (AND, OR, NOT gates) alongside baseline calculations (addition, subtraction) to manipulate standard binary registers." },
-            { title: "Memory Unit (MU)", icon: Cpu, desc: "The Memory Unit temporarily holds instructions and intermediate results during CPU execution. It acts as a fast internal workspace that supports the Control Unit and ALU while processing data." }
+            { title: "Control Unit (CU)", icon: Activity, desc: "The command dispatcher. It fetches operational opcodes, interprets configurations, and synchronizes clock lines to process pathways safely." },
+            { title: "Arithmetic Logic Unit (ALU)", icon: Binary, desc: "The pure mathematical core. Executes logical gates (AND, OR, NOT) alongside binary computing vectors to compute calculations." },
+            { title: "Memory Unit (MU)", icon: Cpu, desc: "Temporarily holds live operations and operational states inside extreme speed buffers directly feeding core lines." }
           ].map((item) => (
-            <motion.div 
-              whileHover={{ y: -4, borderRipple: "1px solid rgb(168, 85, 247)" }}
-              key={item.title} 
-              className="p-6 rounded-2xl border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-lg transition-all"
-            >
-              <div className="flex items-center gap-2 font-bold text-purple-600 dark:text-purple-400 mb-3 text-base">
-                <item.icon className="h-5 w-5" /> {item.title}
+            <div key={item.title} className="p-5 rounded-2xl border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-xs hover:border-purple-500/40 transition-colors">
+              <div className="flex items-center gap-2 font-bold text-purple-600 dark:text-purple-400 mb-2 text-sm md:text-base">
+                <item.icon className="h-4 w-4 shrink-0" /> {item.title}
               </div>
-              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{item.desc}</p>
-            </motion.div>
+              <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{item.desc}</p>
+            </div>
           ))}
         </div>
       </motion.section>
 
       {/* 3. STORAGE ARCHITECTURE */}
-      <section className="space-y-8">
-        <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
-          <h2 className="text-3xl font-bold flex items-center gap-3 text-slate-900 dark:text-white">
-            <HardDrive className="h-7 w-7 text-amber-500" />
-            3. Divided Storage Architecture
+      <section className="space-y-6">
+        <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
+          <h2 className="text-2xl md:text-3xl font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+            <HardDrive className="h-6 w-6 text-amber-500" /> 3. Storage Hierarchy
           </h2>
         </div>
-        <p className="text-slate-600 dark:text-slate-400">
-          Computer storage is split into an intentional hierarchy, gracefully optimizing for the architectural tradeoff between access latency speed and volume capacity.
-        </p>
 
-        {/* Tab Navigation Controls */}
-        <div className="flex border-b border-slate-200 dark:border-slate-800 gap-2 overflow-x-auto pb-px">
+        {/* Dynamic Nav Tabs */}
+        <div className="flex border-b border-slate-200 dark:border-slate-800 gap-1 overflow-x-auto no-scrollbar scroll-smooth">
           {[
             { id: "primary", label: "Primary Storage", icon: Zap },
             { id: "secondary", label: "Secondary Storage", icon: FolderTree },
@@ -325,220 +248,119 @@ export default function DataFlowTopic() {
             <button
               key={tab.id}
               onClick={() => setActiveStorageTab(tab.id as any)}
-              className={`flex items-center gap-2 px-6 py-3 font-semibold text-sm border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+              className={`flex items-center gap-2 px-4 py-2.5 font-bold text-xs uppercase tracking-wider border-b-2 transition-all shrink-0 outline-none ${
                 activeStorageTab === tab.id 
-                  ? "border-amber-500 text-amber-600 dark:text-amber-400 bg-amber-50/30 dark:bg-amber-950/10" 
+                  ? "border-amber-500 text-amber-600 dark:text-amber-400 bg-amber-50/40 dark:bg-amber-950/20" 
                   : "border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
               }`}
             >
-              <tab.icon className="h-4 w-4" />
+              <tab.icon className="h-3.5 w-3.5" />
               {tab.label}
             </button>
           ))}
         </div>
 
-      {/* Dynamic Tab Workspace Container */}
-      <div className="min-h-[300px] mt-6">
-        {activeStorageTab === "primary" && (
-          <motion.div
-            key="primary"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-4"
-          >
-            <p className="text-sm text-slate-500">
-              Also called <strong className="text-slate-700 dark:text-slate-300">Internal or Main Memory</strong>.
-            </p>
-            <p className="text-sm text-slate-500">
-              Main memory links directly to the CPU socket over high‑speed system buses and serves as the active execution canvas for running kernels and software packages.
-            </p>
+        {/* Tab Workspace Panel */}
+        <div className="min-h-[280px]">
+          {activeStorageTab === "primary" && (
+            <motion.div key="primary" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+              <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-white dark:bg-slate-900">
+                <div className="hidden md:grid grid-cols-12 bg-slate-50 dark:bg-slate-950 p-4 font-bold text-xs uppercase text-slate-500 border-b border-slate-200 dark:border-slate-800">
+                  <div className="col-span-3">Property</div>
+                  <div className="col-span-4 text-indigo-600 dark:text-indigo-400">RAM</div>
+                  <div className="col-span-5 text-rose-600 dark:text-rose-400">ROM</div>
+                </div>
+                <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs md:text-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-12 p-4 gap-2 md:gap-0">
+                    <div className="col-span-3 font-bold text-slate-900 dark:text-white md:uppercase md:text-xs">Volatility</div>
+                    <div className="col-span-4 md:pr-4"><span className="text-rose-500 font-bold">Volatile:</span> Clears instantly when device power resets.</div>
+                    <div className="col-span-5"><span className="text-emerald-500 font-bold">Non-Volatile:</span> Permanently locks tracking logs.</div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-12 p-4 gap-2 md:gap-0">
+                    <div className="col-span-3 font-bold text-slate-900 dark:text-white md:uppercase md:text-xs">Access Loop</div>
+                    <div className="col-span-4 md:pr-4">Dynamic high-speed reads and continuous software variable writes.</div>
+                    <div className="col-span-5">Read-mostly ecosystem; requires hardware firmware flashes to adjust values.</div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
 
-            <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
-              <table className="w-full text-left text-sm bg-white dark:bg-slate-900">
-                <thead>
-                  <tr className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-semibold border-b border-slate-200 dark:border-slate-800">
-                    <th className="p-4">Property</th>
-                    <th className="p-4 text-indigo-600 dark:text-indigo-400">RAM</th>
-                    <th className="p-4 text-rose-600 dark:text-rose-400">ROM</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-600 dark:text-slate-400">
-                  <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20">
-                    <td className="p-4 font-semibold text-slate-900 dark:text-white">
-                      Volatility
-                    </td>
-                    <td className="p-4">
-                      <span className="text-rose-600 dark:text-rose-400 font-medium">
-                        Volatile
-                      </span>
-                      : clears instantly when electrical power drops out.
-                    </td>
-                    <td className="p-4">
-                      <span className="text-emerald-600 dark:text-emerald-400 font-medium">
-                        Non‑Volatile
-                      </span>
-                      : permanently retains data layout structures across power cycles.
-                    </td>
-                  </tr>
-                  <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20">
-                    <td className="p-4 font-semibold text-slate-900 dark:text-white">
-                      Read/Write Access
-                    </td>
-                    <td className="p-4">
-                      Dynamic read and write cycles at full runtime performance speeds.
-                    </td>
-                    <td className="p-4">
-                      Read‑Mostly; requires specialized firmware flashing procedures to modify storage blocks.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </motion.div>
-        )}
-
-        {activeStorageTab === "secondary" && (
-          <>
-            <p className="text-sm text-slate-500">
-              Also called <strong className="text-slate-700 dark:text-slate-300">Secondary or Auxiliary Storage</strong>.
-            </p>
-            <motion.div
-              key="secondary"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="grid sm:grid-cols-3 gap-6"
-            >
+          {activeStorageTab === "secondary" && (
+            <motion.div key="secondary" initial={{ opacity: 0 }} className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
               {secondaryStorage.map((st) => (
-                <div
-                  key={st.type}
-                  className="flex flex-col rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs hover:shadow-md transition-all duration-300"
-                >
-                  <img
-                    src={st.img}
-                    alt={st.type}
-                    className="h-32 w-full object-cover object-center"
-                  />
-                  <div className="p-5 space-y-2">
-                    <h4 className="font-bold text-slate-900 dark:text-white text-sm">
-                      {st.type}
-                    </h4>
-                    <span className="text-[10px] uppercase font-bold text-amber-600 dark:text-amber-400 tracking-wider block">
-                      {st.tech}
-                    </span>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                      {st.desc}
-                    </p>
+                <div key={st.type} className="flex flex-col rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs">
+                  <div className="h-24 w-full overflow-hidden">
+                    <img src={st.img} alt={st.type} className="h-full w-full object-cover" />
+                  </div>
+                  <div className="p-4 space-y-1">
+                    <h4 className="font-bold text-slate-900 dark:text-white text-xs md:text-sm truncate">{st.type}</h4>
+                    <span className="text-[9px] uppercase font-bold text-amber-500 tracking-wider block">{st.tech}</span>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">{st.desc}</p>
                   </div>
                 </div>
               ))}
             </motion.div>
-          </>
-        )}
+          )}
 
-        {activeStorageTab === "scale" && (
-          <motion.div
-            key="scale"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs"
-          >
-            <table className="w-full text-left text-xs bg-white dark:bg-slate-900">
-              <thead>
-                <tr className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-semibold border-b border-slate-200 dark:border-slate-800">
-                  <th className="p-3 pl-4">Designation</th>
-                  <th className="p-3">Notation</th>
-                  <th className="p-3">Absolute Equivalent Value</th>
-                  <th className="p-3 pr-4">Physical Representation Example</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-600 dark:text-slate-400">
+          {activeStorageTab === "scale" && (
+            <motion.div key="scale" initial={{ opacity: 0 }} className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-white dark:bg-slate-900">
+              <div className="hidden md:grid grid-cols-12 bg-slate-50 dark:bg-slate-950 p-4 font-bold text-xs uppercase text-slate-500 border-b border-slate-200 dark:border-slate-800">
+                <div className="col-span-3">Designation</div>
+                <div className="col-span-4">Absolute Equivalent</div>
+                <div className="col-span-5">Example Scope</div>
+              </div>
+              <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs md:text-sm">
                 {[
-                  {
-                    name: "Bit",
-                    note: "b",
-                    val: "A single microscopic electrical switch state (0 or 1).",
-                    ex: "An individual true‑false logic gate flag.",
-                  },
-                  {
-                    name: "Byte",
-                    note: "B",
-                    val: "8 individual bits pooled together sequentially.",
-                    ex: "A single alphanumeric character value letter.",
-                  },
-                  {
-                    name: "Kilobyte",
-                    note: "KB",
-                    val: "1,024 Bytes (2¹⁰ multiplier pattern limits).",
-                    ex: "A standard page of unformatted plain‑text document logs.",
-                  },
-                  {
-                    name: "Megabyte",
-                    note: "MB",
-                    val: "1,024 Kilobytes",
-                    ex: "A single highly optimized audio streaming track file.",
-                  },
-                  {
-                    name: "Gigabyte",
-                    note: "GB",
-                    val: "1,024 Megabytes",
-                    ex: "Roughly 1 hour of regular compressed HD streaming video.",
-                  },
+                  { name: "Bit (b)", val: "A single microscopic transistor circuit block state (0 or 1).", ex: "An isolated true/false logical configuration flag value." },
+                  { name: "Byte (B)", val: "8 sequential processing bits combined.", ex: "A single alphanumeric structural character text entry." },
+                  { name: "Kilobyte (KB)", val: "1,024 Bytes system tracking modules.", ex: "A regular string page log array of unformatted texts." },
+                  { name: "Megabyte (MB)", val: "1,024 Kilobytes storage fields.", ex: "A highly optimized audio platform compression track." },
+                  { name: "Gigabyte (GB)", val: "1,024 Megabytes data blocks.", ex: "Approximately 1 hour of compressed data flow stream arrays." }
                 ].map((row) => (
-                  <tr
-                    key={row.name}
-                    className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors"
-                  >
-                    <td className="p-3 pl-4 font-bold text-slate-900 dark:text-white">
-                      {row.name}
-                    </td>
-                    <td className="p-3 font-mono text-amber-600">{row.note}</td>
-                    <td className="p-3">{row.val}</td>
-                    <td className="p-3 pr-4">{row.ex}</td>
-                  </tr>
+                  <div key={row.name} className="grid grid-cols-1 md:grid-cols-12 p-4 gap-1 md:gap-0">
+                    <div className="col-span-3 font-bold text-slate-900 dark:text-white">{row.name}</div>
+                    <div className="col-span-4 text-slate-600 dark:text-slate-400 md:pr-4">{row.val}</div>
+                    <div className="col-span-5 text-slate-400">{row.ex}</div>
+                  </div>
                 ))}
-              </tbody>
-            </table>
-          </motion.div>
-        )}
-      </div>
-
+              </div>
+            </motion.div>
+          )}
+        </div>
       </section>
 
       {/* 4. OUTPUT LAYER */}
-      <section className="space-y-8">
-        <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
-          <h2 className="text-3xl font-bold flex items-center gap-3 text-slate-900 dark:text-white">
-            <LogOut className="h-7 w-7 text-emerald-500" />
-            4. The Output Layer <span className="text-lg font-normal text-slate-400 dark:text-slate-500">(User Interpretation)</span>
+      <section className="space-y-6">
+        <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
+          <h2 className="text-2xl md:text-3xl font-bold flex flex-wrap items-baseline gap-2 text-slate-900 dark:text-white">
+            <span className="flex items-center gap-2"><LogOut className="h-6 w-6 text-emerald-500" /> 4. The Output Layer</span>
+            <span className="text-sm md:text-base font-normal text-slate-400 dark:text-slate-500">(User Interpretation)</span>
           </h2>
         </div>
-        <p className="text-slate-600 dark:text-slate-400">
-          Output devices convert processed digital data into human-perceivable formats such as visuals, audio, printed documents, or tactile feedback. They represent the final translation layer between machine computation and human interpretation.
-        </p>
 
         <motion.div 
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true, margin: "-20px" }}
           variants={staggerContainer}
-          className="grid sm:grid-cols-2 md:grid-cols-3 gap-6"
+          className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4"
         >
           {outputDevices.map((out) => (
             <motion.div
               variants={fadeInUp}
-              whileHover={{ y: -6 }}
               key={out.name}
-              className="flex flex-col rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 group"
+              className="flex flex-col rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs hover:shadow-md transition-all duration-200"
             >
-              <div className="h-32 w-full overflow-hidden relative">
-                <img src={out.img} alt={out.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div className="h-28 w-full overflow-hidden">
+                <img src={out.img} alt={out.name} className="h-full w-full object-cover" />
               </div>
-              <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
-                <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm">
+              <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
+                <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-xs md:text-sm">
                   <out.icon className="h-4 w-4 text-emerald-500 shrink-0" />
-                  {out.name}
+                  <span className="truncate">{out.name}</span>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{out.desc}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">{out.desc}</p>
               </div>
             </motion.div>
           ))}
@@ -549,29 +371,28 @@ export default function DataFlowTopic() {
       <motion.section 
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: true, margin: "-20px" }}
         variants={fadeInUp}
-        className="space-y-6 pt-12 border-t border-slate-200 dark:border-slate-800"
+        className="space-y-4 pt-10 border-t border-slate-200 dark:border-slate-800"
       >
         <div className="space-y-1">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Network className="h-6 w-6 text-indigo-500" />
-            Interactive Visual Walkthrough
+          <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <Network className="h-5 w-5 text-indigo-500" /> Visual Walkthrough
           </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Watch this animation tracing bus requests and hardware pipeline execution cycles step-by-step:
+          <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
+            Hardware pipeline execution cycles step-by-step:
           </p>
         </div>
 
-        <div className="aspect-video max-w-4xl mx-auto rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl relative group bg-black">
-          <iframe className="w-full h-full opacity-90 group-hover:opacity-100 transition-opacity duration-300" src="https://www.youtube.com/embed/CBf-jIn44X0" title="CS Basics: Input Process Output" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+        <div className="aspect-video max-w-4xl mx-auto rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-lg bg-black">
+          <iframe className="w-full h-full opacity-95" src="https://www.youtube.com/embed/CBf-jIn44X0" title="CS Basics: Input Process Output" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
         </div>
       </motion.section>
 
-      <footer className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400 dark:text-slate-600 pt-4 border-t border-slate-200 dark:border-slate-900">
-        <div className="flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-ping mr-1" />
-          DATA FLOW
+      <footer className="flex items-center justify-between text-[10px] font-mono text-slate-400 dark:text-slate-600 pt-4 border-t border-slate-200 dark:border-slate-900">
+        <div className="flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-ping" />
+          SYSTEM PIPELINE STEADY
         </div>
       </footer>
 
