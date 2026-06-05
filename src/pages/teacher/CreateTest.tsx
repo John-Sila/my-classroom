@@ -14,13 +14,14 @@ import {
   X
 } from 'lucide-react';
 import { collection, doc, addDoc, serverTimestamp, setDoc } from 'firebase/firestore';
-import { db, auth, storage } from '../../firebase/config';
+import { db, auth } from '../../firebase/config';
 import { cn } from '../../lib/utils';
 import { useNavigate } from 'react-router-dom';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { notify } from '@/src/utils/toast';
-import { ClassSelect } from '@/src/utils/classSelector';
 import { motion } from 'motion/react';
+
+// Define the available classes for the checklist selection
+const AVAILABLE_CLASSES = ['5A', '5B', '5D', '6C', '6D'];
 
 interface QuestionDraft {
   questionText: string;
@@ -35,7 +36,8 @@ export const CreateTest: React.FC = () => {
   
   // Test Details
   const [testName, setTestName] = useState('');
-  const [className, setClassName] = useState('5D');
+  // Changed from string to string[] to hold multiple target streams
+  const [targetClasses, setTargetClasses] = useState<string[]>(['5D']);
   const [duration, setDuration] = useState(30);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
@@ -72,8 +74,21 @@ export const CreateTest: React.FC = () => {
     setQuestions(newQuestions);
   };
 
-  const d = new Date(endTime);
+  // Toggle selection function for managing classes array
+  const handleClassToggle = (cls: string) => {
+    if (targetClasses.includes(cls)) {
+      // Keep at least one class checked to avoid submitting empty targets
+      if (targetClasses.length > 1) {
+        setTargetClasses(targetClasses.filter(c => c !== cls));
+      } else {
+        notify.error("Please select at least one target class.");
+      }
+    } else {
+      setTargetClasses([...targetClasses, cls]);
+    }
+  };
 
+  const d = new Date(endTime);
   const formattedDate =
     `${d.getDate().toString().padStart(2, '0')} ` +
     `${d.toLocaleString('en-GB', { month: 'short' })}, ` +
@@ -82,9 +97,14 @@ export const CreateTest: React.FC = () => {
     `${d.getMinutes().toString().padStart(2, '0')}`;
 
   const handleSubmit = async () => {
-    const loader = notify.loading('Creating test...');
+    const loader = notify.loading('Creating tests...');
     if (!testName || !startTime || !endTime) {
       notify.updateError(loader, 'Please fill in all test details.');
+      return;
+    }
+
+    if (targetClasses.length === 0) {
+      notify.updateError(loader, 'Please select at least one target class.');
       return;
     }
 
@@ -95,45 +115,52 @@ export const CreateTest: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      const testRef = await addDoc(collection(db, 'tests'), {
-        testName,
-        className,
-        durationMinutes: Number(duration),
-        createdBy: auth.currentUser?.uid,
-        createdAt: serverTimestamp(),
-        startTime: new Date(startTime),
-        endTime: new Date(endTime),
-        isActive: true,
-        timestamp: serverTimestamp(),
-        submittedUIDs: [],
-        markingScheme: questions.reduce((acc, q, idx) => {
-          acc[`question_${idx}`] = 1;
-          return acc;
-        }, {} as Record<string, number>)
-      });
+      // Loop through each selected class stream and deploy a dedicated instance of the test
+      for (const targetClass of targetClasses) {
+        
+        // 1. Create unique base configuration per stream
+        const testRef = await addDoc(collection(db, 'tests'), {
+          testName,
+          className: targetClass,
+          durationMinutes: Number(duration),
+          createdBy: auth.currentUser?.uid,
+          createdAt: serverTimestamp(),
+          startTime: new Date(startTime),
+          endTime: new Date(endTime),
+          isActive: true,
+          timestamp: serverTimestamp(),
+          submittedUIDs: [],
+          markingScheme: questions.reduce((acc, q, idx) => {
+            acc[`question_${idx}`] = 1;
+            return acc;
+          }, {} as Record<string, number>)
+        });
 
-      for (let i = 0; i < questions.length; i++) {
-        const q = questions[i];
-        const imageUrl = q.imageUrl || '';
+        // 2. Add individual questions to subcollections for this specific test document
+        for (let i = 0; i < questions.length; i++) {
+          const q = questions[i];
+          const imageUrl = q.imageUrl || '';
 
-        const questionRef = doc(collection(db, `tests/${testRef.id}/questions`));
-        await setDoc(questionRef, {
-          questionId: questionRef.id,
-          questionText: q.questionText,
-          imageUrl,
-          options: q.options,
-          correctAnswerIndex: q.correctAnswerIndex,
-          answeredUsers: []
+          const questionRef = doc(collection(db, `tests/${testRef.id}/questions`));
+          await setDoc(questionRef, {
+            questionId: questionRef.id,
+            questionText: q.questionText,
+            imageUrl,
+            options: q.options,
+            correctAnswerIndex: q.correctAnswerIndex,
+            answeredUsers: []
+          });
+        }
+
+        // 3. Dispatch separate system notifications tailored to each stream
+        await addDoc(collection(db, 'notifications'), {
+          title: `New test for ${targetClass}`,
+          message: `A new test "${testName}" has been created for ${targetClass}. Attempt it before ${formattedDate}!`,
+          createdAt: serverTimestamp(),
         });
       }
 
-
-      await addDoc(collection(db, 'notifications'), {
-        title: `New test for ${className}`,
-        message: `A new test "${testName}" has been created for ${className}. Attempt it before ${formattedDate}!`,
-        createdAt: serverTimestamp(),
-      });
-
+      // Update the structural timestamp metadata once after entire batch ends
       await setDoc(
         doc(db, 'notifications', 'latestNotification'),
         {
@@ -143,11 +170,11 @@ export const CreateTest: React.FC = () => {
         { merge: true }
       );
       
-      notify.updateSuccess(loader, 'Test created successfully!');
+      notify.updateSuccess(loader, `Successfully published tests to ${targetClasses.join(', ')}!`);
       navigate('/');
     } catch (error: any) {
-      console.error('Error creating test:', error);
-      notify.updateError(loader, 'Failed to create test: ' + error.message);
+      console.error('Error creating batch tests:', error);
+      notify.updateError(loader, 'Failed to create tests: ' + error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -175,7 +202,7 @@ export const CreateTest: React.FC = () => {
             className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-bold rounded-2xl shadow-lg shadow-indigo-200 dark:shadow-none transition-all active:scale-95"
           >
             {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
-            <span>{isSubmitting ? 'Creating...' : 'Publish Test'}</span>
+            <span>{isSubmitting ? 'Publishing...' : 'Publish Test'}</span>
           </button>
         </div>
 
@@ -200,23 +227,41 @@ export const CreateTest: React.FC = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Target Class</label>
-                    <ClassSelect
-                        value={className}
-                        onChange={(v) => setClassName(v)}
-                      />
+                {/* Updated Target Streams Section */}
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">
+                    Target Streams (Select multiple)
+                  </label>
+                  <div className="flex flex-wrap gap-2 p-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl">
+                    {AVAILABLE_CLASSES.map((cls) => {
+                      const isSelected = targetClasses.includes(cls);
+                      return (
+                        <button
+                          key={cls}
+                          type="button"
+                          onClick={() => handleClassToggle(cls)}
+                          className={cn(
+                            "px-3 py-1.5 text-xs font-bold rounded-lg transition-all border",
+                            isSelected 
+                              ? "bg-indigo-600 text-white border-indigo-600" 
+                              : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-100"
+                          )}
+                        >
+                          {cls}
+                        </button>
+                      );
+                    })}
                   </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Duration (Min)</label>
-                    <input
-                      type="number"
-                      value={duration}
-                      onChange={e => setDuration(Number(e.target.value))}
-                      className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none dark:text-white text-sm"
-                    />
-                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Duration (Min)</label>
+                  <input
+                    type="number"
+                    value={duration}
+                    onChange={e => setDuration(Number(e.target.value))}
+                    className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none dark:text-white text-sm"
+                  />
                 </div>
 
                 <div>
@@ -398,8 +443,6 @@ export const CreateTest: React.FC = () => {
           </div>
         </div>
       </div>
-
     </motion.div>
-    
   );
 };
