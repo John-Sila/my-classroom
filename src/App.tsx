@@ -119,10 +119,10 @@ const router = createBrowserRouter([
         path: 'terms',
         element: <ProtectedRoute allowedRanks={['learner', 'teacher']}><Terms /></ProtectedRoute>,
       },
-      {
-        path: 'chatroom',
-        element: <ProtectedRoute allowedRanks={['learner', 'teacher']}><Chatroom /></ProtectedRoute>,
-      },
+      // {
+      //   path: 'chatroom',
+      //   element: <ProtectedRoute allowedRanks={['learner', 'teacher']}><Chatroom /></ProtectedRoute>,
+      // },
     ],
   },
   {
