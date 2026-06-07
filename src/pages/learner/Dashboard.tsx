@@ -121,7 +121,7 @@ export const LearnerDashboard: React.FC = () => {
                   </button>
                   <div className="flex items-center gap-3 px-6 py-3 bg-white/20 backdrop-blur-md rounded-[2rem] text-sm font-bold">
                      <GraduationCap className="w-5 h-5" />
-                     <span>Class {user?.className}</span>
+                     <span>Grade {user?.className}</span>
                   </div>
                </div>
             </div>
