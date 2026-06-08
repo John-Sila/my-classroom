@@ -110,7 +110,11 @@ export const ManageUsers: React.FC = () => {
         className: ''
       });
     } catch (error: any) {
-      notify.updateError(loader, error.message);
+      console.error("FULL FIREBASE ERROR", error);
+      console.error("CODE:", error.code);
+      console.error("MESSAGE:", error.message);
+    
+      notify.updateError(loader, `${error.code}: ${error.message}`);
     } finally {
       setIsCreating(false);
     }
