@@ -106,8 +106,8 @@ export const ManageUsers: React.FC = () => {
         password: '',
         userName: '',
         fullName: '',
-        rank: 'learner',
-        className: ''
+        rank: '',
+        className: '5D'
       });
     } catch (error: any) {
       console.error("FULL FIREBASE ERROR", error);
