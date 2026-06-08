@@ -67,13 +67,16 @@ export const ManageUsers: React.FC = () => {
       // 1. Create a secondary app instance
       const secondaryApp = initializeApp(firebaseConfig, "secondary");
       const secondaryAuth = getAuth(secondaryApp);
-
+      // ADD THIS: Get Firestore tied to the secondary app instance
+      const { getFirestore, setDoc, doc, Timestamp } = await import('firebase/firestore');
+      const secondaryDb = getFirestore(secondaryApp); 
+      
       // 2. Create the user in Auth
       const userCredential = await createUserWithEmailAndPassword(secondaryAuth, formData.email, formData.password);
       const uid = userCredential.user.uid;
-
-      // 3. Create the profile in Firestore
-      const userDocRef = doc(db, 'users', uid);
+      
+      // 3. Create the profile in Firestore using secondaryDb instead of db
+      const userDocRef = doc(secondaryDb, 'users', uid); // <-- Change 'db' to 'secondaryDb'
       const newProfile: UserProfile = {
         uid,
         email: formData.email,
@@ -89,9 +92,9 @@ export const ManageUsers: React.FC = () => {
         isActive: true,
         scores: {}
       };
-
+      
       await setDoc(userDocRef, newProfile);
-
+      
       // 4. Cleanup secondary app
       await deleteApp(secondaryApp);
 
