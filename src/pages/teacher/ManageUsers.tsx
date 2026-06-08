@@ -92,8 +92,8 @@ export const ManageUsers: React.FC = () => {
         isActive: true,
         scores: {}
       };
-      console.log("Primary auth uid:", auth.currentUser?.uid);
-      console.log("New user uid:", uid);
+      notify.success("Primary auth uid:", auth.currentUser?.uid);
+      notify.success("New user uid:", uid);
       
       await setDoc(userDocRef, newProfile);
       
