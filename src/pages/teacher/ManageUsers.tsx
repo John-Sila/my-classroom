@@ -52,31 +52,28 @@ export const ManageUsers: React.FC = () => {
     setIsCreating(true);
 
     try {
-      // In a real production app without a backend, we'd use a secondary Firebase app 
-      // instance to avoid signing out the current teacher.
-      // For this implementation, we'll demonstrate the direct database update 
-      // for the profile while alerting that password-auth creation usually 
-      // requires a secondary instance or Firebase Functions.
-      
-      // I'll import initializeApp and getAuth dynamically or use a secondary instance helper
       const { initializeApp, deleteApp } = await import('firebase/app');
-      const { getAuth, createUserWithEmailAndPassword } = await import('firebase/auth');
-      const { setDoc, doc, Timestamp } = await import('firebase/firestore');
+      const authModule = await import('firebase/auth');
+      const firestoreModule = await import('firebase/firestore');
       const firebaseConfig = (await import('../../../firebase-applet-config.json')).default;
 
-      // 1. Create a secondary app instance
+      // 1. Create secondary Firebase app
       const secondaryApp = initializeApp(firebaseConfig, "secondary");
-      const secondaryAuth = getAuth(secondaryApp);
-      // ADD THIS: Get Firestore tied to the secondary app instance
-      const { getFirestore, setDoc, doc, Timestamp } = await import('firebase/firestore');
-      const secondaryDb = getFirestore(secondaryApp); 
-      
-      // 2. Create the user in Auth
-      const userCredential = await createUserWithEmailAndPassword(secondaryAuth, formData.email, formData.password);
+      const secondaryAuth = authModule.getAuth(secondaryApp);
+      const secondaryDb = firestoreModule.getFirestore(secondaryApp);
+
+      // 2. Create Auth user (secondary context)
+      const userCredential = await authModule.createUserWithEmailAndPassword(
+        secondaryAuth,
+        formData.email,
+        formData.password
+      );
+
       const uid = userCredential.user.uid;
-      
-      // 3. Create the profile in Firestore using secondaryDb instead of db
-      const userDocRef = doc(secondaryDb, 'users', uid); // <-- Change 'db' to 'secondaryDb'
+
+      // 3. Build Firestore document
+      const userDocRef = firestoreModule.doc(secondaryDb, 'users', uid);
+
       const newProfile: UserProfile = {
         uid,
         email: formData.email,
@@ -84,23 +81,23 @@ export const ManageUsers: React.FC = () => {
         fullName: formData.fullName,
         rank: formData.rank,
         className: formData.className,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-        lastLogin: Timestamp.now(),
+        createdAt: firestoreModule.Timestamp.now(),
+        updatedAt: firestoreModule.Timestamp.now(),
+        lastLogin: firestoreModule.Timestamp.now(),
         lastNotificationRead: null,
         photoURL: '',
         isActive: true,
         scores: {}
       };
-      notify.success("Primary auth uid:", auth.currentUser?.uid);
-      notify.success("New user uid:", uid);
-      
-      await setDoc(userDocRef, newProfile);
-      
-      // 4. Cleanup secondary app
+
+      // 4. Write profile
+      await firestoreModule.setDoc(userDocRef, newProfile);
+
+      // 5. Cleanup
       await deleteApp(secondaryApp);
 
       notify.updateSuccess(loader, `User ${formData.userName} created successfully!`);
+
       setFormData({
         email: '',
         password: '',
@@ -109,11 +106,12 @@ export const ManageUsers: React.FC = () => {
         rank: '',
         className: ''
       });
+
     } catch (error: any) {
       console.error("FULL FIREBASE ERROR", error);
       console.error("CODE:", error.code);
       console.error("MESSAGE:", error.message);
-    
+
       notify.updateError(loader, `${error.code}: ${error.message}`);
     } finally {
       setIsCreating(false);
