@@ -3,7 +3,7 @@ import { ChevronDown, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 const classOptions = ['5A', '5B', '5D', '6C', '6D'];
-const roleOptions = ['Learner', 'Teacher'];
+const roleOptions = ['learner', 'teacher'];
 
 export function ClassSelect({
   value,
