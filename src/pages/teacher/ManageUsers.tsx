@@ -203,7 +203,7 @@ export const ManageUsers: React.FC = () => {
                 <div>
                   <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Password</label>
                   <input
-                    type="password"
+                    type="text"
                     required
                     value={formData.password}
                     onChange={e => setFormData({ ...formData, password: e.target.value })}
