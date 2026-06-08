@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
 
-const classOptions = ['5A', '5B', '6C', '6D'];
+const classOptions = ['5A', '5B', '5D', '6C', '6D'];
 const roleOptions = ['Learner', 'Teacher'];
 
 export function ClassSelect({

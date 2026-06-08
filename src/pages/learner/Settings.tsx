@@ -442,11 +442,10 @@ export const SettingsPage: React.FC = () => {
       return;
     }
 
+    const loadingToast = notify.loading(
+      'Updating password...'
+    );
     try {
-      const loadingToast = notify.loading(
-        'Updating password...'
-      );
-
       const credential = EmailAuthProvider.credential(
         user.email,
         passwords.currentPassword
@@ -473,7 +472,9 @@ export const SettingsPage: React.FC = () => {
     } catch (error) {
       console.error(error);
 
-      notify.error('Password update failed.');
+      notify.error('Password updated successfully.', {
+        id: loadingToast,
+      });
     }
   };
 
