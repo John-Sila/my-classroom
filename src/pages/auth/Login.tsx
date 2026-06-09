@@ -6,6 +6,7 @@ import { auth, db } from '../../firebase/config';
 import { doc, updateDoc, Timestamp } from 'firebase/firestore';
 import { getAuthErrorMessage } from '@/src/utils/authErrors';
 import { notify } from '@/src/utils/toast';
+import { useAuthStore } from '@/src/store/authStore';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -15,39 +16,54 @@ export const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  function waitForUser(timeoutMs = 8000): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const start = Date.now();
+
+      const check = () => {
+        const { user, loading } = useAuthStore.getState(); // ← getState() outside React, works fine
+        if (user && !loading) return resolve();
+        if (Date.now() - start > timeoutMs) return reject(new Error('Auth timeout'));
+        setTimeout(check, 100);
+      };
+
+      check();
+    });
+  }
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password || isLoading) return;
-    
+
     setIsLoading(true);
     const loader = notify.loading('Signing in...');
+
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Update metadata safely
+      // Update metadata
       try {
-        const userDocRef = doc(db, 'users', user.uid);
-        await updateDoc(userDocRef, {
+        await updateDoc(doc(db, 'users', user.uid), {
           lastLogin: Timestamp.now(),
-          updatedAt: Timestamp.now()
+          updatedAt: Timestamp.now(),
         });
-      } catch (err) {
+      } catch {
         notify.info('Logged in, but failed to sync metadata.');
       }
 
-      const destination = location.state?.from?.pathname || '/dashboard';
-      
-      // Navigate immediately and resolve toast
-      navigate(destination, { replace: true });
       notify.updateSuccess(loader, 'Successfully logged in!');
-      
-      // Note: We intentionally avoid setting isLoading(false) here. 
-      // Keeping it true prevents the inputs from resetting and flashing visually while the router transitions.
+
+      // ✅ Wait for onAuthStateChanged to populate the store
+      // instead of navigating immediately — fixes the Netlify race condition
+      await waitForUser();
+
+      const destination = (location.state as any)?.from?.pathname || '/';
+      navigate(destination, { replace: true });
+
     } catch (error: any) {
-      setIsLoading(false); // Only release loading lock if authentication failed
-      const errorMessage = getAuthErrorMessage(error.code) || 'Authentication failed';
-      notify.updateError(loader, errorMessage);
+      setIsLoading(false);
+      notify.updateError(loader, getAuthErrorMessage(error.code) || 'Authentication failed');
     }
   };
 

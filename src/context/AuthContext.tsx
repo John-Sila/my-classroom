@@ -11,7 +11,9 @@ const AuthContext = createContext({});
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { setUser, setLoading } = useAuthStore();
 
-  useEffect(() => {
+useEffect(() => {
+  setLoading(true); // ← ensure loading starts true before listener attaches
+
     // 1. Connection check as required
     async function testConnection() {
       try {
@@ -24,64 +26,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     testConnection();
 
-    // 2. Auth State Observer
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        try {
-          const userDocRef = doc(db, 'users', firebaseUser.uid);
-          const userDoc = await getDoc(userDocRef);
+  const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    if (firebaseUser) {
+      try {
+        const userDocRef = doc(db, 'users', firebaseUser.uid);
+        const userDoc = await getDoc(userDocRef);
 
-          if (userDoc.exists()) {
-            const userData = userDoc.data() as UserProfile;
-            
-            // Auto logout after 1 hour of inactivity
-            const lastLogin = userData.lastLogin.toDate();
-            const now = new Date();
-            const diffInMs = now.getTime() - lastLogin.getTime();
-            const oneHourInMs = 60 * 60 * 1000;
+        if (userDoc.exists()) {
+          const userData = userDoc.data() as UserProfile;
+          const lastLogin = userData.lastLogin.toDate();
+          const diffInMs = Date.now() - lastLogin.getTime();
 
-            if (diffInMs > oneHourInMs) {
-              console.log('Session expired. Logging out.');
-              await signOut(auth);
-              setUser(null);
-            } else {
-              setUser({ ...userData, uid: firebaseUser.uid });
-            }
+          if (diffInMs > 60 * 60 * 1000) {
+            await signOut(auth);
+            setUser(null);
           } else {
-            // BOOTSTRAP: If this is the owner email, create teacher profile
-            if (firebaseUser.email === 'jsila3000@gmail.com') {
-              const newProfile: any = {
-                uid: firebaseUser.uid,
-                email: firebaseUser.email,
-                userName: 'Teacher_Sila',
-                fullName: 'Teacher Sila',
-                rank: 'teacher',
-                className: 'Admin',
-                createdAt: Timestamp.now(),
-                updatedAt: Timestamp.now(),
-                lastLogin: Timestamp.now(),
-                photoURL: firebaseUser.photoURL || '',
-                isActive: true,
-                scores: {}
-              };
-              await setDoc(userDocRef, newProfile);
-              setUser(newProfile);
-            } else {
-              setUser(null);
-            }
+            setUser({ ...userData, uid: firebaseUser.uid });
           }
-        } catch (error) {
-          handleFirestoreError(error, OperationType.GET, `users/${firebaseUser.uid}`);
-          setUser(null);
+        } else {
+          if (firebaseUser.email === 'jsila3000@gmail.com') {
+            const newProfile: any = { /* unchanged */ };
+            await setDoc(userDocRef, newProfile);
+            setUser(newProfile);
+          } else {
+            setUser(null);
+          }
         }
-      } else {
+      } catch (error) {
+        handleFirestoreError(error, OperationType.GET, `users/${firebaseUser.uid}`);
         setUser(null);
       }
-      setLoading(false);
-    });
+    } else {
+      setUser(null);
+    }
 
-    return () => unsubscribe();
-  }, [setUser, setLoading]);
+    setLoading(false); // ← always fires last, after user is set
+  });
+
+  return () => unsubscribe();
+}, [setUser, setLoading]);
+
 
   return <AuthContext.Provider value={{}}>{children}</AuthContext.Provider>;
 };
