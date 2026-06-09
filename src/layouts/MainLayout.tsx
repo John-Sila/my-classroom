@@ -18,6 +18,7 @@ import {
   Bell,
   LibraryBig,
   MessageCircleCode,
+  BookOpenCheck,
 } from 'lucide-react';
 
 import { useAuthStore } from '../store/authStore';
@@ -113,6 +114,7 @@ export const MainLayout: React.FC = () => {
   const teacherNav = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
     { name: 'Create Test', icon: PlusCircle, path: '/create-test' },
+    { name: 'Write Test', icon: BookOpenCheck, path: '/write-test' },
     { name: 'Manage Users', icon: Users, path: '/manage-users' },
     { name: 'Results Analytics', icon: BarChart3, path: '/results-analytics' },
     // { name: 'Test Analytics', icon: BookOpen, path: '/test-analytics' },
@@ -125,7 +127,8 @@ export const MainLayout: React.FC = () => {
 
   const learnerNav = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
-    { name: 'Available Tests', icon: ClipboardList, path: '/tests' },
+    { name: 'Multiple Choice Tests', icon: ClipboardList, path: '/tests' },
+    { name: 'Written Tests', icon: BookOpenCheck, path: '/written_tests' },
     { name: 'My Results', icon: BarChart3, path: '/results' },
     { name: 'Notifications', icon: Bell, path: '/notifications' },
     !isMobile && { name: 'Library', icon: LibraryBig, path: '/library' },

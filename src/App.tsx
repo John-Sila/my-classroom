@@ -24,6 +24,8 @@ import HelpCenter from './pages/Help';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Chatroom from './pages/learner/Chatroom';
+import WritingTestsManager from './pages/teacher/WriteTests';
+import LearnerTestsView from './pages/learner/WritingTests';
 
 // const TestAnalytics = () => <ResultsAnalytics />;
 const PersonalAnalytics = () => <LearnerDashboard />;
@@ -68,6 +70,10 @@ const router = createBrowserRouter([
         path: 'results-analytics',
         element: <ProtectedRoute allowedRanks={['teacher']}><ResultsAnalytics /></ProtectedRoute>,
       },
+      {
+        path: 'write-test',
+        element: <ProtectedRoute allowedRanks={['teacher']}><WritingTestsManager /></ProtectedRoute>,
+      },
       // {
       //   path: 'test-analytics',
       //   element: <ProtectedRoute allowedRanks={['teacher']}><TestAnalytics /></ProtectedRoute>,
@@ -83,6 +89,10 @@ const router = createBrowserRouter([
       {
         path: 'tests',
         element: <ProtectedRoute allowedRanks={['learner']}><AvailableTests /></ProtectedRoute>,
+      },
+      {
+        path: 'written_tests',
+        element: <ProtectedRoute allowedRanks={['learner']}><LearnerTestsView /></ProtectedRoute>,
       },
       {
         path: 'take-test/:testId',
