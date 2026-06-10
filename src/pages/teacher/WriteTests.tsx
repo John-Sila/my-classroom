@@ -22,7 +22,8 @@ import {
   doc, 
   query, 
   orderBy, 
-  serverTimestamp 
+  serverTimestamp, 
+  setDoc
 } from 'firebase/firestore';
 import { db } from '@/src/firebase/config';
 import { notify } from '@/src/utils/toast';
@@ -257,62 +258,77 @@ export default function WritingTestsManager() {
 
     // Update handleSubmitTest to open dialog instead of submitting directly
     const handleSubmitTest = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Clean up empty questions
-    const cleanQuestions = questions.filter(q => q.trim() !== '');
-    if (!title || cleanQuestions.length === 0 || !dueDate || !markingDate || targetClasses.length === 0) {
-        notify.updateError(null, "Please fill in all fields, add at least one question, and select target classes.");
-        return;
-    }
+      e.preventDefault();
+      
+      // Clean up empty questions
+      const cleanQuestions = questions.filter(q => q.trim() !== '');
+      if (!title || cleanQuestions.length === 0 || !dueDate || !markingDate || targetClasses.length === 0) {
+          notify.updateError(null, "Please fill in all fields, add at least one question, and select target classes.");
+          return;
+      }
 
-    // Open confirmation dialog instead of submitting
-    setSubmitDialog({
-        isOpen: true,
-        title,
-        questions: cleanQuestions,
-        dueDate,
-        markingDate,
-        targetClasses
-    });
+      // Open confirmation dialog instead of submitting
+      setSubmitDialog({
+          isOpen: true,
+          title,
+          questions: cleanQuestions,
+          dueDate,
+          markingDate,
+          targetClasses
+      });
     };
 
-    // New function to handle confirmed submission
+      // New function to handle confirmed submission
     const handleConfirmedSubmit = async () => {
-    const loader = notify.loading('Publishing test...');
-    
-    setSubmitDialog(prev => ({ ...prev, isOpen: false }));
-    setLoading(true);
-    
-    try {
-        await addDoc(collection(db, 'writing_tests'), {
-        title: submitDialog.title,
-        questions: submitDialog.questions,
-        dueDate: submitDialog.dueDate,
-        markingDate: submitDialog.markingDate,
-        targetClasses: submitDialog.targetClasses,
-        postedOn: serverTimestamp()
-        });
+      const loader = notify.loading('Publishing test...');
+      
+      setSubmitDialog(prev => ({ ...prev, isOpen: false }));
+      setLoading(true);
+      
+      try {
+          await addDoc(collection(db, 'writing_tests'), {
+            title: submitDialog.title,
+            questions: submitDialog.questions,
+            dueDate: submitDialog.dueDate,
+            markingDate: submitDialog.markingDate,
+            targetClasses: submitDialog.targetClasses,
+            postedOn: serverTimestamp()
+          });
 
-        // Reset form
-        setTitle('');
-        setQuestions(['']);
-        setDueDate('');
-        setMarkingDate('');
-        setTargetClasses([]);
-        notify.updateSuccess(loader, "Test successfully posted for learners!");
-        setActiveTab('existing');
-    } catch (error) {
-        console.error("Error adding test: ", error);
-        notify.updateError(loader, "Error saving test. Ensure you have the correct permissions.");
-    } finally {
-        setLoading(false);
-    }
+          await addDoc(collection(db, 'notifications'), {
+            title: `New Writing Test: ${submitDialog.title}`,
+            message: `A new writing test "${submitDialog.title}" has been posted for Grades ${submitDialog.targetClasses.join(', ')}. Complete it before ${formatClassroomDate(submitDialog.dueDate)}!`,
+            createdAt: serverTimestamp(),
+          });
+
+          await setDoc(
+            doc(db, 'notifications', 'latestNotification'),
+            {
+              timestamp: serverTimestamp(),
+              updatedAt: serverTimestamp(),
+            },
+            { merge: true }
+          );
+
+          // Reset form
+          setTitle('');
+          setQuestions(['']);
+          setDueDate('');
+          setMarkingDate('');
+          setTargetClasses([]);
+          notify.updateSuccess(loader, `Test successfully posted for ${submitDialog.targetClasses.join(', ')}!`);
+          setActiveTab('existing');
+      } catch (error) {
+          console.error("Error adding test: ", error);
+          notify.updateError(loader, "Error saving test. Ensure you have the correct permissions.");
+      } finally {
+          setLoading(false);
+      }
     };
 
     // Close dialog handler
     const closeSubmitDialog = () => {
-    setSubmitDialog(prev => ({ ...prev, isOpen: false }));
+      setSubmitDialog(prev => ({ ...prev, isOpen: false }));
     };
 
   // Delete an existing test with confirmation dialog

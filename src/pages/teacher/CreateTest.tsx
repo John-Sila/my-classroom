@@ -155,7 +155,7 @@ export const CreateTest: React.FC = () => {
         // 3. Dispatch separate system notifications tailored to each stream
         await addDoc(collection(db, 'notifications'), {
           title: `New test for ${targetClass}`,
-          message: `A new test "${testName}" has been created for ${targetClass}. Attempt it before ${formattedDate}!`,
+          message: `A new multiple choice test "${testName}" has been created for Grade ${targetClass}. Attempt it before ${formattedDate}!`,
           createdAt: serverTimestamp(),
         });
       }
