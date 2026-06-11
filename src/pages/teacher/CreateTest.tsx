@@ -190,7 +190,7 @@ export const CreateTest: React.FC = () => {
       }}
       className="h-full"
     >
-      <div className="max-w-5xl mx-auto pb-20">
+      <div className=""w-full pb-20">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Create New Test</h1>
