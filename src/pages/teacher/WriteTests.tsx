@@ -425,7 +425,7 @@ export default function WritingTestsManager() {
         }
       `}</style>
 
-      <div className="max-w-4xl mx-auto p-6 bg-slate-50 dark:bg-slate-900 min-h-screen rounded-xl shadow-sm dark:shadow-slate-800/50">
+      <div className="w-full p-4 md:p-6 bg-slate-50 dark:bg-slate-900 min-h-screen rounded-xl shadow-sm dark:shadow-slate-800/50">
         
         {/* Dynamic Top Header */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-slate-200 dark:border-slate-700 pb-5 gap-4">
