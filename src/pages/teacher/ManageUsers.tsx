@@ -50,8 +50,9 @@ export const ManageUsers: React.FC = () => {
     const loader = notify.loading('Creating user...');
     e.preventDefault();
     setIsCreating(true);
-    if (formData.className || formData.rank == "") {
+    if (formData.className == "" || formData.rank == "") {
       notify.updateError(loader, `Missing values!`);
+      return;
     }
 
     try {
