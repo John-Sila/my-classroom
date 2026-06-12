@@ -105,7 +105,7 @@ export const TeacherDashboard: React.FC = () => {
       setStats((prev) => ({ ...prev, submissions: 0, avgScore: 0 }));
       return;
     }
-
+    notify.error("selectedTestId", selectedTestId);
     const qAttempts = query(
       collection(db, 'testAttempts'),
       where('testId', '==', selectedTestId),
