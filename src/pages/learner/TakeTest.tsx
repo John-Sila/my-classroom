@@ -405,8 +405,19 @@ const handleFinalSubmit = async () => {
                     </h2>
 
                     {currentQuestion.imageUrl && (
-                      <div className="rounded-3xl overflow-hidden border border-slate-100 dark:border-slate-800 max-h-[300px]">
-                          <img src={currentQuestion.imageUrl} alt="Context" className="w-full h-full object-contain bg-slate-50 dark:bg-slate-800/50" />
+                      <div className="rounded-3xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-4 flex justify-center items-center">
+                        <img
+                          src={currentQuestion.imageUrl}
+                          alt="Context"
+                          className="
+                            max-w-full
+                            max-h-[250px]
+                            md:max-h-[350px]
+                            lg:max-h-[450px]
+                            object-contain
+                            rounded-xl
+                          "
+                        />
                       </div>
                     )}
 
