@@ -98,10 +98,10 @@ export const TeacherDashboard: React.FC = () => {
       unsubUsers();
     };
   }, []);
-
+  
   useEffect(() => {
-    // Strict runtime guard: prevent Firestore invalid query input
-    if (typeof selectedTestId !== "string" || selectedTestId.trim() === "") {
+    // Strict runtime guard: prevent Firestore invalid query input (null, undefined, or empty string)
+    if (!selectedTestId || typeof selectedTestId !== "string" || selectedTestId.trim() === "") {
       setAttempts([]);
       setStats((prev) => ({
         ...prev,
