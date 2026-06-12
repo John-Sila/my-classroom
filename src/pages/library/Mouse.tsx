@@ -95,11 +95,11 @@ export default function MouseTopic() {
         </p>
 
         {/* Image */}
-        <div className="aspect-[16/9] overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 max-w-3xl">
+        <div className="aspect-[16/9] w-full max-w-3xl rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center p-4 md:p-8">
           <img
             src="https://www.transparentpng.com/download/computer-mouse/3ckv3O-computer-mouse-background.png"
             alt="Mouse device"
-            className="w-full h-full object-cover"
+            className="max-w-full max-h-full object-contain"
           />
         </div>
 
