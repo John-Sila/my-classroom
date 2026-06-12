@@ -100,45 +100,63 @@ export const TeacherDashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!selectedTestId) {
+    // Strict runtime guard: prevent Firestore invalid query input
+    if (typeof selectedTestId !== "string" || selectedTestId.trim() === "") {
       setAttempts([]);
-      setStats((prev) => ({ ...prev, submissions: 0, avgScore: 0 }));
+      setStats((prev) => ({
+        ...prev,
+        submissions: 0,
+        avgScore: 0,
+      }));
       return;
     }
-    console.log("selectedTestId", selectedTestId);
-    const qAttempts = query(
-      collection(db, 'testAttempts'),
-      where('testId', '==', selectedTestId),
-      orderBy('score', 'desc')
-    );
-
-    const unsubAttempts = onSnapshot(
-      qAttempts,
-      (snap) => {
-        const data = snap.docs.map((doc) => ({
-          attemptId: doc.id,
-          ...(doc.data() as TestAttemptLite)
-        }));
-
-        setAttempts(data);
-
-        const avg =
-          data.length > 0
-            ? Math.round(data.reduce((acc, curr) => acc + (curr.percentage || 0), 0) / data.length)
-            : 0;
-
-        setStats((prev) => ({
-          ...prev,
-          submissions: snap.size,
-          avgScore: avg
-        }));
-      },
-      (error) => {
-        console.error('Attempts snapshot error:', error);
-      }
-    );
-
-    return () => unsubAttempts();
+  
+    let unsubAttempts: (() => void) | undefined;
+  
+    try {
+      const qAttempts = query(
+        collection(db, "testAttempts"),
+        where("testId", "==", selectedTestId),
+        orderBy("score", "desc")
+      );
+  
+      unsubAttempts = onSnapshot(
+        qAttempts,
+        (snap) => {
+          const data = snap.docs.map((doc) => ({
+            attemptId: doc.id,
+            ...(doc.data() as TestAttemptLite),
+          }));
+  
+          setAttempts(data);
+  
+          const avg =
+            data.length > 0
+              ? Math.round(
+                  data.reduce(
+                    (acc, curr) => acc + (curr.percentage ?? 0),
+                    0
+                  ) / data.length
+                )
+              : 0;
+  
+          setStats((prev) => ({
+            ...prev,
+            submissions: snap.size,
+            avgScore: avg,
+          }));
+        },
+        (error) => {
+          console.error("Attempts snapshot error:", error);
+        }
+      );
+    } catch (err) {
+      console.error("Failed to initialize Firestore query:", err);
+    }
+  
+    return () => {
+      if (unsubAttempts) unsubAttempts();
+    };
   }, [selectedTestId]);
 
   const selectedTest = useMemo(
