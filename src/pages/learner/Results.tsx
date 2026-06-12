@@ -162,7 +162,7 @@ export const MyResults: React.FC = () => {
   }
 
   return (
-   <motion.div
+    <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
@@ -291,6 +291,18 @@ export const MyResults: React.FC = () => {
                                         {q.questionText}
                                       </h4>
 
+                                      {/* Added: Dynamic Image Rendering Container */}
+                                      {q.imageUrl && (
+                                        <div className="my-4 max-w-lg overflow-hidden rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2">
+                                          <img
+                                            src={q.imageUrl}
+                                            alt={`Question ${idx + 1} diagram`}
+                                            className="w-full h-auto object-contain max-h-[300px] rounded-lg"
+                                            loading="lazy"
+                                          />
+                                        </div>
+                                      )}
+
                                       {typeof selectedIndex === 'number' ? (
                                         <p className="text-sm text-slate-500 dark:text-slate-400">
                                           Your answer:{' '}
@@ -365,8 +377,6 @@ export const MyResults: React.FC = () => {
           </div>
         )}
       </div>
-
     </motion.div>
-    
   );
 };
