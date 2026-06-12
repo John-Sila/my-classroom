@@ -31,7 +31,6 @@ import {
 } from 'recharts';
 import { format } from 'date-fns';
 import { motion } from 'motion/react';
-import { notify } from '@/src/utils/toast';
 
 type TestAttemptLite = {
   attemptId?: string;
@@ -106,7 +105,7 @@ export const TeacherDashboard: React.FC = () => {
       setStats((prev) => ({ ...prev, submissions: 0, avgScore: 0 }));
       return;
     }
-    notify.error("selectedTestId", selectedTestId);
+    console.log("selectedTestId", selectedTestId);
     const qAttempts = query(
       collection(db, 'testAttempts'),
       where('testId', '==', selectedTestId),
