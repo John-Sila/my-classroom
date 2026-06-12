@@ -116,7 +116,7 @@ export const TeacherDashboard: React.FC = () => {
     try {
       const qAttempts = query(
         collection(db, "testAttempts"),
-        where("testId", "==", selectedTestId),
+        where("testId", "==", "ttt"),
         orderBy("score", "desc")
       );
   
