@@ -22,6 +22,7 @@ import {
   Origami,
   Binary,
   BookA,
+  PersonStandingIcon,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -44,6 +45,7 @@ import CyberLawTopic from '../library/Law';
 import RoboticsTopic from '../library/Robotics';
 import IntelligenceTopic from '../library/Intelligence';
 import FunFactsTopic from '../library/FunFacts';
+import ITPioneers from '../library/ITPioneers';
 
 type Topic = {
   id: string;
@@ -69,6 +71,7 @@ const topics: Topic[] = [
   { id: 'reality', title: 'Reality Simulation & CGI', icon: RectangleGoggles, component: RealityManipulationDossier, group: 'culture' },
   { id: 'e_learning', title: 'E-Learning Systems', icon: MonitorCloud, component: ELearningTopic, group: 'culture' },
   { id: 'law', title: 'Cyber Law', icon: BookLock, component: CyberLawTopic, group: 'culture' },
+  { id: 'persons', title: 'IT Pioneers', icon: PersonStandingIcon, component: ITPioneers, group: 'intelligence' },
   { id: 'fun_facts', title: 'System Trivia Engine', icon: BookA, component: FunFactsTopic, group: 'culture' },
   { id: 'short_forms', title: 'Abbreviation Index', icon: Logs, component: ShortFormsReference, group: 'culture' },
 ];

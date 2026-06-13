@@ -113,7 +113,7 @@ export const MainLayout: React.FC = () => {
 
   const teacherNav = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
-    { name: 'Create Test (MCQn\'s)', icon: PlusCircle, path: '/create-test' },
+    { name: 'Create Test (MCQs)', icon: PlusCircle, path: '/create-test' },
     { name: 'Write Test', icon: BookOpenCheck, path: '/write-test' },
     { name: 'Manage Users', icon: Users, path: '/manage-users' },
     { name: 'Results Analytics', icon: BarChart3, path: '/results-analytics' },
