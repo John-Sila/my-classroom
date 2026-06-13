@@ -44,13 +44,9 @@ useEffect(() => {
             setUser({ ...userData, uid: firebaseUser.uid });
           }
         } else {
-          if (firebaseUser.email === 'jsila3000@gmail.com') {
-            const newProfile: any = { /* unchanged */ };
-            await setDoc(userDocRef, newProfile);
-            setUser(newProfile);
-          } else {
-            setUser(null);
-          }
+          await signOut(auth);
+          window.location.reload();
+          return;
         }
       } catch (error) {
         handleFirestoreError(error, OperationType.GET, `users/${firebaseUser.uid}`);

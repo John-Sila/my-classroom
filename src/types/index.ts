@@ -1,13 +1,12 @@
 import { Timestamp } from 'firebase/firestore';
 
-export type UserRank = 'teacher' | 'learner';
 
 export interface UserProfile {
   uid: string;
   email: string;
   userName: string;
   fullName: string;
-  rank: UserRank;
+  rank: string;
   className: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
