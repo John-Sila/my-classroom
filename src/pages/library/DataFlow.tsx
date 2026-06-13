@@ -25,19 +25,26 @@ import {
   Fingerprint,
 } from "lucide-react";
 import WorkspaceHeroSlider from "./components/WorkspaceHeroSlider";
-
-// Clean, smooth optimization curves
-const fadeInUp = {
-  hidden: { opacity: 0, y: 15 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
-};
+import StorageCard from "@/src/utils/shimmer";
 
 const staggerContainer = {
-  hidden: { opacity: 0 },
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 14, scale: 0.98 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.05 }
-  }
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.35, ease: "easeOut" },
+  },
 };
 
 export default function DataFlowTopic() {
@@ -171,7 +178,7 @@ export default function DataFlowTopic() {
           Computers interpret external signals through transducers that convert physical variables into binary streams.
         </p>
 
-        <motion.div 
+        <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-20px" }}
@@ -180,8 +187,8 @@ export default function DataFlowTopic() {
         >
           {inputDevices.map((dev) => (
             <motion.div
-              variants={fadeInUp}
               key={dev.name}
+              variants={fadeInUp}
               className="flex flex-col rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs hover:shadow-md transition-all duration-200"
             >
               <div className="h-28 w-full overflow-hidden">
@@ -192,11 +199,14 @@ export default function DataFlowTopic() {
                   <dev.icon className="h-4 w-4 text-blue-500 shrink-0" />
                   <span className="truncate">{dev.name}</span>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">{dev.desc}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">
+                  {dev.desc}
+                </p>
               </div>
             </motion.div>
           ))}
         </motion.div>
+
       </section>
 
       {/* 2. PROCESSING CORE */}
@@ -234,8 +244,18 @@ export default function DataFlowTopic() {
       <section className="space-y-6">
         <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
           <h2 className="text-2xl md:text-3xl font-bold flex items-center gap-2 text-slate-900 dark:text-white">
-            <HardDrive className="h-6 w-6 text-amber-500" /> 3. Storage Hierarchy
+            <HardDrive className="h-6 w-6 text-amber-500" />
+            3. Storage Hierarchy
           </h2>
+          <p className="mt-2 max-w-3xl text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            Storage is organized into two broad levels: 
+            <span className="font-semibold text-indigo-600 dark:text-indigo-400"> primary storage</span>, also called 
+            <span className="font-semibold text-blue-600 dark:text-blue-400"> main memory</span> or 
+            <span className="font-semibold text-cyan-600 dark:text-cyan-400"> internal memory</span>, because it is inside the computer system and works directly with the CPU. 
+            <span className="font-semibold text-rose-600 dark:text-rose-400"> Secondary storage</span>, also called 
+            <span className="font-semibold text-amber-600 dark:text-amber-400"> auxiliary memory</span> or 
+            <span className="font-semibold text-orange-600 dark:text-orange-400"> external memory</span>, sits outside the CPU and is used for long-term storage. [web:31][web:38][web:40]
+          </p>
         </div>
 
         {/* Dynamic Nav Tabs */}
@@ -248,9 +268,9 @@ export default function DataFlowTopic() {
             <button
               key={tab.id}
               onClick={() => setActiveStorageTab(tab.id as any)}
-              className={`flex items-center gap-2 px-4 py-2.5 font-bold text-xs uppercase tracking-wider border-b-2 transition-all shrink-0 outline-none ${
-                activeStorageTab === tab.id 
-                  ? "border-amber-500 text-amber-600 dark:text-amber-400 bg-amber-50/40 dark:bg-amber-950/20" 
+              className={`flex items-center gap-2 px-4 py-2.5 font-bold text-xs uppercase tracking-wider border-b-2 transition-all duration-300 ease-out shrink-0 outline-none ${
+                activeStorageTab === tab.id
+                  ? "border-amber-500 text-amber-600 dark:text-amber-400 bg-amber-50/60 dark:bg-amber-950/20"
                   : "border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
               }`}
             >
@@ -263,23 +283,43 @@ export default function DataFlowTopic() {
         {/* Tab Workspace Panel */}
         <div className="min-h-[280px]">
           {activeStorageTab === "primary" && (
-            <motion.div key="primary" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-              <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-white dark:bg-slate-900">
+            <motion.div
+              key="primary"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="space-y-4"
+            >
+              <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-white dark:bg-slate-900 shadow-sm">
                 <div className="hidden md:grid grid-cols-12 bg-slate-50 dark:bg-slate-950 p-4 font-bold text-xs uppercase text-slate-500 border-b border-slate-200 dark:border-slate-800">
                   <div className="col-span-3">Property</div>
                   <div className="col-span-4 text-indigo-600 dark:text-indigo-400">RAM</div>
                   <div className="col-span-5 text-rose-600 dark:text-rose-400">ROM</div>
                 </div>
+
                 <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs md:text-sm">
                   <div className="grid grid-cols-1 md:grid-cols-12 p-4 gap-2 md:gap-0">
-                    <div className="col-span-3 font-bold text-slate-900 dark:text-white md:uppercase md:text-xs">Volatility</div>
-                    <div className="col-span-4 md:pr-4"><span className="text-rose-500 font-bold">Volatile:</span> Clears instantly when device power resets.</div>
-                    <div className="col-span-5"><span className="text-emerald-500 font-bold">Non-Volatile:</span> Permanently locks tracking logs.</div>
+                    <div className="col-span-3 font-bold text-slate-900 dark:text-white md:uppercase md:text-xs">
+                      Volatility
+                    </div>
+                    <div className="col-span-4 md:pr-4 text-slate-600 dark:text-slate-300">
+                      <span className="text-rose-500 font-bold">Volatile:</span> data is lost when power is turned off.
+                    </div>
+                    <div className="col-span-5 text-slate-600 dark:text-slate-300">
+                      <span className="text-emerald-500 font-bold">Non-volatile:</span> data remains stored even without power.
+                    </div>
                   </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-12 p-4 gap-2 md:gap-0">
-                    <div className="col-span-3 font-bold text-slate-900 dark:text-white md:uppercase md:text-xs">Access Loop</div>
-                    <div className="col-span-4 md:pr-4">Dynamic high-speed reads and continuous software variable writes.</div>
-                    <div className="col-span-5">Read-mostly ecosystem; requires hardware firmware flashes to adjust values.</div>
+                    <div className="col-span-3 font-bold text-slate-900 dark:text-white md:uppercase md:text-xs">
+                      Access Pattern
+                    </div>
+                    <div className="col-span-4 md:pr-4 text-slate-600 dark:text-slate-300">
+                      Fast read and write access for active programs and data.
+                    </div>
+                    <div className="col-span-5 text-slate-600 dark:text-slate-300">
+                      Mostly read-oriented, with changes made less frequently.
+                    </div>
                   </div>
                 </div>
               </div>
@@ -287,41 +327,45 @@ export default function DataFlowTopic() {
           )}
 
           {activeStorageTab === "secondary" && (
-            <motion.div key="secondary" initial={{ opacity: 0 }} className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+            <motion.div
+              key="secondary"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4"
+            >
               {secondaryStorage.map((st) => (
-                <div key={st.type} className="flex flex-col rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs">
-                  <div className="h-24 w-full overflow-hidden">
-                    <img src={st.img} alt={st.type} className="h-full w-full object-cover" />
-                  </div>
-                  <div className="p-4 space-y-1">
-                    <h4 className="font-bold text-slate-900 dark:text-white text-xs md:text-sm truncate">{st.type}</h4>
-                    <span className="text-[9px] uppercase font-bold text-amber-500 tracking-wider block">{st.tech}</span>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">{st.desc}</p>
-                  </div>
-                </div>
+                <StorageCard key={st.type} st={st} />
               ))}
             </motion.div>
           )}
 
           {activeStorageTab === "scale" && (
-            <motion.div key="scale" initial={{ opacity: 0 }} className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-white dark:bg-slate-900">
+            <motion.div
+              key="scale"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-white dark:bg-slate-900 shadow-sm"
+            >
               <div className="hidden md:grid grid-cols-12 bg-slate-50 dark:bg-slate-950 p-4 font-bold text-xs uppercase text-slate-500 border-b border-slate-200 dark:border-slate-800">
                 <div className="col-span-3">Designation</div>
                 <div className="col-span-4">Absolute Equivalent</div>
                 <div className="col-span-5">Example Scope</div>
               </div>
+
               <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs md:text-sm">
                 {[
-                  { name: "Bit (b)", val: "A single microscopic transistor circuit block state (0 or 1).", ex: "An isolated true/false logical configuration flag value." },
-                  { name: "Byte (B)", val: "8 sequential processing bits combined.", ex: "A single alphanumeric structural character text entry." },
-                  { name: "Kilobyte (KB)", val: "1,024 Bytes system tracking modules.", ex: "A regular string page log array of unformatted texts." },
-                  { name: "Megabyte (MB)", val: "1,024 Kilobytes storage fields.", ex: "A highly optimized audio platform compression track." },
-                  { name: "Gigabyte (GB)", val: "1,024 Megabytes data blocks.", ex: "Approximately 1 hour of compressed data flow stream arrays." }
+                  { name: "Bit (b)", val: "A single binary digit: 0 or 1.", ex: "The smallest unit of digital information." },
+                  { name: "Byte (B)", val: "8 bits combined together.", ex: "Commonly used to represent one character." },
+                  { name: "Kilobyte (KB)", val: "1,024 bytes.", ex: "Small text files and simple documents." },
+                  { name: "Megabyte (MB)", val: "1,024 kilobytes.", ex: "Images, songs, and medium-sized files." },
+                  { name: "Gigabyte (GB)", val: "1,024 megabytes.", ex: "Videos, apps, and storage drives." }
                 ].map((row) => (
                   <div key={row.name} className="grid grid-cols-1 md:grid-cols-12 p-4 gap-1 md:gap-0">
                     <div className="col-span-3 font-bold text-slate-900 dark:text-white">{row.name}</div>
                     <div className="col-span-4 text-slate-600 dark:text-slate-400 md:pr-4">{row.val}</div>
-                    <div className="col-span-5 text-slate-400">{row.ex}</div>
+                    <div className="col-span-5 text-slate-500 dark:text-slate-400">{row.ex}</div>
                   </div>
                 ))}
               </div>

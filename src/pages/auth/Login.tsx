@@ -55,7 +55,7 @@ export const Login: React.FC = () => {
 
       notify.updateSuccess(loader, 'Successfully logged in!');
 
-      // ✅ Wait for onAuthStateChanged to populate the store
+      // Wait for onAuthStateChanged to populate the store
       // instead of navigating immediately — fixes the Netlify race condition
       await waitForUser();
 
