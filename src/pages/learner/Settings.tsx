@@ -257,7 +257,7 @@ function PasswordField({
 
       <div className="relative">
         <input
-          type={visible ? 'text' : 'password'}
+          type={visible ? "text" : "password"}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className={inputClass}
@@ -268,11 +268,18 @@ function PasswordField({
           onClick={onToggle}
           className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"
         >
-          {visible ? (
-            <EyeOff className="h-5 w-5" />
-          ) : (
-            <Eye className="h-5 w-5" />
-          )}
+          <div className="relative h-5 w-5 overflow-hidden">
+            <Eye
+              className={`absolute h-5 w-5 transition-all duration-300 ease-out ${
+                visible ? "translate-y-5 opacity-0" : "translate-y-0 opacity-100"
+              }`}
+            />
+            <EyeOff
+              className={`absolute h-5 w-5 transition-all duration-300 ease-out ${
+                visible ? "translate-y-0 opacity-100" : "-translate-y-5 opacity-0"
+              }`}
+            />
+          </div>
         </button>
       </div>
     </div>
