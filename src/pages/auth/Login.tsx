@@ -139,7 +139,22 @@ export const Login: React.FC = () => {
                     className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer disabled:pointer-events-none"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    <div className="relative w-5 h-5 overflow-hidden">
+                      <Eye 
+                        className={`w-5 h-5 absolute transition-all duration-300 ease-out ${
+                          showPassword 
+                            ? 'translate-y-5 opacity-0' 
+                            : 'translate-y-0 opacity-100'
+                        }`} 
+                      />
+                      <EyeOff 
+                        className={`w-5 h-5 absolute transition-all duration-300 ease-out ${
+                          showPassword 
+                            ? 'translate-y-0 opacity-100' 
+                            : '-translate-y-5 opacity-0'
+                        }`} 
+                      />
+                    </div>
                   </button>
                 </div>
               </div>
