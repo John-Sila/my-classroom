@@ -103,7 +103,7 @@ const avatars = [
   { id: 'avatar-47', url: 'https://s.namemc.com/3d/skin/body.png?id=c30c62bce523c062&model=classic&width=308&height=308' },
   { id: 'avatar-48', url: 'https://i.pinimg.com/originals/4f/7a/68/4f7a6834b3b7fb57349499c5c9efd87b.png' },
   { id: 'avatar-49', url: 'https://www.pngall.com/wp-content/uploads/13/Roblox-Avatar-No-Background.png' },
-  { id: 'avatar-50', url: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/8911a890-1488-4033-b210-287b6a9c5319/df6mjby-36ef5320-994a-4e94-82da-952e58e41611.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi80OTExYTg5MC0xNDg4LTQwMzMtYjIxMC0yODdiNmE5YzUzMTkvZGY2bWpieS0zNmVmNTMyMC05OTRhLTRlOTQtODJkYS05NTJlNThlNDE2MTEucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.8ISfbNk8dvrkrC0wYcA4WKOkd_Z1f7MEMPSco3mPTGc' },
+  { id: 'avatar-50', url: 'https://pixnio.com/free-images/2026/03/06/2026-03-06-09-37-50-1344x1344.png' },
   { id: 'avatar-51', url: 'https://png.pngtree.com/png-clipart/20221222/ourmid/pngtree-flat-style-winter-sports-characters-png-image_6491759.png' },
   { id: 'avatar-52', url: 'https://png.pngtree.com/png-vector/20241228/ourmid/pngtree-sports-avatar-bright-red-and-white-outfit-holding-basketball-wearing-sporty-png-image_14855385.png' },
   { id: 'avatar-53', url: 'https://png.pngtree.com/png-clipart/20221207/ourmid/pngtree-sports-boy-png-image_6514641.png' },
