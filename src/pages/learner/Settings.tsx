@@ -94,14 +94,16 @@ const avatars = [
   { id: 'avatar-40', url: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Frost' },
 
   // others
-  { id: 'avatar-41', url: 'https://pngimg.com/uploads/spider_man/spider_man_PNG75.png' },
+  { id: 'avatar-41', url: 'https://static.vecteezy.com/system/resources/previews/072/335/469/non_2x/spiderman-hero-pose-image-without-background-in-good-quality-free-png.png' },
+  { id: 'avatar-42', url: 'https://purepng.com/public/uploads/large/purepng.com-spidermanspider-manspidermansuperherocomic-bookmarvel-comicscharacterstan-lee-1701528655675wjtla.png' },
+  { id: 'avatar-42', url: 'https://images.seeklogo.com/logo-png/42/2/spiderman-face-logo-png_seeklogo-426612.png' },
   { id: 'avatar-42', url: 'https://i.pinimg.com/originals/1e/ca/95/1eca95a9e9c9edd1a1a331a5917a024b.png' },
   { id: 'avatar-43', url: 'https://www.pngarts.com/files/5/User-Avatar-Free-PNG-Image.png' },
   { id: 'avatar-44', url: 'https://cdn-icons-png.flaticon.com/512/9192/9192877.png' },
   { id: 'avatar-45', url: 'https://s.namemc.com/3d/skin/body.png?id=c30c62bce523c062&model=classic&width=308&height=308' },
   { id: 'avatar-46', url: 'https://i.pinimg.com/originals/4f/7a/68/4f7a6834b3b7fb57349499c5c9efd87b.png' },
   { id: 'avatar-47', url: 'https://www.pngall.com/wp-content/uploads/13/Roblox-Avatar-No-Background.png' },
-  { id: 'avatar-48', url: 'https://png.pngtree.com/png-clipart/20230815/original/pngtree-halftone-icon---referee-avatar-sport-man-football-vector-picture-image_10826964.png' },
+  { id: 'avatar-48', url: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/8911a890-1488-4033-b210-287b6a9c5319/df6mjby-36ef5320-994a-4e94-82da-952e58e41611.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi84OTExYTg5MC0xNDg4LTQwMzMtYjIxMC0yODdiNmE5YzUzMTkvZGY2bWpieS0zNmVmNTMyMC05OTRhLTRlOTQtODJkYS05NTJlNThlNDE2MTEucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.8ISfbNk8dvrkrC0wYcA4WKOkd_Z1f7MEMPSco3mPTGc' },
   { id: 'avatar-49', url: 'https://png.pngtree.com/png-clipart/20221222/ourmid/pngtree-flat-style-winter-sports-characters-png-image_6491759.png' },
   { id: 'avatar-50', url: 'https://png.pngtree.com/png-vector/20241228/ourmid/pngtree-sports-avatar-bright-red-and-white-outfit-holding-basketball-wearing-sporty-png-image_14855385.png' },
   { id: 'avatar-51', url: 'https://png.pngtree.com/png-clipart/20221207/ourmid/pngtree-sports-boy-png-image_6514641.png' },
@@ -122,7 +124,7 @@ const avatars = [
   { id: 'avatar-66', url: 'https://png.pngtree.com/png-clipart/20241114/original/pngtree-cartoon-character-with-orange-cap-and-green-leaf-elements-png-image_17013926.png' },
   { id: 'avatar-67', url: 'https://static.vecteezy.com/system/resources/previews/022/484/111/non_2x/sneaky-3d-burglar-girl-lovable-and-engaging-character-for-kids-games-and-stories-transparent-background-free-png.png' },
   { id: 'avatar-68', url: 'https://static.vecteezy.com/system/resources/thumbnails/070/221/009/small/cartoon-character-enthusiastically-working-on-laptop-while-comfortably-seated-in-gaming-chair-with-png.png' },
-  { id: 'avatar-68', url: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e338e3cb-6c1e-446c-bb49-969609394cca/dimbl09-05e95597-3781-4822-9e62-86fce57dc2f1.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9lMzM4ZTNjYi02YzFlLTQ0NmMtYmI0OS05Njk2MDkzOTRjY2EvZGltYmwwOS0wNWU5NTU5Ny0zNzgxLTQ4MjItOWU2Mi04NmZjZTU3ZGMyZjEucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.6QLt5_pBsHUHz4uoTHcq_bAnxlY2Mf-KmZH74AgefN0' },
+  { id: 'avatar-68', url: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/df300794-5331-494c-a6b7-42e05c98059a/dghwo43-104a0691-5a6f-445b-8357-db3123e30972.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9kZjMwMDc5NC01MzMxLTQ5NGMtYTZiNy00MmUwNWM5ODA1OWEvZGdod280My0xMDRhMDY5MS01YTZmLTQ0NWItODM1Ny1kYjMxMjNlMzA5NzIucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.swze-WJaglmkHE9m2hOQ0uTYQGV8M4dUyA2w4milels' },
 ];
 
 // styling
