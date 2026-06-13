@@ -94,7 +94,7 @@ const avatars = [
   { id: 'avatar-40', url: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Frost' },
 
   // others
-  { id: 'avatar-41', url: 'https://file.aiquickdraw.com/imgcompressed/img/compressed_f1bb9a45d35bdf084dfa5895cb678f1d.webp' },
+  { id: 'avatar-41', url: 'https://pngimg.com/uploads/spider_man/spider_man_PNG75.png' },
   { id: 'avatar-42', url: 'https://i.pinimg.com/originals/1e/ca/95/1eca95a9e9c9edd1a1a331a5917a024b.png' },
   { id: 'avatar-43', url: 'https://www.pngarts.com/files/5/User-Avatar-Free-PNG-Image.png' },
   { id: 'avatar-44', url: 'https://cdn-icons-png.flaticon.com/512/9192/9192877.png' },
@@ -122,6 +122,7 @@ const avatars = [
   { id: 'avatar-66', url: 'https://png.pngtree.com/png-clipart/20241114/original/pngtree-cartoon-character-with-orange-cap-and-green-leaf-elements-png-image_17013926.png' },
   { id: 'avatar-67', url: 'https://static.vecteezy.com/system/resources/previews/022/484/111/non_2x/sneaky-3d-burglar-girl-lovable-and-engaging-character-for-kids-games-and-stories-transparent-background-free-png.png' },
   { id: 'avatar-68', url: 'https://static.vecteezy.com/system/resources/thumbnails/070/221/009/small/cartoon-character-enthusiastically-working-on-laptop-while-comfortably-seated-in-gaming-chair-with-png.png' },
+  { id: 'avatar-68', url: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e338e3cb-6c1e-446c-bb49-969609394cca/dimbl09-05e95597-3781-4822-9e62-86fce57dc2f1.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9lMzM4ZTNjYi02YzFlLTQ0NmMtYmI0OS05Njk2MDkzOTRjY2EvZGltYmwwOS0wNWU5NTU5Ny0zNzgxLTQ4MjItOWU2Mi04NmZjZTU3ZGMyZjEucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.6QLt5_pBsHUHz4uoTHcq_bAnxlY2Mf-KmZH74AgefN0' },
 ];
 
 // styling
