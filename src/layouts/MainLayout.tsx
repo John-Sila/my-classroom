@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, useNavigate, Outlet } from 'react-router-dom';
+import { NavLink, useNavigate, Outlet, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   BookOpen,
@@ -14,10 +14,8 @@ import {
   Moon,
   GraduationCap,
   Settings,
-  BellElectric,
   Bell,
   LibraryBig,
-  MessageCircleCode,
   BookOpenCheck,
 } from 'lucide-react';
 
@@ -30,11 +28,29 @@ import { motion } from 'motion/react';
 import { doc, updateDoc, Timestamp, onSnapshot } from 'firebase/firestore';
 import { notify } from '../utils/toast';
 import { Footer } from '../pages/footer';
-import { useIsCompactView, useIsMobile } from '../utils/isMobile';
+import { useIsMobile } from '../utils/isMobile';
+
+// Maps routes to friendly page titles for the desktop header.
+// Falls back to "Home" when a route isn't listed.
+const routeTitles: Record<string, string> = {
+  '/': "Home",
+  '/create-test': 'Create a New Test',
+  '/write-test': 'Write Test',
+  '/manage-users': 'Manage Users',
+  '/results-analytics': 'Results Analytics',
+  '/notifier': 'Notifier',
+  '/notifications': 'Notifications',
+  '/library': 'Library',
+  '/profile_settings': 'Settings',
+  '/tests': 'Multiple Choice Tests',
+  '/written_tests': 'Written Tests',
+  '/results': 'My Results',
+};
 
 export const MainLayout: React.FC = () => {
   const { user } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
+  const location = useLocation();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [photoURL, setPhotoURL] = useState<string | null>(user?.photoURL ?? null);
@@ -105,7 +121,6 @@ export const MainLayout: React.FC = () => {
       await signOut(auth);
       notify.updateSuccess(loader, 'Logged out successfully!');
       navigate('/login');
-      // window.location.reload();
     } catch (error) {
       notify.updateError(loader, 'Logout failed:');
     }
@@ -117,68 +132,63 @@ export const MainLayout: React.FC = () => {
     { name: 'Write Test', icon: BookOpenCheck, path: '/write-test' },
     { name: 'Manage Users', icon: Users, path: '/manage-users' },
     { name: 'Results Analytics', icon: BarChart3, path: '/results-analytics' },
-    // { name: 'Test Analytics', icon: BookOpen, path: '/test-analytics' },
-    { name: 'Notifier', icon: BellElectric, path: '/notifier' },
-    { name: 'Notifications', icon: Bell, path: '/notifications' },
+    { name: 'Notifier', icon: Bell, path: '/notifier' },
     !isMobile && { name: 'Library', icon: LibraryBig, path: '/library' },
-    // !isMobile && { name: 'Chatroom', icon: MessageCircleCode, path: '/chatroom' },
     { name: 'Settings', icon: Settings, path: '/profile_settings' },
-  ].filter(Boolean);
+  ].filter(Boolean) as { name: string; icon: any; path: string }[];
 
   const learnerNav = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
     { name: 'Multiple Choice Tests', icon: ClipboardList, path: '/tests' },
     { name: 'Written Tests', icon: BookOpenCheck, path: '/written_tests' },
     { name: 'My Results', icon: BarChart3, path: '/results' },
-    { name: 'Notifications', icon: Bell, path: '/notifications' },
     !isMobile && { name: 'Library', icon: LibraryBig, path: '/library' },
-    // !isMobile && { name: 'Chatroom', icon: MessageCircleCode, path: '/chatroom' },
     { name: 'Settings', icon: Settings, path: '/profile_settings' },
-  ].filter(Boolean);
+  ].filter(Boolean) as { name: string; icon: any; path: string }[];
 
   const navItems = user?.rank === 'teacher' ? teacherNav : learnerNav;
+
+  const pageTitle = routeTitles[location.pathname] ?? "Teacher Sila's Classroom";
+
+  const displayName = user?.fullName
+    ? user.fullName.length > 14
+      ? `${user.fullName.slice(0, 14)}...`
+      : user.fullName
+    : 'Teacher Sila';
 
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950 transition-colors duration-300">
       {/* Mobile Topbar */}
       <header className="lg:hidden sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
         <div className="flex items-center gap-2">
-          {/* Profile Photo with Icon Fallback */}
           {user?.photoURL ? (
             <img
               src={user.photoURL}
               alt="Avatar"
-              className="h-8 w-8 rounded-full border border-indigo-500 object-cover"
+              className="h-8 w-8 rounded-full border-2 border-indigo-500 object-cover ring-2 ring-indigo-500/10"
             />
           ) : (
-            <GraduationCap className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 shadow-md shadow-indigo-500/20">
+              <GraduationCap className="h-5 w-5 text-white" />
+            </div>
           )}
 
           <span className="text-lg font-bold text-slate-900 dark:text-white">
-            {user?.fullName 
-              ? user.fullName.length > 14 
-                ? `${user.fullName.slice(0, 14)}...` 
-                : user.fullName
-              : 'Teacher Sila'}
+            {displayName}
           </span>
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Mobile Notification Bell Icon Trigger Link */}
           <button
-            onClick={() => {
-              // Dynamically choose target destination route mapping based on auth profile rank field
-              const targetPath = '/notifications';
-              navigate(targetPath);
-            }}
+            onClick={() => navigate('/notifications')}
             className="relative rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
-            aria-label="Settings"
+            aria-label="Notifications"
           >
             <Bell className="h-6 w-6" />
             {hasUnread && (
               <span className="absolute top-2 right-2 flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-600 dark:bg-indigo-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
               </span>
             )}
           </button>
@@ -186,6 +196,7 @@ export const MainLayout: React.FC = () => {
           <button
             onClick={() => setIsSidebarOpen(true)}
             className="rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+            aria-label="Open menu"
           >
             <Menu className="h-6 w-6" />
           </button>
@@ -200,110 +211,106 @@ export const MainLayout: React.FC = () => {
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           )}
         >
-        <div className="flex h-full flex-col">
-          <div className="hidden items-center gap-3 p-6 lg:flex">
-            <div className="rounded-xl bg-indigo-600 p-2">
-              <GraduationCap className="h-6 w-6 text-white" />
+          <div className="flex h-full flex-col">
+            {/* Desktop logo lockup */}
+            <div className="hidden items-center gap-3 p-6 lg:flex">
+              <div className="rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 p-2 shadow-lg shadow-indigo-500/20">
+                <GraduationCap className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+                  Classroom
+                </span>
+                <div className="h-0.5 w-8 rounded-full bg-gradient-to-r from-indigo-500 to-amber-400 mt-0.5" />
+              </div>
             </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-              Classroom
-            </span>
-          </div>
-          <div className="flex items-center justify-between border-b border-slate-100 p-4 dark:border-slate-800 lg:hidden">
-            <div className="flex min-w-0 items-center gap-3">
-              <div className="h-10 w-10 shrink-0 overflow-hidden bg-transparent">
-                <img
-                  src="/logo.png"
-                  alt="Classroom logo"
-                  className="h-full w-full object-contain"
-                />
+
+            {/* Mobile sidebar header */}
+            <div className="flex items-center justify-between border-b border-slate-100 p-4 dark:border-slate-800 lg:hidden">
+              <div className="flex min-w-0 items-center gap-3">
+                <div className="h-10 w-10 shrink-0 overflow-hidden bg-transparent">
+                  <img src="/logo.png" alt="Classroom logo" className="h-full w-full object-contain" />
+                </div>
+                <span className="min-w-0 truncate text-base font-bold tracking-tight text-slate-900 dark:text-white">
+                  {displayName}
+                </span>
               </div>
 
-              <span className="min-w-0 truncate text-base font-bold tracking-tight text-slate-900 dark:text-white">
-                Teacher Sila
-              </span>
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                className="shrink-0 rounded-lg p-1 hover:bg-slate-100 dark:hover:bg-slate-800"
+                aria-label="Close menu"
+              >
+                <X className="h-6 w-6 text-slate-500" />
+              </button>
             </div>
 
-            <button
-              onClick={() => setIsSidebarOpen(false)}
-              className="shrink-0 rounded-lg p-1 hover:bg-slate-100 dark:hover:bg-slate-800"
-            >
-              <X className="h-6 w-6 text-slate-500" />
-            </button>
-          </div>
-
-          <nav className="flex-1 overflow-y-auto space-y-1 px-4 py-4">
-            {navItems.map((item) => (
-              <NavLink key={item.path} to={item.path} onClick={() => setIsSidebarOpen(false)}>
-                {({ isActive }) => (
-                  <motion.div
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={cn(
-                      "relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors duration-200 overflow-visible",
-                      isActive
-                        ? "text-slate-900 dark:text-white"
-                        : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-                    )}
-                  >
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeSidebarNav"
-                        className="absolute inset-0 rounded-xl bg-white dark:bg-indigo-600 border border-slate-200/80 dark:border-transparent shadow-sm dark:shadow-lg dark:shadow-indigo-500/10"
-                        transition={{
-                          type: "spring",
-                          stiffness: 500,
-                          damping: 35,
-                        }}
-                      />
-                    )}
-
-                    <div
-                      className={cn(
-                        "relative z-10 flex items-center justify-center",
-                        isActive
-                          ? "text-indigo-600 dark:text-white"
-                          : "text-slate-400 dark:text-slate-500"
-                      )}
+            <nav className="flex-1 overflow-y-auto space-y-1 px-4 py-4">
+              {navItems.map((item) => (
+                <NavLink key={item.path} to={item.path} onClick={() => setIsSidebarOpen(false)}>
+                  {({ isActive }) => (
+                    <motion.div
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="group relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors duration-200 overflow-visible"
                     >
-                      <item.icon className="h-5 w-5" />
-                    </div>
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeSidebarNav"
+                          className="absolute inset-0 rounded-xl bg-white dark:bg-indigo-600 border border-slate-200/80 dark:border-transparent shadow-sm dark:shadow-lg dark:shadow-indigo-500/10"
+                          transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                        />
+                      )}
 
-                    <span className="relative z-10">
-                      {item.name}
-                    </span>
+                      <div
+                        className={cn(
+                          'relative z-10 flex items-center justify-center transition-transform duration-200 group-hover:scale-110',
+                          isActive
+                            ? 'text-indigo-600 dark:text-white'
+                            : 'text-slate-400 dark:text-slate-500'
+                        )}
+                      >
+                        <item.icon className="h-5 w-5" />
+                      </div>
 
-                    {item.path === "/notifications" && hasUnread && (
                       <span
                         className={cn(
-                          "absolute right-4 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full z-20",
+                          'relative z-10',
                           isActive
-                            ? "bg-indigo-600 dark:bg-white"
-                            : "bg-indigo-600 dark:bg-indigo-400"
+                            ? 'text-slate-900 dark:text-white'
+                            : 'text-slate-600 group-hover:text-slate-900 dark:text-slate-400 dark:group-hover:text-white'
                         )}
-                      />
-                    )}
-                  </motion.div>
-                )}
-              </NavLink>
-            ))}
-          </nav>
+                      >
+                        {item.name}
+                      </span>
 
-          <div className="border-t border-slate-100 p-4 dark:border-slate-800">
-            <button
-              onClick={handleLogout}
-              className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:hover:bg-red-900/20"
-            >
-              <LogOut className="h-5 w-5" />
-              <span>Logout</span>
-            </button>
+                      {item.path === '/notifications' && hasUnread && (
+                        <span
+                          className={cn(
+                            'absolute right-4 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full z-20',
+                            isActive ? 'bg-white' : 'bg-amber-500'
+                          )}
+                        />
+                      )}
+                    </motion.div>
+                  )}
+                </NavLink>
+              ))}
+            </nav>
+
+            <div className="border-t border-slate-100 p-4 dark:border-slate-800">
+              <button
+                onClick={handleLogout}
+                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:hover:bg-red-900/20"
+              >
+                <LogOut className="h-5 w-5" />
+                <span>Logout</span>
+              </button>
+            </div>
           </div>
-        </div>
-
         </aside>
 
-
-        {/* Backdrop Element overlay layer */}
+        {/* Backdrop overlay for mobile sidebar */}
         {isSidebarOpen && (
           <div
             className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm lg:hidden"
@@ -311,35 +318,36 @@ export const MainLayout: React.FC = () => {
           />
         )}
 
-        {/* Main Workspace Frame container */}
+        {/* Main Workspace */}
         <main className="relative flex min-h-dvh flex-1 flex-col lg:ml-64">
-          {/* Desktop Header panel view */}
+          {/* Desktop Header */}
           <header className="sticky top-0 z-40 hidden items-center justify-between border-b border-slate-200 bg-white/80 px-8 py-4 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/80 lg:flex">
             <div className="flex items-center gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                <img
-                  src="/logo.png"
-                  alt="Logo"
-                  className="h-7 w-7 object-contain"
-                />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden ring-1 ring-slate-200 dark:ring-slate-700">
+                <img src="/logo.png" alt="Logo" className="h-7 w-7 object-contain" />
               </div>
 
-              <div>
-                <h2 className="font-semibold text-slate-900 dark:text-white">
-                  Teacher Sila&apos;s Classroom
-                </h2>
-
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Welcome back, @{user?.userName || 'User'}
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-sm font-medium tracking-tight">
+                  <span className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-400 transition-colors cursor-pointer">
+                    Teacher Sila's Classroom
+                  </span>
+                  <span className="text-slate-300 dark:text-slate-700 font-normal select-none">/</span>
+                  <span className="text-slate-900 dark:text-white font-semibold">
+                    {pageTitle}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 dark:text-slate-500">
+                  Welcome back, <span className="text-indigo-500 font-mono dark:text-indigo-400 font-medium">@{user?.userName || 'User'}</span>
                 </p>
               </div>
             </div>
 
             <div className="ml-auto flex items-center gap-3">
-              {/* Theme Toggle Button CTA */}
+              {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-700"
                 aria-label="Toggle theme"
               >
                 <motion.span
@@ -354,21 +362,17 @@ export const MainLayout: React.FC = () => {
                 </motion.span>
               </button>
 
-              {/* Desktop Notification Action Gateway Item Node link */}
+              {/* Notifications */}
               <button
-                onClick={() => {
-                  // Dynamically choose target destination route mapping based on auth profile rank field
-                  const targetPath = '/notifications';
-                  navigate(targetPath);
-                }}
-                className="relative flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                onClick={() => navigate('/notifications')}
+                className="relative flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-700"
                 aria-label="View notifications"
               >
                 <Bell className="h-5 w-5" />
                 {hasUnread && (
                   <span className="absolute top-2.5 right-2.5 flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-600 dark:bg-indigo-500"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
                   </span>
                 )}
               </button>
@@ -377,7 +381,6 @@ export const MainLayout: React.FC = () => {
                 <p className="text-sm font-medium text-slate-900 dark:text-white">
                   {user?.fullName}
                 </p>
-
                 <p className="text-xs capitalize text-slate-500 dark:text-slate-400">
                   {user?.rank} - {user?.className}
                 </p>
@@ -387,17 +390,17 @@ export const MainLayout: React.FC = () => {
                 <img
                   src={user.photoURL}
                   alt="Avatar"
-                  className="h-10 w-10 rounded-full border-2 border-indigo-500 object-cover"
+                  className="h-10 w-10 rounded-full border-2 border-indigo-500 object-cover ring-2 ring-indigo-500/10"
                 />
               ) : (
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 font-bold text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 font-bold text-white shadow-md shadow-indigo-500/20">
                   {user?.userName?.[0]?.toUpperCase()}
                 </div>
               )}
             </div>
           </header>
 
-          {/* Page Content Injection Target */}
+          {/* Page Content */}
           <div className="flex-1 w-full min-w-0 p-4 lg:p-8">
             <Outlet />
           </div>
