@@ -56,7 +56,6 @@ export const MainLayout: React.FC = () => {
   const [photoURL, setPhotoURL] = useState<string | null>(user?.photoURL ?? null);
   const [hasUnread, setHasUnread] = useState(false);
   const isMobile = useIsMobile();
-  const webName = useState('Teacher Sila');
 
   const navigate = useNavigate();
 
@@ -156,28 +155,43 @@ export const MainLayout: React.FC = () => {
       ? `${user.fullName.slice(0, 14)}...`
       : user.fullName
     : 'Teacher Sila';
+    const webName = 'Teacher Sila';
 
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950 transition-colors duration-300">
       {/* Mobile Topbar */}
       <header className="lg:hidden sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
-        <div className="flex items-center gap-2">
-          {user?.photoURL ? (
-            <img
-              src={user.photoURL}
-              alt="Avatar"
-              className="h-8 w-8 rounded-full border-2 border-indigo-500 object-cover ring-2 ring-indigo-500/10"
-            />
-          ) : (
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 shadow-md shadow-indigo-500/20">
-              <GraduationCap className="h-5 w-5 text-white" />
-            </div>
-          )}
+<div className="flex items-center gap-3">
+  {/* Profile Graphic Container */}
+  <div className="relative shrink-0 select-none">
+    {user?.photoURL ? (
+      <img
+        src={user.photoURL}
+        alt="Profile"
+        className="h-9 w-9 rounded-full border border-slate-200 dark:border-slate-800 object-cover shadow-sm bg-slate-50 dark:bg-slate-900"
+      />
+    ) : (
+      <div className="flex h-9 w-9 items-center justify-center rounded-full border border-indigo-100 dark:border-indigo-950/50 bg-indigo-50/60 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 shadow-sm">
+        <GraduationCap className="h-4 w-4" />
+      </div>
+    )}
+    
+    {/* Optional: Subtle Online Status Indicator Badge */}
+    <span className="absolute bottom-0 right-0 block h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900" />
+  </div>
 
-          <span className="text-lg font-bold text-slate-900 dark:text-white">
-            {displayName}
-          </span>
-        </div>
+  {/* Display Name Container */}
+  <div className="flex flex-col min-w-0">
+    <span className="truncate text-md font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+      {displayName}
+    </span>
+    {user?.rank && (
+      <span className="text-[11px] font-medium font-mono text-slate-400 dark:text-slate-500 capitalize leading-none pt-0.5">
+        {user.rank}
+      </span>
+    )}
+  </div>
+</div>
 
         <div className="flex items-center gap-2">
           <button
