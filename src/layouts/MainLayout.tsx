@@ -56,6 +56,7 @@ export const MainLayout: React.FC = () => {
   const [photoURL, setPhotoURL] = useState<string | null>(user?.photoURL ?? null);
   const [hasUnread, setHasUnread] = useState(false);
   const isMobile = useIsMobile();
+  const webName = useState('Teacher Sila');
 
   const navigate = useNavigate();
 
@@ -232,7 +233,7 @@ export const MainLayout: React.FC = () => {
                   <img src="/logo.png" alt="Classroom logo" className="h-full w-full object-contain" />
                 </div>
                 <span className="min-w-0 truncate text-base font-bold tracking-tight text-slate-900 dark:text-white">
-                  {displayName}
+                  {webName}
                 </span>
               </div>
 
