@@ -538,8 +538,6 @@ export const SettingsPage: React.FC = () => {
     }
   };
 
-  const [loadedMap, setLoadedMap] = useState<Record<string, boolean>>({});
-
   const notificationItems = [
     {
       key: 'emailNotifications',
@@ -629,53 +627,41 @@ export const SettingsPage: React.FC = () => {
                 Choose Avatar
               </button>
 
-<AnimatePresence>
-  {showAvatars && (
-    <motion.div
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: "auto" }}
-      exit={{ opacity: 0, height: 0 }}
-      transition={{ duration: 0.25, ease: "easeOut" }}
-      className="mt-6 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 overflow-hidden"
-    >
-      {avatars.map((avatar) => {
-        const loaded = loadedMap[avatar.id];
+              <AnimatePresence>
+                {showAvatars && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{
+                      opacity: 1,
+                      height: 'auto',
+                    }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mt-6 grid grid-cols-3 gap-3 overflow-hidden"
+                  >
+                    {avatars.map((avatar) => (
+                      <button
+                        key={avatar.id}
+                        onClick={() =>
+                          handleAvatarSelect(avatar.url)
+                        }
+                        className="group relative"
+                      >
+                        <img
+                          src={avatar.url}
+                          alt={avatar.id}
+                          className="h-20 w-20 rounded-2xl border-2 border-transparent object-cover transition-all duration-200 group-hover:border-indigo-500 group-hover:scale-105"
+                        />
 
-        return (
-          <button
-            key={avatar.id}
-            onClick={() => handleAvatarSelect(avatar.url)}
-            className="group relative w-full aspect-square rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 shadow-sm hover:shadow-md transition-all duration-200"
-          >
-            {!loaded && (
-              <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute inset-0 bg-slate-200/70 dark:bg-slate-700/70" />
-                <div className="absolute inset-y-0 left-[-40%] w-[40%] rotate-12 bg-gradient-to-r from-transparent via-white/70 to-transparent animate-shimmer dark:via-white/10" />
-              </div>
-            )}
-
-            <img
-              src={avatar.url}
-              alt={avatar.id}
-              onLoad={() =>
-                setLoadedMap((prev) => ({ ...prev, [avatar.id]: true }))
-              }
-              className={`h-full w-full object-cover transition-all duration-200 group-hover:scale-105 ${
-                loaded ? "opacity-100" : "opacity-0"
-              }`}
-            />
-
-            {user?.photoURL === avatar.url && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                <Check className="h-8 w-8 text-white" />
-              </div>
-            )}
-          </button>
-        );
-      })}
-    </motion.div>
-  )}
-</AnimatePresence>
+                        {user?.photoURL === avatar.url && (
+                          <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/40">
+                            <Check className="h-6 w-6 text-white" />
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* GUIDELINES */}
 
