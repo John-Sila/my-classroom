@@ -131,6 +131,7 @@ const avatars = [
   { id: 'avatar-75', url: 'https://png.pngtree.com/png-vector/20240314/ourmid/pngtree-cartoon-rugby-players-action-male-player-png-image_11954236.png' },
   { id: 'avatar-76', url: 'https://png.pngtree.com/png-vector/20250408/ourmid/pngtree-colorful-silhouette-of-a-football-player-kicking-soccer-ball-png-image_15950149.png' },
   { id: 'avatar-77', url: 'https://cdn.freebiesupply.com/images/large/2x/manchester-city-logo-png-transparent.png' },
+  { id: 'avatar-77', url: 'https://upload.wikimedia.org/wikipedia/sco/thumb/c/cc/Chelsea_FC.svg/1280px-Chelsea_FC.svg.png' },
   { id: 'avatar-78', url: 'https://png.pngtree.com/png-vector/20250702/ourmid/pngtree-badminton-player-in-action-clipart-png-image_16596992.webp' },
   { id: 'avatar-79', url: 'https://png.pngtree.com/png-vector/20230918/ourmid/pngtree-badminton-player-png-png-image_10125216.png' },
   { id: 'avatar-80', url: 'https://png.pngtree.com/png-clipart/20220826/ourmid/pngtree-volleyball-player-red-custom-png-image_6124936.png' },
@@ -537,6 +538,8 @@ export const SettingsPage: React.FC = () => {
     }
   };
 
+  const [loadedMap, setLoadedMap] = useState<Record<string, boolean>>({});
+
   const notificationItems = [
     {
       key: 'emailNotifications',
@@ -626,41 +629,53 @@ export const SettingsPage: React.FC = () => {
                 Choose Avatar
               </button>
 
-              <AnimatePresence>
-                {showAvatars && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{
-                      opacity: 1,
-                      height: 'auto',
-                    }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="mt-6 grid grid-cols-3 gap-3 overflow-hidden"
-                  >
-                    {avatars.map((avatar) => (
-                      <button
-                        key={avatar.id}
-                        onClick={() =>
-                          handleAvatarSelect(avatar.url)
-                        }
-                        className="group relative"
-                      >
-                        <img
-                          src={avatar.url}
-                          alt={avatar.id}
-                          className="h-20 w-20 rounded-2xl border-2 border-transparent object-cover transition-all duration-200 group-hover:border-indigo-500 group-hover:scale-105"
-                        />
+<AnimatePresence>
+  {showAvatars && (
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
+      className="mt-6 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 overflow-hidden"
+    >
+      {avatars.map((avatar) => {
+        const loaded = loadedMap[avatar.id];
 
-                        {user?.photoURL === avatar.url && (
-                          <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/40">
-                            <Check className="h-6 w-6 text-white" />
-                          </div>
-                        )}
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+        return (
+          <button
+            key={avatar.id}
+            onClick={() => handleAvatarSelect(avatar.url)}
+            className="group relative w-full aspect-square rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 shadow-sm hover:shadow-md transition-all duration-200"
+          >
+            {!loaded && (
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute inset-0 bg-slate-200/70 dark:bg-slate-700/70" />
+                <div className="absolute inset-y-0 left-[-40%] w-[40%] rotate-12 bg-gradient-to-r from-transparent via-white/70 to-transparent animate-shimmer dark:via-white/10" />
+              </div>
+            )}
+
+            <img
+              src={avatar.url}
+              alt={avatar.id}
+              onLoad={() =>
+                setLoadedMap((prev) => ({ ...prev, [avatar.id]: true }))
+              }
+              className={`h-full w-full object-cover transition-all duration-200 group-hover:scale-105 ${
+                loaded ? "opacity-100" : "opacity-0"
+              }`}
+            />
+
+            {user?.photoURL === avatar.url && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                <Check className="h-8 w-8 text-white" />
+              </div>
+            )}
+          </button>
+        );
+      })}
+    </motion.div>
+  )}
+</AnimatePresence>
 
               {/* GUIDELINES */}
 
