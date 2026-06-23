@@ -195,14 +195,8 @@ export default function LearnerTestsView() {
               <BookOpen size={28} className="text-sky-300" />
             </div>
             <div className="space-y-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30 tracking-wide uppercase">
-                Task Management Hub
-              </span>
-              <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-sky-100 bg-clip-text">
-                Important Learner Instructions
-              </h2>
               <p className="text-slate-200 text-sm font-medium leading-relaxed max-w-3xl">
-                Please copy these questions neatly into your <span className="underline decoration-amber-400 decoration-wavy decoration-2 font-semibold text-amber-300">Exercise Books</span> before writing down your answers. Ensure you keep your handwriting clean and organized!
+                Hi {user?.fullName.split(" ")[0]}, copy these questions neatly into your <span className="underline decoration-amber-400 decoration-wavy decoration-2 font-semibold text-amber-300">exercise book</span> and write down your answers before the deadline. Ensure to keep your handwriting clean and organized!
               </p>
             </div>
           </div>

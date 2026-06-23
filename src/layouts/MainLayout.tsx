@@ -161,37 +161,37 @@ export const MainLayout: React.FC = () => {
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950 transition-colors duration-300">
       {/* Mobile Topbar */}
       <header className="lg:hidden sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
-<div className="flex items-center gap-3">
-  {/* Profile Graphic Container */}
-  <div className="relative shrink-0 select-none">
-    {user?.photoURL ? (
-      <img
-        src={user.photoURL}
-        alt="Profile"
-        className="h-9 w-9 rounded-full border border-slate-200 dark:border-slate-800 object-cover shadow-sm bg-slate-50 dark:bg-slate-900"
-      />
-    ) : (
-      <div className="flex h-9 w-9 items-center justify-center rounded-full border border-indigo-100 dark:border-indigo-950/50 bg-indigo-50/60 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 shadow-sm">
-        <GraduationCap className="h-4 w-4" />
-      </div>
-    )}
-    
-    {/* Optional: Subtle Online Status Indicator Badge */}
-    <span className="absolute bottom-0 right-0 block h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900" />
-  </div>
+        <div className="flex items-center gap-3">
+          {/* Profile Graphic Container */}
+          <div className="relative shrink-0 select-none">
+            {user?.photoURL ? (
+              <img
+                src={user.photoURL}
+                alt="Profile"
+                className="h-9 w-9 rounded-full border border-slate-200 dark:border-slate-800 object-cover shadow-sm bg-slate-50 dark:bg-slate-900"
+              />
+            ) : (
+              <div className="flex h-9 w-9 items-center justify-center rounded-full border border-indigo-100 dark:border-indigo-950/50 bg-indigo-50/60 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 shadow-sm">
+                <GraduationCap className="h-4 w-4" />
+              </div>
+            )}
+            
+            {/* Optional: Subtle Online Status Indicator Badge */}
+            <span className="absolute bottom-0 right-0 block h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900" />
+          </div>
 
-  {/* Display Name Container */}
-  <div className="flex flex-col min-w-0">
-    <span className="truncate text-md font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-      {displayName}
-    </span>
-    {user?.rank && (
-      <span className="text-[11px] font-medium font-mono text-slate-400 dark:text-slate-500 capitalize leading-none pt-0.5">
-        {user.rank}
-      </span>
-    )}
-  </div>
-</div>
+          {/* Display Name Container */}
+          <div className="flex flex-col min-w-0">
+            <span className="truncate text-md font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+              {displayName}
+            </span>
+            {user?.rank && (
+              <span className="text-[11px] font-medium font-mono text-slate-400 dark:text-slate-500 capitalize leading-none pt-0.5">
+                {user.rank}
+              </span>
+            )}
+          </div>
+        </div>
 
         <div className="flex items-center gap-2">
           <button
@@ -316,7 +316,7 @@ export const MainLayout: React.FC = () => {
             <div className="border-t border-slate-100 p-4 dark:border-slate-800">
               <button
                 onClick={handleLogout}
-                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:hover:bg-red-900/20"
+                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer"
               >
                 <LogOut className="h-5 w-5" />
                 <span>Logout</span>

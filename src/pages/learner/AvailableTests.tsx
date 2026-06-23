@@ -19,6 +19,7 @@ import { cn } from '../../lib/utils';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
+import { notify } from '@/src/utils/toast';
 
 export const AvailableTests: React.FC = () => {
   const { user } = useAuthStore();
@@ -104,12 +105,12 @@ export const AvailableTests: React.FC = () => {
     const endTime = test.endTime.toDate();
 
     if (now < startTime) {
-      alert(`This test starts at ${format(startTime, 'PPp')}`);
+      notify.error(`This test starts at ${format(startTime, 'PPp')}`);
       return;
     }
 
     if (now > endTime) {
-      alert('This test has ended.');
+      notify.error('This test has ended.');
       return;
     }
 
@@ -182,98 +183,159 @@ export const AvailableTests: React.FC = () => {
             const isExpired = now > endTime;
             const canTake = isForUserClass && !isSubmitted && !isExpired && !isUpcoming;
 
+            // 🎨 Precise Visual State Evaluators
+            const statusType = !isForUserClass
+              ? "wrong-class"
+              : isSubmitted
+              ? "submitted"
+              : isExpired
+              ? "expired"
+              : isUpcoming
+              ? "upcoming"
+              : "active";
+
+            // 🛠️ Dynamic Style Dictionary mapping states to sleek Tailwind classes
+            const cardStyles: Record<typeof statusType, string> = {
+              "wrong-class": "border-slate-100 dark:border-slate-900 bg-slate-50/50 dark:bg-slate-950/20 opacity-65 grayscale select-none",
+              "submitted": "border-emerald-100 dark:border-emerald-950/40 bg-white dark:bg-slate-900 shadow-sm",
+              "expired": "border-slate-200/60 dark:border-slate-800/80 bg-slate-50/40 dark:bg-slate-900/10 opacity-75",
+              "upcoming": "border-amber-100/70 dark:border-amber-950/30 bg-white dark:bg-slate-900 shadow-sm",
+              "active": "border-slate-100 dark:border-slate-800/80 bg-white dark:bg-slate-900 shadow-md shadow-indigo-500/[0.02] hover:shadow-xl hover:shadow-indigo-500/[0.05] dark:hover:shadow-none hover:-translate-y-1"
+            };
+
+            const iconBoxStyles: Record<typeof statusType, string> = {
+              "wrong-class": "bg-slate-100 dark:bg-slate-800 text-slate-400",
+              "submitted": "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400",
+              "expired": "bg-slate-100 dark:bg-slate-800 text-slate-400",
+              "upcoming": "bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-500",
+              "active": "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400"
+            };
+
             return (
               <div 
                 key={test.testId}
                 className={cn(
-                  "group relative bg-white dark:bg-slate-900 rounded-[2rem] p-6 border transition-all duration-300",
-                  isForUserClass 
-                    ? "border-slate-100 dark:border-slate-800 hover:shadow-xl hover:shadow-indigo-100 dark:hover:shadow-none hover:-translate-y-1"
-                    : "border-slate-50 dark:border-slate-900 opacity-60 grayscale"
+                  "group relative rounded-3xl p-6 border transition-all duration-300 flex flex-col justify-between",
+                  cardStyles[statusType]
                 )}
               >
-                <div className="flex justify-between items-start mb-6">
-                  <div className={cn(
-                    "p-3 rounded-2xl",
-                    isForUserClass ? "bg-indigo-50 dark:bg-indigo-900/30" : "bg-slate-100 dark:bg-slate-800"
-                  )}>
-                    <BookOpen className={cn("w-6 h-6", isForUserClass ? "text-indigo-600 dark:text-indigo-400" : "text-slate-400")} />
-                  </div>
-                  <div className="flex flex-col items-end">
-                    <span className={cn(
-                      "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-1",
-                      isForUserClass 
-                        ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300"
-                        : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
-                    )}>
-                      Grade {test.className}
-                    </span>
-                    {isSubmitted && (
-                      <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase">
-                        <CheckCircle2 className="w-3 h-3" /> Submitted
+                <div>
+                  {/* Header Action Row */}
+                  <div className="flex justify-between items-start mb-5">
+                    <div className={cn("p-2.5 rounded-xl transition-colors", iconBoxStyles[statusType])}>
+                      <BookOpen className="w-5 h-5" />
+                    </div>
+                    
+                    <div className="flex flex-col items-end gap-1.5">
+                      <span className={cn(
+                        "px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider border",
+                        isForUserClass 
+                          ? "bg-indigo-50/60 text-indigo-600 border-indigo-100 dark:bg-indigo-950/30 dark:text-indigo-400 dark:border-indigo-900/30"
+                          : "bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700"
+                      )}>
+                        Grade {test.className}
                       </span>
-                    )}
+                      
+                      {/* Dynamic Badges */}
+                      {isSubmitted && (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider font-mono">
+                          <CheckCircle2 className="w-3 h-3 stroke-[2.5]" /> Done
+                        </span>
+                      )}
+                      {isExpired && !isSubmitted && (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider font-mono">
+                          <Lock className="w-3 h-3" /> Closed
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Test Metadata */}
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 tracking-tight line-clamp-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                    {test.testName}
+                  </h3>
+                  
+                  <div className="space-y-2 mb-6">
+                    <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 text-xs font-medium">
+                      <Clock className="w-3.5 h-3.5 shrink-0" />
+                      <span>Duration: <strong className="text-slate-600 dark:text-slate-300 font-semibold">{test.durationMinutes} Mins</strong></span>
+                    </div>
+                    
+                    {/* 🕒 Highlighted From {date} To {date} window row */}
+                    <div className="flex items-start gap-2 text-slate-400 dark:text-slate-500 text-xs font-medium">
+                      <Calendar className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex flex-wrap items-center gap-1.5 text-slate-600 dark:text-slate-300 font-medium">
+                          <span className="bg-slate-100 dark:bg-slate-800/80 px-1.5 py-0.5 rounded text-[11px] font-semibold text-slate-500">
+                            {format(startTime, 'MMM d, h:mm a')}
+                          </span>
+                          <span className="text-slate-300 dark:text-slate-700 font-normal">&rarr;</span>
+                          <span className="bg-slate-50 dark:bg-slate-800/40 px-1.5 py-0.5 rounded text-[11px] font-semibold text-slate-500 border border-slate-100 dark:border-transparent">
+                            {format(endTime, 'MMM d, h:mm a')}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 line-clamp-1">{test.testName}</h3>
-                
-                <div className="space-y-3 mb-8">
-                  <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
-                    <Clock className="w-4 h-4" />
-                    <span>{test.durationMinutes} Minutes</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
-                    <Calendar className="w-4 h-4" />
-                    <span>{format(startTime, 'MMM d, h:mm a')}</span>
-                  </div>
-                </div>
+                {/* 🚦 Footer Action Context Engine */}
+                <div className="pt-4 border-t border-slate-100 dark:border-slate-800/60 mt-auto">
+                  {statusType === "wrong-class" && (
+                    <div className="flex items-center justify-center gap-1.5 text-slate-400 dark:text-slate-500 text-xs font-medium py-2 bg-slate-100/50 dark:bg-slate-800/30 rounded-xl">
+                      <Lock className="w-3.5 h-3.5" />
+                      <span>Grade {test.className} only</span>
+                    </div>
+                  )}
 
-                {!isForUserClass ? (
-                  <div className="flex items-center gap-2 text-slate-400 text-xs font-medium py-3 border-t border-slate-50 dark:border-slate-800 mt-4">
-                    <Lock className="w-3.5 h-3.5" />
-                    <span>Not for your class</span>
-                  </div>
-                ) : isSubmitted ? (
-                  <button 
-                    onClick={() => navigate('/results')}
-                    className="w-full py-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-bold rounded-xl text-sm border border-emerald-100 dark:border-emerald-900/50 hover:bg-emerald-100 transition-colors"
-                  >
-                    View Result
-                  </button>
-                ) : isExpired ? (
-                  <div className="w-full py-3 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold rounded-xl text-sm text-center border border-slate-200 dark:border-slate-700">
-                    Ended
-                  </div>
-                ) : isUpcoming ? (
-                  <div className="w-full py-3 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 font-bold rounded-xl text-sm text-center border border-amber-100 dark:border-amber-900/50">
-                    Starts {format(startTime, 'p')}
-                  </div>
-                ) : (
-                  <button 
-                    onClick={() => handleStartTest(test)}
-                    className="w-full group/btn flex items-center justify-center gap-2 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 dark:shadow-none transition-all"
-                  >
-                    <span>Start Test</span>
-                    <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                  </button>
-                )}
+                  {statusType === "submitted" && (
+                    <button 
+                      onClick={() => navigate('/results')}
+                      className="w-full py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-950/30 dark:hover:bg-emerald-900/30 dark:text-emerald-400 font-semibold rounded-xl text-sm border border-emerald-200/50 dark:border-emerald-900/30 transition-colors"
+                    >
+                      Review Results
+                    </button>
+                  )}
+
+                  {statusType === "expired" && (
+                    <div className="w-full py-2.5 bg-slate-100 dark:bg-slate-800/60 text-slate-400 dark:text-slate-500 font-medium rounded-xl text-sm text-center border border-slate-200/40 dark:border-slate-700/40 cursor-not-allowed">
+                      Assessment Window Ended
+                    </div>
+                  )}
+
+                  {statusType === "upcoming" && (
+                    <div className="w-full py-2.5 bg-amber-50/60 text-amber-700 dark:bg-amber-950/20 dark:text-amber-400 font-medium rounded-xl text-sm text-center border border-amber-200/40 dark:border-amber-900/20 font-mono text-xs cursor-wait">
+                      Unlocks at {format(startTime, 'h:mm a')}
+                    </div>
+                  )}
+
+                  {statusType === "active" && (
+                    <button 
+                      onClick={() => handleStartTest(test)}
+                      className="w-full group/btn flex items-center justify-center gap-1.5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-md shadow-indigo-500/10 dark:shadow-none transition-all hover:shadow-lg hover:shadow-indigo-500/20 cursor-pointer"
+                    >
+                      <span>Begin Assessment</span>
+                      <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-0.5 transition-transform" />
+                    </button>
+                  )}
+                </div>
               </div>
             );
           })}
 
           {displayedTests.length === 0 && (
-            <div className="col-span-full bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-slate-100 dark:border-slate-800">
-              <ClipboardList className="w-16 h-16 text-slate-200 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">No active tests</h3>
-              <p className="text-slate-500">
+            <div className="col-span-full bg-white dark:bg-slate-900 rounded-[2rem] p-12 text-center border border-slate-100 dark:border-slate-800">
+              <ClipboardList className="w-12 h-12 text-slate-200 dark:text-slate-700 mx-auto mb-3" />
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">No Assessments Available</h3>
+              <p className="text-sm text-slate-400 dark:text-slate-500 max-w-sm mx-auto">
                 {showOnlyMyClass 
                   ? "There are no active tests scheduled for your class right now." 
-                  : "Scheduled tests will appear here when they are active."}
+                  : "Scheduled tests will appear here when they are configured."}
               </p>
             </div>
           )}
         </div>
+
       </div>
 
     </motion.div>
