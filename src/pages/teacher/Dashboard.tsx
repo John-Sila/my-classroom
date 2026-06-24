@@ -31,6 +31,7 @@ import {
 } from 'recharts';
 import { format } from 'date-fns';
 import { motion } from 'motion/react';
+import { TestSelect } from '@/src/utils/classSelector';
 
 type TestAttemptLite = {
   attemptId?: string;
@@ -262,18 +263,13 @@ export const TeacherDashboard: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <div className="relative">
                     <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <select
-                      value={selectedTestId || ""}
-                      onChange={(e) => setSelectedTestId(e.target.value)}
-                      className="pl-9 pr-10 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all"
-                    >
-                      {recentTests.map((t) => (
-                        <option key={t.testId} value={t.testId}>
-                          {t.testName} ({t.className})
-                        </option>
-                      ))}
-                      {recentTests.length === 0 && <option value="">No tests available</option>}
-                    </select>
+                    <div className="pl-9">
+                      <TestSelect
+                        value={selectedTestId || ""}
+                        onChange={setSelectedTestId}
+                        options={recentTests}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
