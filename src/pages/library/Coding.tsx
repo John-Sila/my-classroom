@@ -250,14 +250,14 @@ export default function CodingFundamentals() {
 
                   <div className="border-t border-slate-100 dark:border-slate-800/50 pt-4 mt-6 space-y-2">
                     <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
-                      Operational Flow Vectors:
+                      Operational Flow in Program Testing (Step 4):
                     </div>
                     <div className="flex flex-wrap gap-2 text-[10px] font-mono font-bold">
                       <span className="flex items-center gap-1 px-2.5 py-1 rounded bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/30">
-                        SUCCESS <ArrowRight className="w-3 h-3" /> DOCS
+                        SUCCESS <ArrowRight className="w-3 h-3" /> DOCS (Step 5)
                       </span>
                       <span className="flex items-center gap-1 px-2.5 py-1 rounded bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-900/30">
-                        FAILURE <ArrowRight className="w-3 h-3" /> REFACTOR
+                        FAILURE <ArrowRight className="w-3 h-3" /> REWRITE (Step 3)
                       </span>
                     </div>
                   </div>
