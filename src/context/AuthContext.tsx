@@ -11,9 +11,7 @@ const AuthContext = createContext({});
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { setUser, setLoading } = useAuthStore();
 
-useEffect(() => {
-  setLoading(true); // ← ensure loading starts true before listener attaches
-
+  useEffect(() => {
     // 1. Connection check as required
     async function testConnection() {
       try {
@@ -26,42 +24,56 @@ useEffect(() => {
     }
     testConnection();
 
-  const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-    if (firebaseUser) {
-      try {
-        const userDocRef = doc(db, 'users', firebaseUser.uid);
-        const userDoc = await getDoc(userDocRef);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      // Set loading true at the START of every auth transition (not just on mount).
+      // Without this, a login event that fires after the initial mount leaves
+      // loading=false while the Firestore read below is still in flight, which
+      // lets ProtectedRoute see {user: null, loading: false} and bounce back to
+      // /login before setUser() ever runs.
+      setLoading(true);
 
-        if (userDoc.exists()) {
-          const userData = userDoc.data() as UserProfile;
-          const lastLogin = userData.lastLogin.toDate();
-          const diffInMs = Date.now() - lastLogin.getTime();
+      if (firebaseUser) {
+        try {
+          const userDocRef = doc(db, 'users', firebaseUser.uid);
+          const userDoc = await getDoc(userDocRef);
 
-          if (diffInMs > 60 * 60 * 1000) {
-            await signOut(auth);
-            setUser(null);
+          if (userDoc.exists()) {
+            const userData = userDoc.data() as UserProfile;
+
+            // Use Firebase Auth's own sign-in timestamp instead of the
+            // Firestore lastLogin field. The Firestore field is also written
+            // by Login.tsx's updateDoc call as part of the same login flow,
+            // so reading it here race against that write and could see a
+            // stale value from the previous session.
+            const lastSignIn = firebaseUser.metadata.lastSignInTime
+              ? new Date(firebaseUser.metadata.lastSignInTime).getTime()
+              : 0;
+            const diffInMs = Date.now() - lastSignIn;
+
+            if (diffInMs > 60 * 60 * 1000) {
+              await signOut(auth);
+              setUser(null);
+            } else {
+              setUser({ ...userData, uid: firebaseUser.uid });
+            }
           } else {
-            setUser({ ...userData, uid: firebaseUser.uid });
+            await signOut(auth);
+            window.location.reload();
+            return;
           }
-        } else {
-          await signOut(auth);
-          window.location.reload();
-          return;
+        } catch (error) {
+          handleFirestoreError(error, OperationType.GET, `users/${firebaseUser.uid}`);
+          setUser(null);
         }
-      } catch (error) {
-        handleFirestoreError(error, OperationType.GET, `users/${firebaseUser.uid}`);
+      } else {
         setUser(null);
       }
-    } else {
-      setUser(null);
-    }
 
-    setLoading(false); // ← always fires last, after user is set
-  });
+      setLoading(false);
+    });
 
-  return () => unsubscribe();
-}, [setUser, setLoading]);
-
+    return () => unsubscribe();
+  }, [setUser, setLoading]);
 
   return <AuthContext.Provider value={{}}>{children}</AuthContext.Provider>;
 };

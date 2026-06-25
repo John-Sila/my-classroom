@@ -26,6 +26,7 @@ import Terms from './pages/Terms';
 import Chatroom from './pages/learner/Chatroom';
 import WritingTestsManager from './pages/teacher/WriteTests';
 import LearnerTestsView from './pages/learner/WritingTests';
+import { LoginRedirect } from './pages/Redirects/LoginRedirect';
 
 // const TestAnalytics = () => <ResultsAnalytics />;
 const PersonalAnalytics = () => <LearnerDashboard />;
@@ -38,8 +39,12 @@ const DashboardSwitch = () => {
 
 const router = createBrowserRouter([
   {
-    path: '/login',
-    element: <Login />,
+    path: "/login",
+    element: (
+      <LoginRedirect>
+        <Login />
+      </LoginRedirect>
+    ),
   },
   {
     path: '/themes',

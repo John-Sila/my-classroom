@@ -36,52 +36,45 @@ export const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // 2. Clear previous custom validations before running checks
-    setErrors({});
-    let localErrors: { email?: string; password?: string } = {};
+    if (isLoading) return;
 
-    if (!email.trim()) {
-      localErrors.email = 'Please fill out this field.';
-    }
-    if (!password) {
-      localErrors.password = 'Please fill out this field.';
-    }
+    setErrors({});
+    const localErrors: { email?: string; password?: string } = {};
+
+    if (!email.trim()) localErrors.email = "Please fill out this field.";
+    if (!password) localErrors.password = "Please fill out this field.";
 
     if (Object.keys(localErrors).length > 0) {
       setErrors(localErrors);
       return;
     }
 
-    if (isLoading) return;
-
     setIsLoading(true);
-    const loader = notify.loading('Signing in...');
+    const loader = notify.loading("Signing in...");
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
       try {
-        await updateDoc(doc(db, 'users', user.uid), {
+        await updateDoc(doc(db, "users", user.uid), {
           lastLogin: Timestamp.now(),
           updatedAt: Timestamp.now(),
         });
       } catch {
-        notify.info('Logged in, but failed to sync metadata.');
+        notify.info("Logged in, but failed to sync metadata.");
       }
 
-      notify.updateSuccess(loader, 'You are now signed in!');
-      await waitForUser();
+      notify.updateSuccess(loader, "You are now signed in!");
 
-      const destination = (location.state as any)?.from?.pathname || '/';
+      const destination = (location.state as any)?.from?.pathname || "/";
       navigate(destination, { replace: true });
-
     } catch (error: any) {
+      notify.updateError(loader, getAuthErrorMessage(error.code) || "Authentication failed");
       setIsLoading(false);
-      notify.updateError(loader, getAuthErrorMessage(error.code) || 'Authentication failed');
     }
   };
+
 
   return (
     <motion.div
