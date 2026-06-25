@@ -119,7 +119,7 @@ export const MainLayout: React.FC = () => {
       }
 
       await signOut(auth);
-      notify.updateSuccess(loader, 'Logged out successfully!');
+      notify.updateSuccess(loader, `Hi ${user?.fullName.split(" ")[0]}, your session has been saved and logged out!`);
       navigate('/login');
     } catch (error) {
       notify.updateError(loader, 'Logout failed:');
