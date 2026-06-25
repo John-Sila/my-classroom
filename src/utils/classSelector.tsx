@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { TooltipProps } from 'recharts';
 
 const classOptions = ['5A', '5B', '5D', '6C', '6D', 'Admin'];
 const roleOptions = ['learner', 'teacher'];
@@ -174,7 +175,7 @@ export function TestSelect({
       <button
         type="button"
         onClick={toggleDropdown}
-        className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition hover:bg-slate-100 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-800/50 dark:text-white dark:hover:bg-slate-800"
+        className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 py-2.5 text-sm text-slate-900 outline-none transition hover:bg-slate-100 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-800/50 dark:text-white dark:hover:bg-slate-800"
       >
         <span className={cn(!value && "text-slate-400 dark:text-slate-500")}>
           {selected ? `${selected.testName} (${selected.className})` : "Select test"}
@@ -223,3 +224,41 @@ export function TestSelect({
     </div>
   );
 }
+
+export const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="rounded-2xl border-0 bg-white p-3 shadow-xl dark:bg-slate-800">
+        <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
+          Success Rate: <span className="font-semibold">{Math.round(Number(payload[0].value))}%</span>
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
+export const CustomPieTooltip = ({ active, payload }: TooltipProps<number, string>) => {
+  if (active && payload && payload.length && payload[0].value !== undefined) {
+    const data = payload[0].payload;
+    const roundedValue = Math.round(Number(payload[0].value));
+
+    return (
+      <div className="rounded-xl border-0 bg-white p-3 shadow-xl ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10 transition-colors duration-200">
+        <div className="flex items-center gap-2 mb-0.5">
+          <span 
+            className="w-2.5 h-2.5 rounded-full" 
+            style={{ backgroundColor: payload[0].color }} 
+          />
+          <p className="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
+            {data.name}
+          </p>
+        </div>
+        <p className="text-sm font-bold text-slate-900 dark:text-slate-50 pl-4.5">
+          Value: <span className="text-indigo-500 dark:text-indigo-400">{roundedValue}</span>
+        </p>
+      </div>
+    );
+  }
+  return null;
+};

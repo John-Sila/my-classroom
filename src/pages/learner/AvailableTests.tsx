@@ -9,10 +9,10 @@ import {
   CheckCircle2,
   Lock,
   Loader2,
-  Filter // Added for visual feedback on toggle button
+  Filter 
 } from 'lucide-react';
-import { collection, query, onSnapshot, where, orderBy, getDocs } from 'firebase/firestore';
-import { db, auth } from '../../firebase/config';
+import { collection, query, onSnapshot, orderBy, where } from 'firebase/firestore';
+import { db } from '../../firebase/config';
 import { useAuthStore } from '../../store/authStore';
 import { Test, TestAttempt } from '../../types';
 import { cn } from '../../lib/utils';
@@ -26,7 +26,11 @@ export const AvailableTests: React.FC = () => {
   const [tests, setTests] = useState<Test[]>([]);
   const [attempts, setAttempts] = useState<Record<string, TestAttempt>>({});
   const [isLoading, setIsLoading] = useState(true);
-  const [showOnlyMyClass, setShowOnlyMyClass] = useState(true); // Added: Defaults to true
+  const [showOnlyMyClass, setShowOnlyMyClass] = useState(true); 
+  
+  // 1. ADD STATE TRACKER FOR SEARCH
+  const [searchQuery, setSearchQuery] = useState(''); 
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,7 +38,6 @@ export const AvailableTests: React.FC = () => {
 
     setIsLoading(true);
 
-    // TESTS
     const testsQuery = query(
       collection(db, 'tests'),
       orderBy('startTime', 'desc')
@@ -49,8 +52,6 @@ export const AvailableTests: React.FC = () => {
             testId: doc.id,
           })) as Test[];
 
-          console.log('TESTS:', testsData);
-
           setTests(testsData);
           setIsLoading(false);
         } catch (err) {
@@ -64,7 +65,6 @@ export const AvailableTests: React.FC = () => {
       }
     );
 
-    // ATTEMPTS
     const attemptsQuery = query(
       collection(db, 'testAttempts'),
       where('uid', '==', user.uid)
@@ -77,7 +77,6 @@ export const AvailableTests: React.FC = () => {
 
         snapshot.docs.forEach((doc) => {
           const data = doc.data() as TestAttempt;
-
           attemptsData[data.testId] = {
             ...data,
             attemptId: doc.id,
@@ -126,19 +125,25 @@ export const AvailableTests: React.FC = () => {
     );
   }
 
-  // Filter logic runs inline here, keeping core snapshot array safe
-  const displayedTests = showOnlyMyClass 
-    ? tests.filter(test => test.className === user?.className)
-    : tests;
+  // 2. RE-ENGINEERED DYNAMIC FILTER INDEX PIPELINE
+  const displayedTests = tests.filter(test => {
+    // Stage A: Class verification checks
+    const matchesClass = !showOnlyMyClass || test.className === user?.className;
+    
+    // Stage B: Multi-field fuzzy text search indexing
+    const cleanQuery = searchQuery.toLowerCase().trim();
+    const matchesSearch = !cleanQuery || 
+      test.testName.toLowerCase().includes(cleanQuery) || 
+      test.className.toLowerCase().includes(cleanQuery);
+
+    return matchesClass && matchesSearch;
+  });
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.35,
-        ease: 'easeOut',
-      }}
+      transition={{ duration: 0.35, ease: 'easeOut' }}
       className="h-full"
     >
       <div className="space-y-8">
@@ -148,9 +153,7 @@ export const AvailableTests: React.FC = () => {
             <p className="text-slate-500 dark:text-slate-400">View and participate in scheduled examinations</p>
           </div>
           
-          {/* Action Button Controls Row */}
           <div className="flex items-center gap-3 self-start md:self-auto w-full md:w-auto">
-            {/* Added: Toggler Button */}
             <button
               onClick={() => setShowOnlyMyClass(!showOnlyMyClass)}
               className={cn(
@@ -166,7 +169,14 @@ export const AvailableTests: React.FC = () => {
 
             <div className="bg-white dark:bg-slate-900 px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center gap-3 flex-1 md:flex-initial">
               <Search className="w-4 h-4 text-slate-400" />
-              <input type="text" placeholder="Search tests..." className="bg-transparent border-none outline-none text-sm text-slate-900 dark:text-white w-full md:w-auto" />
+              {/* 3. CONTROLLED INPUT STATE REPLACEMENT */}
+              <input 
+                type="text" 
+                placeholder="Search tests..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-transparent border-none outline-none text-sm text-slate-900 dark:text-white w-full md:w-80" 
+              />
             </div>
           </div>
         </div>
@@ -181,9 +191,7 @@ export const AvailableTests: React.FC = () => {
             const endTime = test.endTime.toDate();
             const isUpcoming = now < startTime;
             const isExpired = now > endTime;
-            const canTake = isForUserClass && !isSubmitted && !isExpired && !isUpcoming;
 
-            // 🎨 Precise Visual State Evaluators
             const statusType = !isForUserClass
               ? "wrong-class"
               : isSubmitted
@@ -194,7 +202,6 @@ export const AvailableTests: React.FC = () => {
               ? "upcoming"
               : "active";
 
-            // 🛠️ Dynamic Style Dictionary mapping states to sleek Tailwind classes
             const cardStyles: Record<typeof statusType, string> = {
               "wrong-class": "border-slate-100 dark:border-slate-900 bg-slate-50/50 dark:bg-slate-950/20 opacity-65 grayscale select-none",
               "submitted": "border-emerald-100 dark:border-emerald-950/40 bg-white dark:bg-slate-900 shadow-sm",
@@ -220,7 +227,6 @@ export const AvailableTests: React.FC = () => {
                 )}
               >
                 <div>
-                  {/* Header Action Row */}
                   <div className="flex justify-between items-start mb-5">
                     <div className={cn("p-2.5 rounded-xl transition-colors", iconBoxStyles[statusType])}>
                       <BookOpen className="w-5 h-5" />
@@ -236,7 +242,6 @@ export const AvailableTests: React.FC = () => {
                         Grade {test.className}
                       </span>
                       
-                      {/* Dynamic Badges */}
                       {isSubmitted && (
                         <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider font-mono">
                           <CheckCircle2 className="w-3 h-3 stroke-[2.5]" /> Done
@@ -250,7 +255,6 @@ export const AvailableTests: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Test Metadata */}
                   <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 tracking-tight line-clamp-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                     {test.testName}
                   </h3>
@@ -261,7 +265,6 @@ export const AvailableTests: React.FC = () => {
                       <span>Duration: <strong className="text-slate-600 dark:text-slate-300 font-semibold">{test.durationMinutes} Mins</strong></span>
                     </div>
                     
-                    {/* 🕒 Highlighted From {date} To {date} window row */}
                     <div className="flex items-start gap-2 text-slate-400 dark:text-slate-500 text-xs font-medium">
                       <Calendar className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                       <div className="flex flex-col gap-0.5">
@@ -279,7 +282,6 @@ export const AvailableTests: React.FC = () => {
                   </div>
                 </div>
 
-                {/* 🚦 Footer Action Context Engine */}
                 <div className="pt-4 border-t border-slate-100 dark:border-slate-800/60 mt-auto">
                   {statusType === "wrong-class" && (
                     <div className="flex items-center justify-center gap-1.5 text-slate-400 dark:text-slate-500 text-xs font-medium py-2 bg-slate-100/50 dark:bg-slate-800/30 rounded-xl">
@@ -326,18 +328,18 @@ export const AvailableTests: React.FC = () => {
           {displayedTests.length === 0 && (
             <div className="col-span-full bg-white dark:bg-slate-900 rounded-[2rem] p-12 text-center border border-slate-100 dark:border-slate-800">
               <ClipboardList className="w-12 h-12 text-slate-200 dark:text-slate-700 mx-auto mb-3" />
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">No Assessments Available</h3>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">No Assessments Found</h3>
               <p className="text-sm text-slate-400 dark:text-slate-500 max-w-sm mx-auto">
-                {showOnlyMyClass 
+                {searchQuery 
+                  ? `No tests matched your query "${searchQuery}". Try searching for something else.` 
+                  : showOnlyMyClass 
                   ? "There are no active tests scheduled for your class right now." 
                   : "Scheduled tests will appear here when they are configured."}
               </p>
             </div>
           )}
         </div>
-
       </div>
-
     </motion.div>
   );
 };

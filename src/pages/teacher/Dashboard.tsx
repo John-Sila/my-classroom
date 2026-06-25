@@ -261,15 +261,14 @@ export const TeacherDashboard: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <div className="pl-9">
-                      <TestSelect
-                        value={selectedTestId || ""}
-                        onChange={setSelectedTestId}
-                        options={recentTests}
-                      />
-                    </div>
+                  {/* The absolute container must directly wrap the icon and component */}
+                  <div className="relative flex items-center">
+                    <Filter className="absolute left-3.5 z-10 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
+                    <TestSelect
+                      value={selectedTestId || ""}
+                      onChange={setSelectedTestId}
+                      options={recentTests}
+                    />
                   </div>
                 </div>
               </div>

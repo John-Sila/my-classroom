@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { motion } from 'motion/react';
+import { CustomPieTooltip, CustomTooltip, TestSelect } from '@/src/utils/classSelector';
 
 export const ResultsAnalytics: React.FC = () => {
   const [tests, setTests] = useState<Test[]>([]);
@@ -37,6 +38,11 @@ export const ResultsAnalytics: React.FC = () => {
   const [attempts, setAttempts] = useState<TestAttempt[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const isDarkMode = document.documentElement.classList.contains('dark');
+
+   const MODERN_COLORS = isDarkMode 
+   ? ['#6366f1', '#10b981', '#f59e0b', '#f43f5e'] 
+   : ['#4f46e5', '#059669', '#d97706', '#e11d48'];
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, 'tests'), (snap) => {
@@ -103,17 +109,15 @@ export const ResultsAnalytics: React.FC = () => {
          </div>
 
          <div className="flex items-center gap-3">
-            <div className="relative">
-               <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-               <select 
+            <div className="relative flex items-center">
+               {/* Themed, padded, and layered icon */}
+               <Filter className="absolute left-3.5 z-10 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
+               
+               <TestSelect 
                   value={selectedTestId}
-                  onChange={(e) => setSelectedTestId(e.target.value)}
-                  className="pl-9 pr-8 py-2.5 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 outline-none shadow-sm"
-               >
-                  {tests.map(t => (
-                     <option key={t.testId} value={t.testId}>{t.testName} ({t.className})</option>
-                  ))}
-               </select>
+                  onChange={(val) => setSelectedTestId(val)}
+                  options={tests}
+               />
             </div>
          </div>
          </div>
@@ -138,16 +142,21 @@ export const ResultsAnalytics: React.FC = () => {
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
                         <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#94A3B8' }} />
                         <YAxis domain={[0, 100]} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#94A3B8' }} />
-                        <Tooltip 
-                           contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                        />
+                        
+                        <Tooltip content={<CustomTooltip />} />
+                        
                         <Bar dataKey="successRate">
                            {questionDifficultyData.map((entry, index) => (
-                              <Cell key={index} fill={entry.successRate > 70 ? '#10B981' : entry.successRate > 40 ? '#F59E0B' : '#EF4444'} radius={[6, 6, 0, 0]} />
+                              <Cell 
+                                 key={index} 
+                                 fill={entry.successRate > 70 ? '#10B981' : entry.successRate > 40 ? '#F59E0B' : '#EF4444'} 
+                                 radius={[6, 6, 0, 0]} 
+                              />
                            ))}
                         </Bar>
                      </BarChart>
                   </ResponsiveContainer>
+
                </div>
             </div>
 
@@ -156,23 +165,31 @@ export const ResultsAnalytics: React.FC = () => {
                <div className="h-64 w-full">
                   <ResponsiveContainer width="100%" height="100%">
                      <PieChart>
+                        <Tooltip content={<CustomPieTooltip />} />
                         <Pie
                            data={distributionData}
                            cx="50%"
                            cy="50%"
                            innerRadius={60}
                            outerRadius={80}
-                           paddingAngle={5}
+                           paddingAngle={6}
+                           cornerRadius={5}
                            dataKey="value"
                         >
                            {distributionData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                              <Cell 
+                                 key={`cell-${index}`} 
+                                 fill={MODERN_COLORS[index % MODERN_COLORS.length]} 
+                                 stroke={isDarkMode ? '#0f172a' : '#ffffff'}
+                                 strokeWidth={2}
+                                 className="focus:outline-none transition-all duration-200 hover:opacity-90 cursor-pointer"
+                              />
                            ))}
                         </Pie>
-                        <Tooltip />
                      </PieChart>
                   </ResponsiveContainer>
                </div>
+
                <div className="mt-4 flex flex-col gap-3">
                   {distributionData.map((d, index) => (
                      <div key={d.name} className="flex items-center justify-between">
