@@ -71,7 +71,7 @@ export const Login: React.FC = () => {
         notify.info('Logged in, but failed to sync metadata.');
       }
 
-      notify.updateSuccess(loader, 'Successfully logged in!');
+      notify.updateSuccess(loader, 'You are now signed in!');
       await waitForUser();
 
       const destination = (location.state as any)?.from?.pathname || '/';
